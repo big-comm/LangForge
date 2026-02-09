@@ -1,0 +1,21 @@
+#!/bin/bash
+# Wrapper to run LangForge GUI
+
+# Detect installation directory
+# First look in Python site-packages (newest to oldest version)
+# Then fallback to /usr/share/langforge or local directory
+for i in /usr/lib/python3.{25..6}/site-packages/langforge /usr/share/langforge; do
+    if [[ -e "$i" ]]; then
+        LANGFORGE_DIR="$i"
+        break
+    fi
+done
+
+# If not found, try local directory (development)
+if [[ -z "$LANGFORGE_DIR" ]]; then
+    SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+    LANGFORGE_DIR="$SCRIPT_DIR/../share/langforge"
+fi
+
+# Execute main.py
+exec python3 "$LANGFORGE_DIR/main.py" "$@"

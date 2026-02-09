@@ -1,14 +1,24 @@
 #
 msgid ""
 msgstr ""
+"Project-Id-Version: langforge\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 17:32\n"
+"PO-Revision-Date: 2026-02-09 17:32\n"
+"Last-Translator: Translation Automator <auto@translator.ai>\n"
+"Language-Team: Portuguese <pt@li.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
-msgstr "Tradutor automático para projetos gettext"
+msgstr "Tradutor automático para projectos gettext"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:103
 msgid "API Settings"
-msgstr "Configurações da API"
+msgstr "Definições da API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
@@ -18,7 +28,7 @@ msgstr "Sobre"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:109
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:541
 msgid "Start Translation"
-msgstr "Iniciar tradução"
+msgstr "Iniciar a tradução"
 
 #. Group: API
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
@@ -42,7 +52,7 @@ msgstr "Pago"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
 msgid "Provider"
-msgstr "Provedor"
+msgstr "Fornecedor"
 
 #. Group: Options
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:151
@@ -51,7 +61,7 @@ msgstr "Opções"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
-msgstr "Compilar arquivos .mo"
+msgstr "Compilar ficheiros .mo"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:158
 msgid "Overwrite existing"
@@ -60,17 +70,17 @@ msgstr "Substituir o existente"
 #. Group: Languages
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:166
 msgid "Languages"
-msgstr "Idiomas"
+msgstr "Línguas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
 #, python-brace-format
 msgid "{} languages supported"
-msgstr "{} idiomas suportados"
+msgstr "{} línguas suportadas"
 
 #. Advanced Settings Button
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
 msgid "API Settings..."
-msgstr "Configurações da API..."
+msgstr "Definições da API..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
@@ -78,7 +88,7 @@ msgstr "Nenhum projeto selecionado"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
 msgid "Drag a folder here or click to select"
-msgstr "Arraste uma pasta para cá ou clique para selecionar"
+msgstr "Arraste uma pasta para aqui ou clique para selecionar"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
@@ -91,11 +101,11 @@ msgstr "Projeto de mudança"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:463
 msgid "Translating..."
-msgstr "Traduzindo..."
+msgstr "Traduzir..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
-msgstr "Preparando..."
+msgstr "Preparar..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
 msgid "Ready"
@@ -112,12 +122,12 @@ msgstr "Erro"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
 msgid "Project does not use gettext"
-msgstr "O projeto não usa o gettext"
+msgstr "O projeto não utiliza gettext"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
 #, python-brace-format
 msgid "{} strings · 29 languages"
-msgstr "Sequências de caracteres {} - 29 idiomas"
+msgstr "{} strings - 29 idiomas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
 #, python-brace-format
@@ -132,16 +142,16 @@ msgstr "Projeto carregado: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:477
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
 msgid "Extracting strings..."
-msgstr "Extração de cadeias de caracteres..."
+msgstr "Extrair cadeias de caracteres..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
 #, python-brace-format
 msgid "Translating {} strings..."
-msgstr "Traduzindo cadeias de caracteres {}..."
+msgstr "Tradução de cadeias de caracteres {}..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
 msgid "Compiling..."
-msgstr "Compilando..."
+msgstr "Compilação..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
 msgid "Completed!"
@@ -150,17 +160,17 @@ msgstr "Concluído!"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
 #, python-brace-format
 msgid "{} languages translated"
-msgstr "{} idiomas traduzidos"
+msgstr "{} línguas traduzidas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
 #, python-brace-format
 msgid "Completed: {}/29 languages"
-msgstr "Concluído: {}/29 idiomas"
+msgstr "Concluído: {}/29 línguas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
-msgstr "Tradução concluída! {Idiomas"
+msgstr "Tradução completa! {línguas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"
@@ -168,7 +178,7 @@ msgstr "Tipo de API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:67
 msgid "Select type"
-msgstr "Selecione o tipo"
+msgstr "Selecionar o tipo"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
 msgid "Free API"
@@ -184,20 +194,19 @@ msgstr "APIs de nível gratuito"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
 msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr ""
-"Recomendado: DeepL (melhor qualidade) ou Groq (melhor custo-benefício)"
+msgstr "Recomendado: DeepL (melhor qualidade) ou Groq (melhor preço)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
 msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL e Groq são as melhores opções para tradução i18n"
+msgstr "DeepL e Groq são as melhores opções para a tradução i18n"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
 msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Free (500k chars/mês - Melhor qualidade)"
+msgstr "DeepL Grátis (500k chars/mês - Melhor qualidade)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
 msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14,4 mil solicitações/dia - a mais rápida)"
+msgstr "Groq (14,4k req/dia - mais rápido)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
 msgid "Gemini Free (1k req/day)"
@@ -209,7 +218,7 @@ msgstr "OpenRouter (18 modelos gratuitos)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
 msgid "Mistral Free"
-msgstr "Mistral Free"
+msgstr "Mistral Livre"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
 msgid "LibreTranslate (Open Source)"
@@ -219,7 +228,7 @@ msgstr "LibreTranslate (código aberto)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:121
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
-msgstr "Chave da API"
+msgstr "Chave API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
 msgid "LibreTranslate URL"
@@ -227,7 +236,7 @@ msgstr "URL do LibreTranslate"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:112
 msgid "Paid API Settings"
-msgstr "Configurações da API paga"
+msgstr "Definições da API paga"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
 msgid "Model"
@@ -239,19 +248,19 @@ msgstr "Como obter chaves de API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:144
 msgid "Test Connection"
-msgstr "Conexão de teste"
+msgstr "Ligação de teste"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
 msgid "✅ Connection OK!"
-msgstr "Conexão OK!"
+msgstr "Ligação OK!"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
 msgid "❌ Connection failed"
-msgstr "Falha na conexão"
+msgstr "A ligação falhou"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
 msgid "✓ Settings saved!"
-msgstr "Configurações salvas!"
+msgstr "Definições guardadas!"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
 msgid "How to Get API Keys"
@@ -263,7 +272,7 @@ msgstr "APIs gratuitas disponíveis"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:280
 msgid "Click the links to create your account and get your key"
-msgstr "Clique nos links para criar sua conta e obter sua chave"
+msgstr "Clique nas ligações para criar a sua conta e obter a sua chave"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:289
 msgid "Recommended"
@@ -287,7 +296,7 @@ msgstr "Mais rápido"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "14,400 requests/day"
-msgstr "14.400 solicitações/dia"
+msgstr "14.400 pedidos/dia"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:300
 msgid "LLaMA 3 - Excellent value"
@@ -295,11 +304,11 @@ msgstr "LLaMA 3 - Excelente valor"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:302
 msgid "Create account → API Keys → Create"
-msgstr "Criar conta → Chaves de API → Criar"
+msgstr "Criar conta → Chaves API → Criar"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:308
 msgid "1,000 requests/day"
-msgstr "1.000 solicitações/dia"
+msgstr "1.000 pedidos/dia"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:309
 msgid "Google AI - Good quality"
@@ -307,7 +316,7 @@ msgstr "Google AI - Boa qualidade"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Google Login → Get API Key"
-msgstr "Login do Google → Obter chave de API"
+msgstr "Login do Google → Obter chave da API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:317
 msgid "18 free models"
@@ -323,7 +332,7 @@ msgstr "Criar conta → Chaves → Criar chave"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:326
 msgid "Free tier available"
-msgstr "Nível gratuito disponível"
+msgstr "Escalão gratuito disponível"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:327
 msgid "Quality Mistral models"
@@ -331,11 +340,11 @@ msgstr "Modelos Mistral de qualidade"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:329
 msgid "Create account → API Keys → Generate"
-msgstr "Criar conta → Chaves de API → Gerar"
+msgstr "Criar conta → Chaves API → Gerar"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:334
 msgid "No API Key"
-msgstr "Sem chave de API"
+msgstr "Sem chave API"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:335
 msgid "Unlimited (self-hosted)"
@@ -347,7 +356,7 @@ msgstr "Código aberto - Qualidade básica"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:338
 msgid "Use default URL or your own server"
-msgstr "Use o URL padrão ou seu próprio servidor"
+msgstr "Utilizar o URL predefinido ou o seu próprio servidor"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:398
 msgid "Open"
