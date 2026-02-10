@@ -3,114 +3,89 @@ msgid ""
 msgstr ""
 "Project-Id-Version: langforge\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-09 17:33\n"
-"PO-Revision-Date: 2026-02-09 17:33\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "gettext projeleri için otomatik çevirmen"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:103
 msgid "API Settings"
 msgstr "API Ayarları"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "Hakkında"
-
 #. Main button (second pack_end = before menu)
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:109
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:541
 msgid "Start Translation"
 msgstr "Çeviriye Başla"
-
 #. Group: API
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:59
 msgid "Translation API"
 msgstr "Çeviri API'si"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Type"
 msgstr "Tip"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Free"
 msgstr "Ücretsiz"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Paid"
 msgstr "Ücretli"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
 msgid "Provider"
 msgstr "Sağlayıcı"
-
 #. Group: Options
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:151
 msgid "Options"
 msgstr "Seçenekler"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr ".mo dosyalarını derleyin"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:158
 msgid "Overwrite existing"
 msgstr "Var olanın üzerine yaz"
-
 #. Group: Languages
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:166
 msgid "Languages"
 msgstr "Diller"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
 #, python-brace-format
 msgid "{} languages supported"
 msgstr "{} desteklenen diller"
-
 #. Advanced Settings Button
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
 msgid "API Settings..."
 msgstr "API Ayarları..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "Seçilen proje yok"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
 msgid "Drag a folder here or click to select"
 msgstr "Bir klasörü buraya sürükleyin veya seçmek için tıklayın"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "Proje Seçiniz"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
 msgid "Change Project"
 msgstr "Değişim Projesi"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:463
 msgid "Translating..."
 msgstr "Çeviri..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "Hazırlanıyorum."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
 msgid "Ready"
 msgstr "Hazır"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:424
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:455
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:530
@@ -119,246 +94,188 @@ msgstr "Hazır"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:243
 msgid "Error"
 msgstr "Hata"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
 msgid "Project does not use gettext"
 msgstr "Proje gettext kullanmıyor"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
 #, python-brace-format
 msgid "{} strings · 29 languages"
 msgstr "{} dizeleri - 29 dil"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
 #, python-brace-format
 msgid "Project: {}"
 msgstr "Proje: {}"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Proje yüklendi: {}"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:477
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
 msgid "Extracting strings..."
 msgstr "Dizeler çıkarılıyor..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
 #, python-brace-format
 msgid "Translating {} strings..."
 msgstr "{} dizelerini çevirme..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
 msgid "Compiling..."
 msgstr "Derleme..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
 msgid "Completed!"
 msgstr "Tamamlandı!"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
 #, python-brace-format
 msgid "{} languages translated"
 msgstr "{} dillere çevrildi"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
 #, python-brace-format
 msgid "Completed: {}/29 languages"
 msgstr "Tamamlandı: {}/29 dil"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
 msgstr "Çeviri tamamlandı! {} dilleri"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"
 msgstr "API Türü"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:67
 msgid "Select type"
 msgstr "Tip seçin"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
 msgid "Free API"
 msgstr "Ücretsiz API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
 msgid "Paid API"
 msgstr "Ücretli API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:77
 msgid "Free Tier APIs"
 msgstr "Ücretsiz Katman API'leri"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
 msgid "Recommended: DeepL (best quality) or Groq (best value)"
 msgstr "Tavsiye edilir: DeepL (en iyi kalite) veya Groq (en iyi değer)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
 msgid "DeepL and Groq are the best options for i18n translation"
 msgstr "DeepL ve Groq i18n çevirisi için en iyi seçeneklerdir"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
 msgid "DeepL Free (500k chars/month - Best quality)"
 msgstr "DeepL Ücretsiz (500 bin karakter/ay - En iyi kalite)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
 msgid "Groq (14.4k req/day - Fastest)"
 msgstr "Groq (14,4k talep/gün - En Hızlı)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
 msgid "Gemini Free (1k req/day)"
 msgstr "İkizler Serbest (1 bin talep/gün)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
 msgid "OpenRouter (18 free models)"
 msgstr "OpenRouter (18 ücretsiz model)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
 msgid "Mistral Free"
 msgstr "Mistral Ücretsiz"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
 msgid "LibreTranslate (Open Source)"
 msgstr "LibreTranslate (Açık Kaynak)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:97
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:121
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "API Anahtarı"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
 msgid "LibreTranslate URL"
 msgstr "LibreTranslate URL'si"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:112
 msgid "Paid API Settings"
 msgstr "Ücretli API Ayarları"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
 msgid "Model"
 msgstr "Model"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
 msgid "How to get API Keys"
 msgstr "API Anahtarları nasıl alınır"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:144
 msgid "Test Connection"
 msgstr "Test Bağlantısı"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
 msgid "✅ Connection OK!"
 msgstr "✅ Bağlantı Tamam!"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
 msgid "❌ Connection failed"
 msgstr "❌ Bağlantı başarısız"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
 msgid "✓ Settings saved!"
 msgstr "✓ Ayarlar kaydedildi!"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
 msgid "How to Get API Keys"
 msgstr "API Anahtarları Nasıl Alınır"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
 msgstr "Mevcut Ücretsiz API'ler"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:280
 msgid "Click the links to create your account and get your key"
 msgstr ""
 "Hesabınızı oluşturmak ve anahtarınızı almak için bağlantılara tıklayın"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:289
 msgid "Recommended"
 msgstr "Tavsiye edilir"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
 msgid "500k characters/month"
 msgstr "500 bin karakter/ay"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:291
 msgid "Best translation quality"
 msgstr "En iyi çeviri kalitesi"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:293
 msgid "Create account → Free Plan → API Keys"
 msgstr "Hesap oluştur → Ücretsiz Plan → API Anahtarları"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:298
 msgid "Fastest"
 msgstr "En hızlı"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "14,400 requests/day"
 msgstr "14.400 talep/gün"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:300
 msgid "LLaMA 3 - Excellent value"
 msgstr "LLaMA 3 - Mükemmel değer"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:302
 msgid "Create account → API Keys → Create"
 msgstr "Hesap oluştur → API Anahtarları → Oluştur"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:308
 msgid "1,000 requests/day"
 msgstr "1.000 talep/gün"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:309
 msgid "Google AI - Good quality"
 msgstr "Google AI - İyi kalite"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Google Login → Get API Key"
 msgstr "Google Girişi → API Anahtarını Al"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:317
 msgid "18 free models"
 msgstr "18 ücretsiz model"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:318
 msgid "Multiple models available"
 msgstr "Birden fazla model mevcuttur"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:320
 msgid "Create account → Keys → Create Key"
 msgstr "Hesap oluştur → Anahtarlar → Anahtar Oluştur"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:326
 msgid "Free tier available"
 msgstr "Ücretsiz katman mevcut"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:327
 msgid "Quality Mistral models"
 msgstr "Kaliteli Mistral modelleri"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:329
 msgid "Create account → API Keys → Generate"
 msgstr "Hesap oluştur → API Anahtarları → Oluştur"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:334
 msgid "No API Key"
 msgstr "API Anahtarı Yok"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:335
 msgid "Unlimited (self-hosted)"
 msgstr "Sınırsız (kendi kendine barındırılan)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:336
 msgid "Open source - Basic quality"
 msgstr "Açık kaynak - Temel kalite"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:338
 msgid "Use default URL or your own server"
 msgstr "Varsayılan URL'yi veya kendi sunucunuzu kullanın"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:398
 msgid "Open"
 msgstr "Açık"

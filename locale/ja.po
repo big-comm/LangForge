@@ -3,114 +3,89 @@ msgid ""
 msgstr ""
 "Project-Id-Version: langforge\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-09 17:30\n"
-"PO-Revision-Date: 2026-02-09 17:30\n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "gettextプロジェクトの自動翻訳機"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:103
 msgid "API Settings"
 msgstr "API設定"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "について"
-
 #. Main button (second pack_end = before menu)
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:109
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:541
 msgid "Start Translation"
 msgstr "翻訳開始"
-
 #. Group: API
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:59
 msgid "Translation API"
 msgstr "翻訳API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Type"
 msgstr "タイプ"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Free"
 msgstr "無料"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
 msgid "Paid"
 msgstr "有料"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
 msgid "Provider"
 msgstr "プロバイダー"
-
 #. Group: Options
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:151
 msgid "Options"
 msgstr "オプション"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr ".moファイルをコンパイルする"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:158
 msgid "Overwrite existing"
 msgstr "既存のものを上書きする"
-
 #. Group: Languages
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:166
 msgid "Languages"
 msgstr "言語"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
 #, python-brace-format
 msgid "{} languages supported"
 msgstr "{} 対応言語"
-
 #. Advanced Settings Button
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
 msgid "API Settings..."
 msgstr "API設定..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "該当プロジェクトなし"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
 msgid "Drag a folder here or click to select"
 msgstr "ここにフォルダをドラッグするか、クリックして選択します。"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "プロジェクトを選択"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
 msgid "Change Project"
 msgstr "チェンジ・プロジェクト"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:463
 msgid "Translating..."
 msgstr "翻訳..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "準備..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
 msgid "Ready"
 msgstr "準備完了"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:424
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:455
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:530
@@ -119,245 +94,187 @@ msgstr "準備完了"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:243
 msgid "Error"
 msgstr "エラー"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
 msgid "Project does not use gettext"
 msgstr "プロジェクトはgettextを使用しない"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
 #, python-brace-format
 msgid "{} strings · 29 languages"
 msgstr "{} 文字列 - 29 言語"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
 #, python-brace-format
 msgid "Project: {}"
 msgstr "プロジェクト{}"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "プロジェクトがロードされました：{}"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:477
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
 msgid "Extracting strings..."
 msgstr "文字列の抽出..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
 #, python-brace-format
 msgid "Translating {} strings..."
 msgstr "{} 文字列を翻訳中..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
 msgid "Compiling..."
 msgstr "コンパイル..."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
 msgid "Completed!"
 msgstr "完成した！"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
 #, python-brace-format
 msgid "{} languages translated"
 msgstr "{} 翻訳された言語"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
 #, python-brace-format
 msgid "Completed: {}/29 languages"
 msgstr "完成：{}/29言語"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
 msgstr "翻訳完了！{} 言語"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"
 msgstr "APIタイプ"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:67
 msgid "Select type"
 msgstr "タイプを選択"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
 msgid "Free API"
 msgstr "無料API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
 msgid "Paid API"
 msgstr "有料API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:77
 msgid "Free Tier APIs"
 msgstr "無料API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
 msgid "Recommended: DeepL (best quality) or Groq (best value)"
 msgstr "推奨DeepL（最高品質）またはGroq（最高価格）"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
 msgid "DeepL and Groq are the best options for i18n translation"
 msgstr "DeepLとGroqは国際化翻訳に最適なオプションです。"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
 msgid "DeepL Free (500k chars/month - Best quality)"
 msgstr "DeepLフリー (500k文字/月 - 最高品質)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
 msgid "Groq (14.4k req/day - Fastest)"
 msgstr "Groq (14.4k req/日 - 最速)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
 msgid "Gemini Free (1k req/day)"
 msgstr "ジェミニ・フリー（1日1kレク）"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
 msgid "OpenRouter (18 free models)"
 msgstr "OpenRouter（無料18モデル）"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
 msgid "Mistral Free"
 msgstr "ミストラル 無料"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
 msgid "LibreTranslate (Open Source)"
 msgstr "LibreTranslate (オープンソース)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:97
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:121
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "APIキー"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
 msgid "LibreTranslate URL"
 msgstr "LibreTranslate URL"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:112
 msgid "Paid API Settings"
 msgstr "有料API設定"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
 msgid "Model"
 msgstr "モデル"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
 msgid "How to get API Keys"
 msgstr "APIキーの取得方法"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:144
 msgid "Test Connection"
 msgstr "テスト接続"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
 msgid "✅ Connection OK!"
 msgstr "✅ 接続OK！"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
 msgid "❌ Connection failed"
 msgstr "接続に失敗しました。"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
 msgid "✓ Settings saved!"
 msgstr "設定が保存されました！"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
 msgid "How to Get API Keys"
 msgstr "APIキーの取得方法"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
 msgstr "利用可能な無料API"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:280
 msgid "Click the links to create your account and get your key"
 msgstr "リンクをクリックしてアカウントを作成し、キーを入手してください。"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:289
 msgid "Recommended"
 msgstr "おすすめ"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
 msgid "500k characters/month"
 msgstr "月間50万文字"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:291
 msgid "Best translation quality"
 msgstr "最高の翻訳品質"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:293
 msgid "Create account → Free Plan → API Keys"
 msgstr "アカウント作成 → 無料プラン → APIキー"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:298
 msgid "Fastest"
 msgstr "最速"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "14,400 requests/day"
 msgstr "14,400リクエスト/日"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:300
 msgid "LLaMA 3 - Excellent value"
 msgstr "LLaMA 3 - 優れた価値"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:302
 msgid "Create account → API Keys → Create"
 msgstr "アカウント作成 → APIキー → 作成"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:308
 msgid "1,000 requests/day"
 msgstr "1,000リクエスト/日"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:309
 msgid "Google AI - Good quality"
 msgstr "グーグルAI - 良質"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Google Login → Get API Key"
 msgstr "Googleログイン → APIキー取得"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:317
 msgid "18 free models"
 msgstr "18の無料モデル"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:318
 msgid "Multiple models available"
 msgstr "複数のモデルを用意"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:320
 msgid "Create account → Keys → Create Key"
 msgstr "アカウント作成 → キー → キー作成"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:326
 msgid "Free tier available"
 msgstr "フリー・ティアあり"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:327
 msgid "Quality Mistral models"
 msgstr "ミストラルの高品質モデル"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:329
 msgid "Create account → API Keys → Generate"
 msgstr "アカウント作成 → APIキー → 生成"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:334
 msgid "No API Key"
 msgstr "APIキーなし"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:335
 msgid "Unlimited (self-hosted)"
 msgstr "無制限（セルフホスト）"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:336
 msgid "Open source - Basic quality"
 msgstr "オープンソース - 基本品質"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:338
 msgid "Use default URL or your own server"
 msgstr "デフォルトのURLまたは独自のサーバーを使用する"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:398
 msgid "Open"
 msgstr "オープン"
