@@ -1,6 +1,16 @@
 #
 msgid ""
 msgstr ""
+"Project-Id-Version: langforge\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 17:32\n"
+"PO-Revision-Date: 2026-02-09 17:32\n"
+"Last-Translator: Translation Automator <auto@translator.ai>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
@@ -160,7 +170,7 @@ msgstr "Concluído: {}/29 idiomas"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
-msgstr "Tradução concluída! {Idiomas"
+msgstr "Tradução concluída! {} idiomas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"

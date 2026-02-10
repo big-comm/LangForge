@@ -1,12 +1,96 @@
 """Motor de tradução que coordena APIs e arquivos .po."""
 
+import re
 import polib
 from pathlib import Path
-from typing import Dict, Callable, Optional
+from typing import Dict, List, Tuple, Callable, Optional
 from datetime import datetime
 
 from core.languages import SUPPORTED_LANGUAGES
 from api.base import TranslationAPI
+
+# Padrões de formato Python que devem ser preservados durante a tradução
+_FORMAT_PATTERNS = [
+    re.compile(r'%\([^)]+\)[sdifcr]'),  # %(name)s, %(count)d
+    re.compile(r'%[sdifcr%]'),            # %s, %d, %i, %f, %c, %r, %%
+    re.compile(r'\{[^}]*\}'),             # {}, {0}, {name}, {count:.2f}
+]
+
+
+def _protect_placeholders(text: str) -> Tuple[str, List[Tuple[str, str]]]:
+    """Substitui placeholders por tokens XML antes de traduzir.
+
+    APIs de tradução preservam tags XML, então usamos <x1/>, <x2/> etc.
+    como tokens seguros para proteger os placeholders de formato.
+    Cada ocorrência recebe um token único, mesmo que o placeholder se repita.
+    """
+    tokens: List[Tuple[str, str]] = []
+
+    # Coleta todos os matches com posição (para substituir de trás para frente)
+    all_matches: List[Tuple[int, int, str]] = []
+    for pattern in _FORMAT_PATTERNS:
+        for match in pattern.finditer(text):
+            all_matches.append((match.start(), match.end(), match.group()))
+
+    # Ordena por posição (de trás para frente) para não invalidar offsets
+    all_matches.sort(key=lambda m: m[0], reverse=True)
+
+    # Atribui tokens em ordem reversa
+    counter = len(all_matches)
+    for start, end, placeholder in all_matches:
+        token = f"<x{counter}/>"
+        tokens.append((token, placeholder))
+        text = text[:start] + token + text[end:]
+        counter -= 1
+
+    # Reverte a lista para que tokens fiquem em ordem natural (x1, x2, ...)
+    tokens.reverse()
+    return text, tokens
+
+
+def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
+    """Restaura placeholders originais a partir dos tokens XML."""
+    for token, original in tokens:
+        # Tenta também variações comuns de corrupção de tags
+        text = text.replace(token, original)
+        # APIs podem adicionar espaços extras: <x1 /> ou < x1/>
+        text = text.replace(token.replace("/>", " />"), original)
+    return text
+
+
+def _validate_placeholders(original: str, translated: str) -> bool:
+    """Valida se todos os placeholders do original existem na tradução."""
+    for pattern in _FORMAT_PATTERNS:
+        orig_matches = sorted(pattern.findall(original))
+        trans_matches = sorted(pattern.findall(translated))
+        if orig_matches != trans_matches:
+            return False
+    return True
+
+
+def _fix_placeholders(original: str, translated: str) -> str:
+    """Tenta reparar placeholders corrompidos na tradução.
+
+    Se um placeholder do original está ausente na tradução,
+    tenta inserí-lo de volta na posição mais provável.
+    """
+    for pattern in _FORMAT_PATTERNS:
+        orig_matches = pattern.findall(original)
+        trans_matches = pattern.findall(translated)
+        for placeholder in orig_matches:
+            if placeholder not in trans_matches:
+                # Placeholder ausente - tenta inserir onde faria sentido
+                # Procura por versões corrompidas (ex: {palavra) e substitui
+                corrupted = re.compile(
+                    re.escape(placeholder[0]) + r'[^}\s]*(?!\})'
+                )
+                match = corrupted.search(translated)
+                if match:
+                    translated = translated[:match.start()] + placeholder + translated[match.end():]
+                else:
+                    # Não encontrou versão corrompida, adiciona ao final
+                    translated = translated.rstrip() + ' ' + placeholder
+    return translated
 
 
 class TranslationEngine:
@@ -100,15 +184,36 @@ class TranslationEngine:
                 continue
 
             try:
+                # Protege placeholders de formato antes de enviar à API
+                protected_text, tokens = _protect_placeholders(entry.msgid)
+
                 translation = self.api.translate(
-                    text=entry.msgid,
+                    text=protected_text,
                     source_lang='en',
                     target_lang=lang
                 )
+
+                # Restaura placeholders originais
+                if tokens:
+                    translation = _restore_placeholders(translation, tokens)
+
+                # Valida se placeholders estão intactos
+                if not _validate_placeholders(entry.msgid, translation):
+                    # Tenta reparar automaticamente
+                    translation = _fix_placeholders(entry.msgid, translation)
+
+                    # Valida novamente após reparo
+                    if not _validate_placeholders(entry.msgid, translation):
+                        # Não conseguiu reparar - copia original como fallback
+                        translation = entry.msgid
+                        if 'fuzzy' not in entry.flags:
+                            entry.flags.append('fuzzy')
+
                 entry.msgstr = translation
-                # Remove fuzzy flag if it was there
-                if 'fuzzy' in entry.flags:
-                    entry.flags.remove('fuzzy')
+                # Remove fuzzy flag apenas se validação passou
+                if _validate_placeholders(entry.msgid, translation):
+                    if 'fuzzy' in entry.flags:
+                        entry.flags.remove('fuzzy')
                 translated_count += 1
             except Exception as e:
                 # If translation fails, mark as fuzzy for manual review

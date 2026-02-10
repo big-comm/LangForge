@@ -1,6 +1,16 @@
 #
 msgid ""
 msgstr ""
+"Project-Id-Version: langforge\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-09 17:28\n"
+"PO-Revision-Date: 2026-02-09 17:28\n"
+"Last-Translator: Translation Automator <auto@translator.ai>\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"

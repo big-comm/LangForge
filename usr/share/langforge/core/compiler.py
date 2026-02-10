@@ -62,8 +62,11 @@ class MoCompiler:
         if not po_file.exists():
             raise FileNotFoundError(f"Arquivo {po_file} não encontrado")
 
-        # Estrutura: usr/share/locale/{lang}/LC_MESSAGES/{textdomain}.mo
-        mo_dir = self.project_path / "usr" / "share" / "locale" / lang / "LC_MESSAGES"
+        # Converte código do idioma para formato locale (pt-BR → pt_BR)
+        locale_code = lang.replace("-", "_")
+
+        # Estrutura: usr/share/locale/{locale_code}/LC_MESSAGES/{textdomain}.mo
+        mo_dir = self.project_path / "usr" / "share" / "locale" / locale_code / "LC_MESSAGES"
         mo_file = mo_dir / f"{self.textdomain}.mo"
 
         # Cria diretórios

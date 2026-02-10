@@ -75,7 +75,7 @@ msgstr "言語"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
 #, python-brace-format
 msgid "{} languages supported"
-msgstr "{対応言語"
+msgstr "{} 対応言語"
 
 #. Advanced Settings Button
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
@@ -147,7 +147,7 @@ msgstr "文字列の抽出..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
 #, python-brace-format
 msgid "Translating {} strings..."
-msgstr "文字列を翻訳する..."
+msgstr "{} 文字列を翻訳中..."
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
 msgid "Compiling..."
@@ -160,17 +160,17 @@ msgstr "完成した！"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
 #, python-brace-format
 msgid "{} languages translated"
-msgstr "{翻訳された言語"
+msgstr "{} 翻訳された言語"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
 #, python-brace-format
 msgid "Completed: {}/29 languages"
-msgstr "完成：{29言語"
+msgstr "完成：{}/29言語"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
-msgstr "翻訳完了！言語"
+msgstr "翻訳完了！{} 言語"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"

@@ -165,7 +165,7 @@ msgstr "{} vertaalde talen"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
 #, python-brace-format
 msgid "Completed: {}/29 languages"
-msgstr "Voltooid: {29 talen"
+msgstr "Voltooid: {}/29 talen"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format

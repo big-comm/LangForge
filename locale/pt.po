@@ -170,7 +170,7 @@ msgstr "Concluído: {}/29 línguas"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
 #, python-brace-format
 msgid "Translation complete! {} languages"
-msgstr "Tradução completa! {línguas"
+msgstr "Tradução completa! {} línguas"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
 msgid "API Type"

@@ -197,9 +197,8 @@ msgid "Recommended: DeepL (best quality) or Groq (best value)"
 msgstr "Tavsiye edilir: DeepL (en iyi kalite) veya Groq (en iyi değer)"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
-#, fuzzy
 msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL and Groq are the best options for i18n translation"
+msgstr "DeepL ve Groq i18n çevirisi için en iyi seçeneklerdir"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
 msgid "DeepL Free (500k chars/month - Best quality)"

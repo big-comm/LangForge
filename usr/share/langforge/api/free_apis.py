@@ -29,7 +29,7 @@ class GroqAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "system",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation."
+                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
                 }, {
                     "role": "user",
                     "content": text
@@ -163,7 +163,9 @@ class DeepLFreeAPI(TranslationAPI):
             data={
                 "text": text,
                 "source_lang": "EN",
-                "target_lang": target
+                "target_lang": target,
+                "tag_handling": "xml",
+                "ignore_tags": "x",
             },
             timeout=30
         )
@@ -210,7 +212,7 @@ class GeminiFreeAPI(TranslationAPI):
 
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Gemini."""
-        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation:\n\n{text}"
+        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them.\n\n{text}"
         response = self.model.generate_content(
             prompt,
             generation_config={"temperature": 0.3, "max_output_tokens": 512}
@@ -256,7 +258,7 @@ class OpenRouterAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation:\n\n{text}"
+                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
                 }],
                 "temperature": 0.3,
                 "max_tokens": 512
@@ -305,7 +307,7 @@ class MistralFreeAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation:\n\n{text}"
+                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
                 }],
                 "temperature": 0.3,
                 "max_tokens": 512

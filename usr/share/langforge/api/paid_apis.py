@@ -22,7 +22,7 @@ class OpenAIAPI(TranslationAPI):
             model=self.model,
             messages=[{
                 "role": "system",
-                "content": f"You are a translator. Translate from {source_lang} to {target_lang}. Return ONLY the translation."
+                "content": f"You are a translator. Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
             }, {
                 "role": "user",
                 "content": text
@@ -59,7 +59,7 @@ class GeminiAPI(TranslationAPI):
 
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Gemini."""
-        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation:\n\n{text}"
+        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
         response = self.model.generate_content(
             prompt,
             generation_config={
@@ -101,7 +101,7 @@ class ClaudeAPI(TranslationAPI):
             temperature=0.3,
             messages=[{
                 "role": "user",
-                "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation:\n\n{text}"
+                "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
             }]
         )
         return response.content[0].text.strip()
@@ -143,7 +143,7 @@ class GrokAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "system",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation."
+                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
                 }, {
                     "role": "user",
                     "content": text
