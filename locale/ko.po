@@ -16,35 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 144
-# File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
-msgid "API Type"
-msgstr "API 유형"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
-msgid "Free"
-msgstr "무료"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
-msgid "Paid"
-msgstr "유료"
-# 
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
-msgid "Provider"
-msgstr "공급자"
-# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
@@ -74,11 +45,6 @@ msgstr "번역 시작"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "정보"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 250
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
-msgid "Ready"
-msgstr "준비"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
@@ -112,6 +78,35 @@ msgstr "번역 중..."
 msgid "Preparing..."
 msgstr "준비 중..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+msgid "Free"
+msgstr "무료"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+msgid "Paid"
+msgstr "유료"
+# 
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 144
+# File: usr/share/langforge/ui/settings_dialog.py, line: 64
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
+msgid "API Type"
+msgstr "API 유형"
+# 
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
+msgid "Provider"
+msgstr "공급자"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -140,12 +135,6 @@ msgstr "프로젝트에서 gettext를 사용하지 않음"
 msgid "{} strings · 29 languages"
 msgstr "{} 문자열 - 29개 언어"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 442
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
-#, python-brace-format
-msgid "Project: {}"
-msgstr "프로젝트: {}"
-# 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
@@ -158,12 +147,6 @@ msgstr "프로젝트가 로드되었습니다: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
 msgid "Extracting strings..."
 msgstr "문자열 추출..."
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 492
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
-#, python-brace-format
-msgid "Translating {} strings..."
-msgstr "문자열 {} 번역 중..."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 538
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
@@ -180,12 +163,6 @@ msgstr "완료!"
 #, python-brace-format
 msgid "{} languages translated"
 msgstr "번역된 {} 언어"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 553
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
-#, python-brace-format
-msgid "Completed: {}/29 languages"
-msgstr "완료되었습니다: {}/29개 언어"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 557
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527

@@ -16,35 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 144
-# File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
-msgid "API Type"
-msgstr "Type d'API"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
-msgid "Free"
-msgstr "Gratuit"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
-msgid "Paid"
-msgstr "Payé"
-# 
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
-msgid "Provider"
-msgstr "Fournisseur"
-# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
@@ -74,11 +45,6 @@ msgstr "Commencer la traduction"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "A propos de"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 250
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
-msgid "Ready"
-msgstr "Prêt"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
@@ -112,6 +78,35 @@ msgstr "Traduire..."
 msgid "Preparing..."
 msgstr "Préparer..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+msgid "Free"
+msgstr "Gratuit"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+msgid "Paid"
+msgstr "Payé"
+# 
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 144
+# File: usr/share/langforge/ui/settings_dialog.py, line: 64
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
+msgid "API Type"
+msgstr "Type d'API"
+# 
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
+msgid "Provider"
+msgstr "Fournisseur"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -140,12 +135,6 @@ msgstr "Le projet n'utilise pas gettext"
 msgid "{} strings · 29 languages"
 msgstr "Chaînes {} - 29 langues"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 442
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
-#, python-brace-format
-msgid "Project: {}"
-msgstr "Projet : {}"
-# 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
@@ -158,12 +147,6 @@ msgstr "Projet chargé : {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
 msgid "Extracting strings..."
 msgstr "Extraction de chaînes de caractères..."
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 492
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
-#, python-brace-format
-msgid "Translating {} strings..."
-msgstr "Traduire les chaînes {}..."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 538
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
@@ -180,12 +163,6 @@ msgstr "Terminé !"
 #, python-brace-format
 msgid "{} languages translated"
 msgstr "{} langues traduites"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 553
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
-#, python-brace-format
-msgid "Completed: {}/29 languages"
-msgstr "Complété : {}/29 langues"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 557
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
