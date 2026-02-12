@@ -309,11 +309,6 @@ msgstr "❌ 연결 실패"
 msgid "✓ Settings saved!"
 msgstr "설정이 저장되었습니다!"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
-msgid "How to Get API Keys"
-msgstr "API 키를 얻는 방법"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
@@ -434,7 +429,7 @@ msgstr "기본 URL 또는 자체 서버 사용"
 msgid "Open"
 msgstr "열기"
 # 
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "gettext 프로젝트용 자동 번역기"

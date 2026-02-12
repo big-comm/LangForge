@@ -309,11 +309,6 @@ msgstr "❌ Bağlantı başarısız"
 msgid "✓ Settings saved!"
 msgstr "✓ Ayarlar kaydedildi!"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
-msgid "How to Get API Keys"
-msgstr "API Anahtarları Nasıl Alınır"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
@@ -434,7 +429,7 @@ msgstr "Varsayılan URL'yi veya kendi sunucunuzu kullanın"
 msgid "Open"
 msgstr "Açık"
 # 
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "gettext projeleri için otomatik çevirmen"

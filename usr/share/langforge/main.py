@@ -16,6 +16,13 @@ from gi.repository import Adw, Gio, Gtk
 from ui.main_window import MainWindow
 from utils.i18n import _
 
+APP_VERSION = "1.0.1"
+try:
+    from __init__ import __version__
+    APP_VERSION = __version__
+except ImportError:
+    pass
+
 
 class LangForgeApp(Adw.Application):
     """Main application."""
@@ -54,9 +61,9 @@ class LangForgeApp(Adw.Application):
         """Show About dialog."""
         about = Adw.AboutWindow(
             application_name="LangForge",
-            application_icon="accessories-dictionary",
+            application_icon="langforge",
             developer_name="BigLinux",
-            version="1.0.0",
+            version=APP_VERSION,
             comments=_("Automatic translator for gettext projects"),
             website="https://github.com/biglinux/langforge",
             license_type=Gtk.License.GPL_3_0,

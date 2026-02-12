@@ -309,11 +309,6 @@ msgstr "❌ Не удалось установить соединение"
 msgid "✓ Settings saved!"
 msgstr "✓ Настройки сохранены!"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
-msgid "How to Get API Keys"
-msgstr "Как получить ключи API"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
@@ -434,7 +429,7 @@ msgstr "Используйте URL-адрес по умолчанию или с�
 msgid "Open"
 msgstr "Открыть"
 # 
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Автоматический переводчик для проектов gettext"

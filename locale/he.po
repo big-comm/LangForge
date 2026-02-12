@@ -351,12 +351,6 @@ msgstr "❌ Connection failed"
 msgid "✓ Settings saved!"
 msgstr "✓ Settings saved!"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
-#, fuzzy
-msgid "How to Get API Keys"
-msgstr "How to Get API Keys"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 #, fuzzy
@@ -501,7 +495,7 @@ msgstr "Use default URL or your own server"
 msgid "Open"
 msgstr "Open"
 # 
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 #, fuzzy
 msgid "Automatic translator for gettext projects"

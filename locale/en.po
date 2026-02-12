@@ -293,11 +293,6 @@ msgid "✓ Settings saved!"
 msgstr "✓ Settings saved!"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-msgid "How to Get API Keys"
-msgstr "How to Get API Keys"
-
-#
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 msgid "Available Free APIs"
 msgstr "Available Free APIs"
@@ -418,6 +413,6 @@ msgid "Open"
 msgstr "Open"
 
 #
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 msgid "Automatic translator for gettext projects"
 msgstr "Automatic translator for gettext projects"

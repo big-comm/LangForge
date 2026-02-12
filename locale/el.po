@@ -309,11 +309,6 @@ msgstr "❌ Η σύνδεση απέτυχε"
 msgid "✓ Settings saved!"
 msgstr "✓ Οι ρυθμίσεις αποθηκεύτηκαν!"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 256
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
-msgid "How to Get API Keys"
-msgstr "Πώς να αποκτήσετε κλειδιά API"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Available Free APIs"
@@ -434,7 +429,7 @@ msgstr "Χρησιμοποιήστε την προεπιλεγμένη διεύ�
 msgid "Open"
 msgstr "Ανοίξτε το"
 # 
-# File: usr/share/langforge/main.py, line: 60
+# File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Αυτόματος μεταφραστής για έργα gettext"
