@@ -1,4 +1,4 @@
-"""Main application window - BigLinux Style."""
+"""Main application window - Modern Adwaita Style."""
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -60,7 +60,7 @@ class ProgressRing(Gtk.DrawingArea):
 
 
 class MainWindow(Adw.ApplicationWindow):
-    """Main window - BigLinux Style."""
+    """Main window - Modern Adwaita Split View."""
 
     def __init__(self, app):
         super().__init__(application=app)
@@ -86,218 +86,160 @@ class MainWindow(Adw.ApplicationWindow):
             )
 
     def _build_ui(self):
-        # Main container
+        """Build the main UI with split view layout."""
+        # Toast overlay wraps everything
         self.toast_overlay = Adw.ToastOverlay()
         self.set_content(self.toast_overlay)
 
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.toast_overlay.set_child(main_box)
+        # Split view: sidebar + content
+        split_view = Adw.OverlaySplitView()
+        split_view.set_min_sidebar_width(260)
+        split_view.set_max_sidebar_width(320)
+        split_view.set_sidebar_width_fraction(0.32)
+        self.toast_overlay.set_child(split_view)
 
-        # === Header Bar ===
+        # Build panes
+        split_view.set_sidebar(self._build_sidebar())
+        split_view.set_content(self._build_content())
+
+        # Start on drop page
+        self.stack.set_visible_child_name("drop")
+
+    # ── Sidebar ─────────────────────────────────────────────────
+
+    def _build_sidebar(self):
+        """Build the sidebar pane with header and option cards."""
+        toolbar = Adw.ToolbarView()
+
+        # Sidebar header — icon + title centered, no window buttons on this side
         header = Adw.HeaderBar()
+        header.set_show_end_title_buttons(False)
 
-        # Menu (first pack_end = rightmost)
-        menu_button = Gtk.MenuButton()
-        menu_button.set_icon_name("open-menu-symbolic")
-        menu = Gio.Menu()
-        menu.append(_("API Settings"), "app.settings")
-        menu.append(_("About"), "app.about")
-        menu_button.set_menu_model(menu)
-        header.pack_end(menu_button)
+        # App icon on the left
+        app_icon = Gtk.Image.new_from_icon_name("langforge")
+        app_icon.set_pixel_size(20)
+        header.pack_start(app_icon)
 
-        # Main button (second pack_end = before menu)
+        # Centered title
+        title_label = Gtk.Label(label="LangForge")
+        title_label.add_css_class("heading")
+        header.set_title_widget(title_label)
+
+        toolbar.add_top_bar(header)
+
+        # Scrollable sidebar content
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_vexpand(True)
+
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
+        content.set_margin_start(12)
+        content.set_margin_end(12)
+        content.set_margin_top(6)
+        content.set_margin_bottom(12)
+
+        # ── API Translation card ──
+        api_group = Adw.PreferencesGroup()
+
+        self.api_type_row = Adw.ComboRow(title=_("API Type"))
+        self.api_type_row.set_model(
+            Gtk.StringList.new([_("Free"), _("Paid")])
+        )
+        api_group.add(self.api_type_row)
+
+        self.api_provider_row = Adw.ComboRow(title=_("Provider"))
+        self.api_provider_row.set_model(
+            Gtk.StringList.new([
+                "DeepL Free", "Groq", "Gemini Free",
+                "OpenRouter", "Mistral", "LibreTranslate"
+            ])
+        )
+        api_group.add(self.api_provider_row)
+
+        content.append(api_group)
+
+        # ── Options card ──
+        options_group = Adw.PreferencesGroup()
+
+        compile_row = Adw.ActionRow(title=_("Compile .mo files"))
+        self.compile_switch = Gtk.Switch()
+        self.compile_switch.set_valign(Gtk.Align.CENTER)
+        self.compile_switch.set_active(True)
+        compile_row.add_suffix(self.compile_switch)
+        compile_row.set_activatable_widget(self.compile_switch)
+        options_group.add(compile_row)
+
+        content.append(options_group)
+
+        # ── Languages card ──
+        langs_group = Adw.PreferencesGroup()
+
+        langs_row = Adw.ActionRow(
+            title=_("{} languages supported").format(len(SUPPORTED_LANGUAGES)),
+            icon_name="preferences-desktop-locale-symbolic"
+        )
+        langs_group.add(langs_row)
+
+        content.append(langs_group)
+
+        # ── API Settings button ──
+        adv_button = Gtk.Button(label=_("API Settings..."))
+        adv_button.add_css_class("suggested-action")
+        adv_button.add_css_class("pill")
+        adv_button.set_halign(Gtk.Align.CENTER)
+        adv_button.connect("clicked", self._on_settings_clicked)
+        content.append(adv_button)
+
+        scroll.set_child(content)
+        toolbar.set_content(scroll)
+
+        return toolbar
+
+    # ── Content ─────────────────────────────────────────────────
+
+    def _build_content(self):
+        """Build the content pane with header, stack, and status bar."""
+        toolbar = Adw.ToolbarView()
+
+        # Content header — action buttons + window controls
+        header = Adw.HeaderBar()
+        header.set_show_start_title_buttons(False)
+
+        # Centered translate button as title widget
         self.translate_button = Gtk.Button(label=_("Start Translation"))
         self.translate_button.add_css_class("suggested-action")
         self.translate_button.set_sensitive(False)
         self.translate_button.connect("clicked", self._on_start_translation)
-        header.pack_end(self.translate_button)
+        header.set_title_widget(self.translate_button)
 
-        main_box.append(header)
+        # Menu button (only About — API Settings is in sidebar)
+        menu_button = Gtk.MenuButton()
+        menu_button.set_icon_name("open-menu-symbolic")
+        menu = Gio.Menu()
+        menu.append(_("About"), "app.about")
+        menu_button.set_menu_model(menu)
+        header.pack_end(menu_button)
 
-        # === Content: Sidebar + Main Area ===
-        content_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        content_box.set_vexpand(True)
-        main_box.append(content_box)
+        toolbar.add_top_bar(header)
 
-        # --- Left Sidebar ---
-        sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        sidebar.set_size_request(280, -1)
-        sidebar.add_css_class("sidebar")
-
-        sidebar_scroll = Gtk.ScrolledWindow()
-        sidebar_scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sidebar_scroll.set_vexpand(True)
-
-        sidebar_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        sidebar_scroll.set_child(sidebar_content)
-        sidebar.append(sidebar_scroll)
-
-        # Group: API
-        api_group = self._create_sidebar_group(_("Translation API"))
-
-        self.api_type_row = self._create_combo_row(
-            _("Type"), [_("Free"), _("Paid")]
-        )
-        api_group.append(self.api_type_row)
-
-        self.api_provider_row = self._create_combo_row(
-            _("Provider"), ["DeepL Free", "Groq", "Gemini Free", "OpenRouter", "Mistral", "LibreTranslate"]
-        )
-        api_group.append(self.api_provider_row)
-
-        sidebar_content.append(api_group)
-
-        # Group: Options
-        options_group = self._create_sidebar_group(_("Options"))
-
-        compile_row = self._create_switch_row(_("Compile .mo files"))
-        self.compile_switch = compile_row.switch
-        self.compile_switch.set_active(True)
-        options_group.append(compile_row)
-
-        overwrite_row = self._create_switch_row(_("Overwrite existing"))
-        self.overwrite_switch = overwrite_row.switch
-        self.overwrite_switch.set_active(True)
-        options_group.append(overwrite_row)
-
-        sidebar_content.append(options_group)
-
-        # Group: Languages
-        langs_group = self._create_sidebar_group(_("Languages"))
-
-        langs_info = Gtk.Label(label=_("{} languages supported").format(len(SUPPORTED_LANGUAGES)))
-        langs_info.add_css_class("dim-label")
-        langs_info.set_halign(Gtk.Align.START)
-        langs_info.set_margin_start(12)
-        langs_info.set_margin_bottom(8)
-        langs_group.append(langs_info)
-
-        sidebar_content.append(langs_group)
-
-        # Advanced Settings Button
-        adv_button = Gtk.Button(label=_("API Settings..."))
-        adv_button.set_margin_start(12)
-        adv_button.set_margin_end(12)
-        adv_button.set_margin_top(12)
-        adv_button.set_margin_bottom(12)
-        adv_button.connect("clicked", self._on_settings_clicked)
-        sidebar.append(adv_button)
-
-        content_box.append(sidebar)
-
-        # Vertical separator
-        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
-        content_box.append(sep)
-
-        # --- Main Area ---
-        main_area = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        main_area.set_hexpand(True)
-        main_area.set_vexpand(True)
-        content_box.append(main_area)
-
-        # Stack to switch between drop zone and progress
+        # ── Stack (page switching) ──
         self.stack = Gtk.Stack()
         self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        main_area.append(self.stack)
+        self.stack.set_vexpand(True)
+        self.stack.set_hexpand(True)
 
-        # --- Page: Drop Zone ---
-        drop_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        drop_page.set_valign(Gtk.Align.CENTER)
-        drop_page.set_halign(Gtk.Align.CENTER)
-        drop_page.set_vexpand(True)
-        drop_page.set_hexpand(True)
+        self._build_drop_page()
+        self._build_project_page()
+        self._build_progress_page()
 
-        # Visual container for drop
-        drop_frame = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
-        drop_frame.add_css_class("drop-zone")
-        drop_frame.set_valign(Gtk.Align.CENTER)
-        drop_frame.set_halign(Gtk.Align.CENTER)
-        drop_frame.set_size_request(400, 250)
-
-        drop_icon = Gtk.Image.new_from_icon_name("folder-open-symbolic")
-        drop_icon.set_pixel_size(64)
-        drop_icon.set_opacity(0.6)
-        drop_frame.append(drop_icon)
-
-        self.drop_title = Gtk.Label(label=_("No project selected"))
-        self.drop_title.add_css_class("title-2")
-        drop_frame.append(self.drop_title)
-
-        self.drop_subtitle = Gtk.Label(label=_("Drag a folder here or click to select"))
-        self.drop_subtitle.add_css_class("dim-label")
-        drop_frame.append(self.drop_subtitle)
-
-        select_btn = Gtk.Button(label=_("Select Project"))
-        select_btn.add_css_class("suggested-action")
-        select_btn.add_css_class("pill")
-        select_btn.set_halign(Gtk.Align.CENTER)
-        select_btn.connect("clicked", self._on_select_project)
-        drop_frame.append(select_btn)
-
-        drop_page.append(drop_frame)
-        self.stack.add_named(drop_page, "drop")
-
-        # --- Page: Project Loaded ---
-        project_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        project_page.set_valign(Gtk.Align.CENTER)
-        project_page.set_halign(Gtk.Align.CENTER)
-        project_page.set_spacing(16)
-
-        project_icon = Gtk.Image.new_from_icon_name("folder-symbolic")
-        project_icon.set_pixel_size(64)
-        project_icon.set_opacity(0.5)
-        project_page.append(project_icon)
-
-        self.project_name_label = Gtk.Label()
-        self.project_name_label.add_css_class("title-2")
-        project_page.append(self.project_name_label)
-
-        self.project_info_label = Gtk.Label()
-        self.project_info_label.add_css_class("dim-label")
-        project_page.append(self.project_info_label)
-
-        change_btn = Gtk.Button(label=_("Change Project"))
-        change_btn.set_halign(Gtk.Align.CENTER)
-        change_btn.connect("clicked", self._on_select_project)
-        project_page.append(change_btn)
-
-        self.stack.add_named(project_page, "project")
-
-        # --- Page: Progress ---
-        progress_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        progress_page.set_valign(Gtk.Align.CENTER)
-        progress_page.set_halign(Gtk.Align.CENTER)
-        progress_page.set_spacing(20)
-
-        self.progress_ring = ProgressRing()
-        progress_page.append(self.progress_ring)
-
-        self.progress_title = Gtk.Label(label=_("Translating..."))
-        self.progress_title.add_css_class("title-3")
-        progress_page.append(self.progress_title)
-
-        self.progress_subtitle = Gtk.Label(label=_("Preparing..."))
-        self.progress_subtitle.add_css_class("dim-label")
-        progress_page.append(self.progress_subtitle)
-
-        # Compact language grid
-        self.lang_grid = Gtk.FlowBox()
-        self.lang_grid.set_max_children_per_line(12)
-        self.lang_grid.set_min_children_per_line(6)
-        self.lang_grid.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.lang_grid.set_homogeneous(True)
-        self.lang_grid.set_margin_top(16)
-        self._populate_lang_grid()
-        progress_page.append(self.lang_grid)
-
-        self.stack.add_named(progress_page, "progress")
-
-        # Drop target
+        # Drop target on stack
         drop_target = Gtk.DropTarget.new(Gio.File, Gdk.DragAction.COPY)
         drop_target.connect("drop", self._on_drop)
-        main_area.add_controller(drop_target)
+        self.stack.add_controller(drop_target)
 
-        # --- Bottom Bar (Status) ---
+        toolbar.set_content(self.stack)
+
+        # ── Status bar at bottom ──
         status_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         status_bar.add_css_class("statusbar")
         status_bar.set_margin_start(12)
@@ -311,65 +253,109 @@ class MainWindow(Adw.ApplicationWindow):
         self.status_label.set_hexpand(True)
         status_bar.append(self.status_label)
 
-        main_box.append(status_bar)
+        toolbar.add_bottom_bar(status_bar)
 
-        # Start on drop page
-        self.stack.set_visible_child_name("drop")
+        return toolbar
 
-    def _create_sidebar_group(self, title: str) -> Gtk.Box:
-        """Create a group in the sidebar."""
-        group = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    # ── Stack Pages ─────────────────────────────────────────────
 
-        label = Gtk.Label(label=title)
-        label.add_css_class("heading")
-        label.set_halign(Gtk.Align.START)
-        label.set_margin_start(12)
-        label.set_margin_top(16)
-        label.set_margin_bottom(8)
-        group.append(label)
+    def _build_drop_page(self):
+        """Build the initial drop zone page."""
+        page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        page.set_valign(Gtk.Align.CENTER)
+        page.set_halign(Gtk.Align.CENTER)
+        page.set_vexpand(True)
+        page.set_hexpand(True)
 
-        return group
+        frame = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        frame.add_css_class("drop-zone")
+        frame.set_valign(Gtk.Align.CENTER)
+        frame.set_halign(Gtk.Align.CENTER)
+        frame.set_size_request(400, 250)
 
-    def _create_combo_row(self, title: str, options: list) -> Gtk.Box:
-        """Create a row with label and combo."""
-        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        row.set_margin_start(12)
-        row.set_margin_end(12)
-        row.set_margin_top(4)
-        row.set_margin_bottom(4)
+        icon = Gtk.Image.new_from_icon_name("folder-open-symbolic")
+        icon.set_pixel_size(64)
+        icon.set_opacity(0.6)
+        frame.append(icon)
 
-        label = Gtk.Label(label=title)
-        label.set_hexpand(True)
-        label.set_halign(Gtk.Align.START)
-        row.append(label)
+        self.drop_title = Gtk.Label(label=_("No project selected"))
+        self.drop_title.add_css_class("title-2")
+        frame.append(self.drop_title)
 
-        combo = Gtk.DropDown()
-        combo.set_model(Gtk.StringList.new(options))
-        combo.add_css_class("flat")
-        row.append(combo)
+        self.drop_subtitle = Gtk.Label(
+            label=_("Drag a folder here or click to select")
+        )
+        self.drop_subtitle.add_css_class("dim-label")
+        frame.append(self.drop_subtitle)
 
-        row.combo = combo
-        return row
+        select_btn = Gtk.Button(label=_("Select Project"))
+        select_btn.add_css_class("suggested-action")
+        select_btn.add_css_class("pill")
+        select_btn.set_halign(Gtk.Align.CENTER)
+        select_btn.connect("clicked", self._on_select_project)
+        frame.append(select_btn)
 
-    def _create_switch_row(self, title: str) -> Gtk.Switch:
-        """Create a row with label and switch."""
-        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        row.set_margin_start(12)
-        row.set_margin_end(12)
-        row.set_margin_top(4)
-        row.set_margin_bottom(4)
+        page.append(frame)
+        self.stack.add_named(page, "drop")
 
-        label = Gtk.Label(label=title)
-        label.set_hexpand(True)
-        label.set_halign(Gtk.Align.START)
-        row.append(label)
+    def _build_project_page(self):
+        """Build the project-loaded info page."""
+        page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        page.set_valign(Gtk.Align.CENTER)
+        page.set_halign(Gtk.Align.CENTER)
+        page.set_spacing(16)
 
-        switch = Gtk.Switch()
-        switch.set_valign(Gtk.Align.CENTER)
-        row.append(switch)
+        icon = Gtk.Image.new_from_icon_name("folder-symbolic")
+        icon.set_pixel_size(64)
+        icon.set_opacity(0.5)
+        page.append(icon)
 
-        row.switch = switch
-        return row
+        self.project_name_label = Gtk.Label()
+        self.project_name_label.add_css_class("title-2")
+        page.append(self.project_name_label)
+
+        self.project_info_label = Gtk.Label()
+        self.project_info_label.add_css_class("dim-label")
+        page.append(self.project_info_label)
+
+        change_btn = Gtk.Button(label=_("Change Project"))
+        change_btn.set_halign(Gtk.Align.CENTER)
+        change_btn.connect("clicked", self._on_select_project)
+        page.append(change_btn)
+
+        self.stack.add_named(page, "project")
+
+    def _build_progress_page(self):
+        """Build the translation progress page."""
+        page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        page.set_valign(Gtk.Align.CENTER)
+        page.set_halign(Gtk.Align.CENTER)
+        page.set_spacing(20)
+
+        self.progress_ring = ProgressRing()
+        page.append(self.progress_ring)
+
+        self.progress_title = Gtk.Label(label=_("Translating..."))
+        self.progress_title.add_css_class("title-3")
+        page.append(self.progress_title)
+
+        self.progress_subtitle = Gtk.Label(label=_("Preparing..."))
+        self.progress_subtitle.add_css_class("dim-label")
+        page.append(self.progress_subtitle)
+
+        # Language grid
+        self.lang_grid = Gtk.FlowBox()
+        self.lang_grid.set_max_children_per_line(12)
+        self.lang_grid.set_min_children_per_line(6)
+        self.lang_grid.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.lang_grid.set_homogeneous(True)
+        self.lang_grid.set_margin_top(16)
+        self._populate_lang_grid()
+        page.append(self.lang_grid)
+
+        self.stack.add_named(page, "progress")
+
+    # ── Language Grid ───────────────────────────────────────────
 
     def _populate_lang_grid(self):
         """Populate language grid."""
@@ -404,7 +390,11 @@ class MainWindow(Adw.ApplicationWindow):
             'success': 'emblem-ok-symbolic',
             'error': 'dialog-error-symbolic'
         }
-        w.status_icon.set_from_icon_name(icons.get(status, 'content-loading-symbolic'))
+        w.status_icon.set_from_icon_name(
+            icons.get(status, 'content-loading-symbolic')
+        )
+
+    # ── Callbacks ───────────────────────────────────────────────
 
     def _on_settings_clicked(self, button):
         dialog = SettingsDialog(self, self.settings)
@@ -443,13 +433,19 @@ class MainWindow(Adw.ApplicationWindow):
             strings = scanner.count_translatable_strings()
 
             self.project_name_label.set_label(textdomain)
-            self.project_info_label.set_label(_("{} strings · 29 languages").format(strings))
+            self.project_info_label.set_label(
+                _("{} strings · 29 languages").format(strings)
+            )
 
             self.translate_button.set_sensitive(True)
-            self.status_label.set_label(_("Project: {}").format(textdomain))
+            self.status_label.set_label(
+                _("Project: {}").format(textdomain)
+            )
             self.stack.set_visible_child_name("project")
 
-            self._show_toast(_("Project loaded: {}").format(textdomain))
+            self._show_toast(
+                _("Project loaded: {}").format(textdomain)
+            )
 
         except Exception as e:
             self._show_toast(f"{_('Error')}: {e}")
@@ -474,18 +470,27 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _run_translation(self):
         try:
-            GLib.idle_add(self.status_label.set_label, _("Extracting strings..."))
-            GLib.idle_add(self.progress_subtitle.set_label, _("Extracting strings..."))
+            GLib.idle_add(
+                self.status_label.set_label, _("Extracting strings...")
+            )
+            GLib.idle_add(
+                self.progress_subtitle.set_label, _("Extracting strings...")
+            )
 
             scanner = ProjectScanner(str(self.selected_project))
             textdomain = scanner.detect_textdomain()
             files = scanner.find_python_files()
 
-            extractor = GettextExtractor(str(self.selected_project), textdomain)
+            extractor = GettextExtractor(
+                str(self.selected_project), textdomain
+            )
             extractor.extract_strings(files)
             count = extractor.get_string_count()
 
-            GLib.idle_add(self.status_label.set_label, _("Translating {} strings...").format(count))
+            GLib.idle_add(
+                self.status_label.set_label,
+                _("Translating {} strings...").format(count)
+            )
 
             api = APIFactory.create_from_settings(self.settings)
             translator = TranslationEngine(api, textdomain)
@@ -493,18 +498,31 @@ class MainWindow(Adw.ApplicationWindow):
             def callback(lang, status, current, total):
                 name = SUPPORTED_LANGUAGES.get(lang, lang)
                 if "error" in status.lower():
-                    GLib.idle_add(self._update_lang_status, lang, 'error')
+                    GLib.idle_add(
+                        self._update_lang_status, lang, 'error'
+                    )
                 else:
-                    GLib.idle_add(self._update_lang_status, lang, 'success')
+                    GLib.idle_add(
+                        self._update_lang_status, lang, 'success'
+                    )
 
                 langs = list(SUPPORTED_LANGUAGES.keys())
                 if current < total:
                     next_l = langs[current]
-                    GLib.idle_add(self._update_lang_status, next_l, 'translating')
-                    GLib.idle_add(self.progress_subtitle.set_label, f"{name}...")
+                    GLib.idle_add(
+                        self._update_lang_status, next_l, 'translating'
+                    )
+                    GLib.idle_add(
+                        self.progress_subtitle.set_label, f"{name}..."
+                    )
 
-                GLib.idle_add(self.progress_ring.set_progress, current / total)
-                GLib.idle_add(self.status_label.set_label, f"[{current}/{total}] {name}")
+                GLib.idle_add(
+                    self.progress_ring.set_progress, current / total
+                )
+                GLib.idle_add(
+                    self.status_label.set_label,
+                    f"[{current}/{total}] {name}"
+                )
 
             first = list(SUPPORTED_LANGUAGES.keys())[0]
             GLib.idle_add(self._update_lang_status, first, 'translating')
@@ -514,23 +532,44 @@ class MainWindow(Adw.ApplicationWindow):
             )
             success = sum(1 for v in results.values() if v)
 
-            # Compile
+            # Compile .mo files if enabled
             if self.compile_switch.get_active():
-                GLib.idle_add(self.progress_subtitle.set_label, _("Compiling..."))
+                GLib.idle_add(
+                    self.progress_subtitle.set_label, _("Compiling...")
+                )
                 compiler = MoCompiler(self.selected_project, textdomain)
                 compiler.compile_all()
 
-            GLib.idle_add(self.progress_title.set_label, _("Completed!"))
-            GLib.idle_add(self.progress_subtitle.set_label, _("{} languages translated").format(success))
+            GLib.idle_add(
+                self.progress_title.set_label, _("Completed!")
+            )
+            GLib.idle_add(
+                self.progress_subtitle.set_label,
+                _("{} languages translated").format(success)
+            )
             GLib.idle_add(self.progress_ring.set_progress, 1.0)
-            GLib.idle_add(self.status_label.set_label, _("Completed: {}/29 languages").format(success))
-            GLib.idle_add(self._show_toast, _("Translation complete! {} languages").format(success))
+            GLib.idle_add(
+                self.status_label.set_label,
+                _("Completed: {}/29 languages").format(success)
+            )
+            GLib.idle_add(
+                self._show_toast,
+                _("Translation complete! {} languages").format(success)
+            )
 
         except Exception as e:
-            GLib.idle_add(self.progress_title.set_label, _("Error"))
-            GLib.idle_add(self.progress_subtitle.set_label, str(e))
-            GLib.idle_add(self.status_label.set_label, f"{_('Error')}: {e}")
-            GLib.idle_add(self._show_toast, f"{_('Error')}: {e}")
+            GLib.idle_add(
+                self.progress_title.set_label, _("Error")
+            )
+            GLib.idle_add(
+                self.progress_subtitle.set_label, str(e)
+            )
+            GLib.idle_add(
+                self.status_label.set_label, f"{_('Error')}: {e}"
+            )
+            GLib.idle_add(
+                self._show_toast, f"{_('Error')}: {e}"
+            )
 
         finally:
             GLib.idle_add(self._finish_translation)
