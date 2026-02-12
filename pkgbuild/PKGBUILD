@@ -1,14 +1,19 @@
 # Maintainer: Tales A. Mendonça <talesam@gmail.com>
 
-pkgname=pkgbuild-template-translate
-pkgdesc="Package template for BigCommunity"
-# Uncomment and edit the following lines as needed
-#depends=('')
-#makedepends=('')
-#optdepends=('')
-#conflicts=('')
-#provides=('')
-#replaces=('')
+pkgname=langforge
+pkgdesc="Automatic translation tool for gettext projects using AI-powered APIs"
+depends=(
+    'python'
+    'python-gobject'
+    'python-requests'
+    'python-polib'
+    'libadwaita'
+    'gtk4'
+    'gettext'
+)
+optdepends=(
+    'python-google-generativeai: for Gemini API support'
+)
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')

@@ -4,359 +4,350 @@ msgstr ""
 "Project-Id-Version: langforge\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: Translation Automator <auto@translator.ai>\n"
-"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
-"Language: pt_BR\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"Language: hr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
+#, fuzzy
 msgid "Automatic translator for gettext projects"
-msgstr "Tradutor automático para projetos gettext"
-
+msgstr "Automatic translator for gettext projects"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:103
+#, fuzzy
 msgid "API Settings"
-msgstr "Configurações da API"
-
+msgstr "API Settings"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
+#, fuzzy
 msgid "About"
-msgstr "Sobre"
-
+msgstr "About"
 #. Main button (second pack_end = before menu)
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:109
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:541
+#, fuzzy
 msgid "Start Translation"
-msgstr "Iniciar tradução"
-
+msgstr "Start Translation"
 #. Group: API
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:59
+#, fuzzy
 msgid "Translation API"
-msgstr "API de tradução"
-
+msgstr "Translation API"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+#, fuzzy
 msgid "Type"
-msgstr "Tipo"
-
+msgstr "Type"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+#, fuzzy
 msgid "Free"
-msgstr "Grátis"
-
+msgstr "Free"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
+#, fuzzy
 msgid "Paid"
-msgstr "Pago"
-
+msgstr "Paid"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:144
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:81
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:115
+#, fuzzy
 msgid "Provider"
-msgstr "Provedor"
-
+msgstr "Provider"
 #. Group: Options
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:151
+#, fuzzy
 msgid "Options"
-msgstr "Opções"
-
+msgstr "Options"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
+#, fuzzy
 msgid "Compile .mo files"
-msgstr "Compilar arquivos .mo"
-
+msgstr "Compile .mo files"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:158
+#, fuzzy
 msgid "Overwrite existing"
-msgstr "Substituir o existente"
-
+msgstr "Overwrite existing"
 #. Group: Languages
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:166
+#, fuzzy
 msgid "Languages"
-msgstr "Idiomas"
-
+msgstr "Languages"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "{} languages supported"
-msgstr "{} idiomas suportados"
-
+msgstr "{} languages supported"
 #. Advanced Settings Button
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
+#, fuzzy
 msgid "API Settings..."
-msgstr "Configurações da API..."
-
+msgstr "API Settings..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
+#, fuzzy
 msgid "No project selected"
-msgstr "Nenhum projeto selecionado"
-
+msgstr "No project selected"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
+#, fuzzy
 msgid "Drag a folder here or click to select"
-msgstr "Arraste uma pasta para cá ou clique para selecionar"
-
+msgstr "Drag a folder here or click to select"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
+#, fuzzy
 msgid "Select Project"
-msgstr "Selecionar projeto"
-
+msgstr "Select Project"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
+#, fuzzy
 msgid "Change Project"
-msgstr "Projeto de mudança"
-
+msgstr "Change Project"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:463
+#, fuzzy
 msgid "Translating..."
-msgstr "Traduzindo..."
-
+msgstr "Translating..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
+#, fuzzy
 msgid "Preparing..."
-msgstr "Preparando..."
-
+msgstr "Preparing..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:308
+#, fuzzy
 msgid "Ready"
-msgstr "Pronto"
-
+msgstr "Ready"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:424
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:455
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:530
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:532
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:243
+#, fuzzy
 msgid "Error"
-msgstr "Erro"
-
+msgstr "Error"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
+#, fuzzy
 msgid "Project does not use gettext"
-msgstr "O projeto não usa o gettext"
-
+msgstr "Project does not use gettext"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "{} strings · 29 languages"
-msgstr "Sequências de caracteres {} - 29 idiomas"
-
+msgstr "{} strings · 29 languages"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "Project: {}"
-msgstr "Projeto: {}"
-
+msgstr "Project: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "Project loaded: {}"
-msgstr "Projeto carregado: {}"
-
+msgstr "Project loaded: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:477
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:478
+#, fuzzy
 msgid "Extracting strings..."
-msgstr "Extração de cadeias de caracteres..."
-
+msgstr "Extracting strings..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:488
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "Translating {} strings..."
-msgstr "Traduzindo cadeias de caracteres {}..."
-
+msgstr "Translating {} strings..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:519
+#, fuzzy
 msgid "Compiling..."
-msgstr "Compilando..."
-
+msgstr "Compiling..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
+#, fuzzy
 msgid "Completed!"
-msgstr "Concluído!"
-
+msgstr "Completed!"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "{} languages translated"
-msgstr "{} idiomas traduzidos"
-
+msgstr "{} languages translated"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:526
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "Completed: {}/29 languages"
-msgstr "Concluído: {}/29 idiomas"
-
+msgstr "Completed: {}/29 languages"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
-#, python-brace-format
+#, python-brace-format, fuzzy
 msgid "Translation complete! {} languages"
-msgstr "Tradução concluída! {} idiomas"
-
+msgstr "Translation complete! {} languages"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:64
+#, fuzzy
 msgid "API Type"
-msgstr "Tipo de API"
-
+msgstr "API Type"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:67
+#, fuzzy
 msgid "Select type"
-msgstr "Selecione o tipo"
-
+msgstr "Select type"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
+#, fuzzy
 msgid "Free API"
-msgstr "API gratuita"
-
+msgstr "Free API"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:68
+#, fuzzy
 msgid "Paid API"
-msgstr "API paga"
-
+msgstr "Paid API"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:77
+#, fuzzy
 msgid "Free Tier APIs"
-msgstr "APIs de nível gratuito"
-
+msgstr "Free Tier APIs"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
+#, fuzzy
 msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr ""
-"Recomendado: DeepL (melhor qualidade) ou Groq (melhor custo-benefício)"
-
+msgstr "Recommended: DeepL (best quality) or Groq (best value)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
+#, fuzzy
 msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL e Groq são as melhores opções para tradução i18n"
-
+msgstr "DeepL and Groq are the best options for i18n translation"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
+#, fuzzy
 msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Free (500k chars/mês - Melhor qualidade)"
-
+msgstr "DeepL Free (500k chars/month - Best quality)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
+#, fuzzy
 msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14,4 mil solicitações/dia - a mais rápida)"
-
+msgstr "Groq (14.4k req/day - Fastest)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
+#, fuzzy
 msgid "Gemini Free (1k req/day)"
-msgstr "Gemini Free (1k req/dia)"
-
+msgstr "Gemini Free (1k req/day)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
+#, fuzzy
 msgid "OpenRouter (18 free models)"
-msgstr "OpenRouter (18 modelos gratuitos)"
-
+msgstr "OpenRouter (18 free models)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
+#, fuzzy
 msgid "Mistral Free"
 msgstr "Mistral Free"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
+#, fuzzy
 msgid "LibreTranslate (Open Source)"
-msgstr "LibreTranslate (código aberto)"
-
+msgstr "LibreTranslate (Open Source)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:97
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:121
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
+#, fuzzy
 msgid "API Key"
-msgstr "Chave da API"
-
+msgstr "API Key"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
+#, fuzzy
 msgid "LibreTranslate URL"
-msgstr "URL do LibreTranslate"
-
+msgstr "LibreTranslate URL"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:112
+#, fuzzy
 msgid "Paid API Settings"
-msgstr "Configurações da API paga"
-
+msgstr "Paid API Settings"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
+#, fuzzy
 msgid "Model"
-msgstr "Modelo"
-
+msgstr "Model"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
+#, fuzzy
 msgid "How to get API Keys"
-msgstr "Como obter chaves de API"
-
+msgstr "How to get API Keys"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:144
+#, fuzzy
 msgid "Test Connection"
-msgstr "Conexão de teste"
-
+msgstr "Test Connection"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
+#, fuzzy
 msgid "✅ Connection OK!"
-msgstr "Conexão OK!"
-
+msgstr "✅ Connection OK!"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
+#, fuzzy
 msgid "❌ Connection failed"
-msgstr "Falha na conexão"
-
+msgstr "❌ Connection failed"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
+#, fuzzy
 msgid "✓ Settings saved!"
-msgstr "Configurações salvas!"
-
+msgstr "✓ Settings saved!"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:256
+#, fuzzy
 msgid "How to Get API Keys"
-msgstr "Como obter chaves de API"
-
+msgstr "How to Get API Keys"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
+#, fuzzy
 msgid "Available Free APIs"
-msgstr "APIs gratuitas disponíveis"
-
+msgstr "Available Free APIs"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:280
+#, fuzzy
 msgid "Click the links to create your account and get your key"
-msgstr "Clique nos links para criar sua conta e obter sua chave"
-
+msgstr "Click the links to create your account and get your key"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:289
+#, fuzzy
 msgid "Recommended"
-msgstr "Recomendado"
-
+msgstr "Recommended"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
+#, fuzzy
 msgid "500k characters/month"
-msgstr "500 mil caracteres/mês"
-
+msgstr "500k characters/month"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:291
+#, fuzzy
 msgid "Best translation quality"
-msgstr "Melhor qualidade de tradução"
-
+msgstr "Best translation quality"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:293
+#, fuzzy
 msgid "Create account → Free Plan → API Keys"
-msgstr "Criar conta → Plano gratuito → Chaves de API"
-
+msgstr "Create account → Free Plan → API Keys"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:298
+#, fuzzy
 msgid "Fastest"
-msgstr "Mais rápido"
-
+msgstr "Fastest"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
+#, fuzzy
 msgid "14,400 requests/day"
-msgstr "14.400 solicitações/dia"
-
+msgstr "14,400 requests/day"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:300
+#, fuzzy
 msgid "LLaMA 3 - Excellent value"
-msgstr "LLaMA 3 - Excelente valor"
-
+msgstr "LLaMA 3 - Excellent value"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:302
+#, fuzzy
 msgid "Create account → API Keys → Create"
-msgstr "Criar conta → Chaves de API → Criar"
-
+msgstr "Create account → API Keys → Create"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:308
+#, fuzzy
 msgid "1,000 requests/day"
-msgstr "1.000 solicitações/dia"
-
+msgstr "1,000 requests/day"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:309
+#, fuzzy
 msgid "Google AI - Good quality"
-msgstr "Google AI - Boa qualidade"
-
+msgstr "Google AI - Good quality"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
+#, fuzzy
 msgid "Google Login → Get API Key"
-msgstr "Login do Google → Obter chave de API"
-
+msgstr "Google Login → Get API Key"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:317
+#, fuzzy
 msgid "18 free models"
-msgstr "18 modelos gratuitos"
-
+msgstr "18 free models"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:318
+#, fuzzy
 msgid "Multiple models available"
-msgstr "Vários modelos disponíveis"
-
+msgstr "Multiple models available"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:320
+#, fuzzy
 msgid "Create account → Keys → Create Key"
-msgstr "Criar conta → Chaves → Criar chave"
-
+msgstr "Create account → Keys → Create Key"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:326
+#, fuzzy
 msgid "Free tier available"
-msgstr "Nível gratuito disponível"
-
+msgstr "Free tier available"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:327
+#, fuzzy
 msgid "Quality Mistral models"
-msgstr "Modelos Mistral de qualidade"
-
+msgstr "Quality Mistral models"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:329
+#, fuzzy
 msgid "Create account → API Keys → Generate"
-msgstr "Criar conta → Chaves de API → Gerar"
-
+msgstr "Create account → API Keys → Generate"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:334
+#, fuzzy
 msgid "No API Key"
-msgstr "Sem chave de API"
-
+msgstr "No API Key"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:335
+#, fuzzy
 msgid "Unlimited (self-hosted)"
-msgstr "Ilimitado (auto-hospedado)"
-
+msgstr "Unlimited (self-hosted)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:336
+#, fuzzy
 msgid "Open source - Basic quality"
-msgstr "Código aberto - Qualidade básica"
-
+msgstr "Open source - Basic quality"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:338
+#, fuzzy
 msgid "Use default URL or your own server"
-msgstr "Use o URL padrão ou seu próprio servidor"
-
+msgstr "Use default URL or your own server"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:398
+#, fuzzy
 msgid "Open"
-msgstr "Aberto"
+msgstr "Open"

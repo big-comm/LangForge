@@ -1,0 +1,61 @@
+/* LangForge - Modern Adwaita Style */
+/* GTK4/Adwaita compatible — split view layout */
+
+/* === Drop Zone === */
+.drop-zone {
+    border: 2px dashed alpha(@accent_bg_color, 0.5);
+    border-radius: 16px;
+    padding: 40px;
+    background: alpha(@accent_bg_color, 0.05);
+    transition: all 200ms ease;
+}
+
+.drop-zone:hover {
+    border-color: @accent_bg_color;
+    background: alpha(@accent_bg_color, 0.1);
+}
+
+/* === Language Grid Items === */
+.lang-item {
+    background: alpha(@card_bg_color, 0.4);
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 2px;
+    border: 1px solid alpha(@borders, 0.2);
+    transition: all 150ms ease;
+}
+
+.lang-item.pending {
+    opacity: 0.4;
+}
+
+.lang-item.translating {
+    border-color: @accent_bg_color;
+    opacity: 1;
+    animation: pulse 1.5s infinite;
+}
+
+.lang-item.success {
+    border-color: @success_bg_color;
+    background: alpha(@success_bg_color, 0.15);
+    opacity: 1;
+}
+
+.lang-item.error {
+    border-color: @error_bg_color;
+    background: alpha(@error_bg_color, 0.15);
+    opacity: 1;
+}
+
+/* === Animations === */
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 alpha(@accent_bg_color, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px alpha(@accent_bg_color, 0);
+    }
+}
