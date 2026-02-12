@@ -253,18 +253,18 @@ class SettingsDialog(Adw.PreferencesWindow):
         dialog.set_transient_for(self)
         dialog.set_modal(True)
         dialog.set_default_size(550, 520)
-        dialog.set_title(_("How to Get API Keys"))
 
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        dialog.set_content(main_box)
+        toolbar = Adw.ToolbarView()
+        dialog.set_content(toolbar)
 
+        # Header bar without title
         header = Adw.HeaderBar()
-        header.set_show_end_title_buttons(True)
-        main_box.append(header)
+        header.set_title_widget(Gtk.Box())
+        toolbar.add_top_bar(header)
 
         scroll = Gtk.ScrolledWindow()
         scroll.set_vexpand(True)
-        main_box.append(scroll)
+        toolbar.set_content(scroll)
 
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
         content.set_margin_top(20)
