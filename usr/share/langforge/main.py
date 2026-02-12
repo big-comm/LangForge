@@ -16,7 +16,7 @@ from gi.repository import Adw, Gio, Gtk
 from ui.main_window import MainWindow
 from utils.i18n import _
 
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"
 try:
     from __init__ import __version__
     APP_VERSION = __version__

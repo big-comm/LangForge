@@ -34,7 +34,7 @@ class Settings:
                 "model": "llama-3.3-70b-versatile"  # Modelo padrão
             },
             "paid_api": {
-                "provider": "openai",  # openai, gemini, claude, grok
+                "provider": "openai",  # openai, gemini, grok
                 "api_key": "",
                 "model": "gpt-4o-mini"
             }

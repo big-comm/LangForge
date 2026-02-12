@@ -4,6 +4,19 @@ from typing import Optional
 from api.base import TranslationAPI
 
 
+# Prompt contextual para tradução de software (LLM APIs)
+TRANSLATION_PROMPT = (
+    "You are a professional translator specializing in software localization. "
+    "Translate the following text from {source} to {target}. "
+    "Use natural, contextual translation appropriate for a software UI — "
+    "do NOT translate literally. Adapt idioms and expressions to sound natural "
+    "in the target language. "
+    "IMPORTANT: Preserve any XML tags like <x1/>, <x2/>, placeholders like "
+    "{{}}, %s, %d, and formatting codes exactly as they are. "
+    "Return ONLY the translated text, nothing else."
+)
+
+
 class OpenAIAPI(TranslationAPI):
     """API paga do OpenAI (GPT-4, GPT-4o-mini, etc)."""
 
@@ -22,7 +35,9 @@ class OpenAIAPI(TranslationAPI):
             model=self.model,
             messages=[{
                 "role": "system",
-                "content": f"You are a translator. Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
+                "content": TRANSLATION_PROMPT.format(
+                    source=source_lang, target=target_lang
+                )
             }, {
                 "role": "user",
                 "content": text
@@ -35,91 +50,63 @@ class OpenAIAPI(TranslationAPI):
     def test_connection(self) -> bool:
         """Testa conexão com OpenAI."""
         try:
-            self.client.models.retrieve(self.model)
+            # List models is the simplest way to verify API key validity
+            models = self.client.models.list()
+            # Consume at least one result to confirm access
+            next(iter(models))
             return True
-        except Exception:
-            return False
+        except Exception as e:
+            import sys
+            print(f"[LangForge] OpenAI test error: {e}", file=sys.stderr)
+            raise ConnectionError(f"OpenAI: {e}") from e
 
     def get_name(self) -> str:
         return f"OpenAI ({self.model})"
 
 
 class GeminiAPI(TranslationAPI):
-    """API paga do Google Gemini."""
+    """
+    API paga do Google Gemini.
+    Uses new google-genai SDK (replaces deprecated google-generativeai).
+    """
 
     def __init__(self, api_key: str, model: str = "gemini-2.0-flash-exp"):
         try:
-            import google.generativeai as genai
+            from google import genai
         except ImportError:
-            raise ImportError("Install google-generativeai: pip install google-generativeai")
+            raise ImportError("Install: pip install google-genai")
 
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
+        self.client = genai.Client(api_key=api_key)
         self.model_name = model
 
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Gemini."""
-        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
-        response = self.model.generate_content(
-            prompt,
-            generation_config={
-                "temperature": 0.3,
-                "max_output_tokens": 512
-            }
+        prompt = (
+            TRANSLATION_PROMPT.format(source=source_lang, target=target_lang)
+            + f"\n\n{text}"
+        )
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config={"temperature": 0.3, "max_output_tokens": 512}
         )
         return response.text.strip()
 
     def test_connection(self) -> bool:
         """Testa conexão com Gemini."""
         try:
-            response = self.model.generate_content("test")
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents="test"
+            )
             return bool(response.text)
-        except Exception:
-            return False
+        except Exception as e:
+            import sys
+            print(f"[LangForge] Gemini test error: {e}", file=sys.stderr)
+            raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
         return f"Gemini ({self.model_name})"
-
-
-class ClaudeAPI(TranslationAPI):
-    """API paga do Anthropic Claude."""
-
-    def __init__(self, api_key: str, model: str = "claude-haiku-4-5"):
-        try:
-            from anthropic import Anthropic
-        except ImportError:
-            raise ImportError("Install anthropic: pip install anthropic")
-
-        self.client = Anthropic(api_key=api_key)
-        self.model = model
-
-    def translate(self, text: str, source_lang: str, target_lang: str) -> str:
-        """Traduz texto usando Claude."""
-        response = self.client.messages.create(
-            model=self.model,
-            max_tokens=512,
-            temperature=0.3,
-            messages=[{
-                "role": "user",
-                "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
-            }]
-        )
-        return response.content[0].text.strip()
-
-    def test_connection(self) -> bool:
-        """Testa conexão com Claude."""
-        try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=10,
-                messages=[{"role": "user", "content": "test"}]
-            )
-            return bool(response.content)
-        except Exception:
-            return False
-
-    def get_name(self) -> str:
-        return f"Claude ({self.model})"
 
 
 class GrokAPI(TranslationAPI):
@@ -143,7 +130,9 @@ class GrokAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "system",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
+                    "content": TRANSLATION_PROMPT.format(
+                        source=source_lang, target=target_lang
+                    )
                 }, {
                     "role": "user",
                     "content": text
@@ -164,9 +153,12 @@ class GrokAPI(TranslationAPI):
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 timeout=10
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            import sys
+            print(f"[LangForge] Grok test error: {e}", file=sys.stderr)
+            raise ConnectionError(f"Grok: {e}") from e
 
     def get_name(self) -> str:
         return f"Grok ({self.model})"

@@ -6,6 +6,19 @@ from api.base import TranslationAPI
 from core.languages import get_api_lang_code
 
 
+# Prompt contextual para tradução de software (LLM APIs)
+TRANSLATION_PROMPT = (
+    "You are a professional translator specializing in software localization. "
+    "Translate the following text from {source} to {target}. "
+    "Use natural, contextual translation appropriate for a software UI — "
+    "do NOT translate literally. Adapt idioms and expressions to sound natural "
+    "in the target language. "
+    "IMPORTANT: Preserve any XML tags like <x1/>, <x2/>, placeholders like "
+    "{{}}, %s, %d, and formatting codes exactly as they are. "
+    "Return ONLY the translated text, nothing else."
+)
+
+
 class GroqAPI(TranslationAPI):
     """
     Groq - Super rápido com LPU hardware.
@@ -29,7 +42,9 @@ class GroqAPI(TranslationAPI):
                 "model": self.model,
                 "messages": [{
                     "role": "system",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
+                    "content": TRANSLATION_PROMPT.format(
+                        source=source_lang, target=target_lang
+                    )
                 }, {
                     "role": "user",
                     "content": text
@@ -50,9 +65,10 @@ class GroqAPI(TranslationAPI):
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 timeout=10
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"Groq: {e}") from e
 
     def get_name(self) -> str:
         return "Groq (14.4k req/dia)"
@@ -91,9 +107,10 @@ class LibreTranslateAPI(TranslationAPI):
         """Testa conexão com LibreTranslate."""
         try:
             response = self.session.get(f"{self.url}/languages", timeout=10)
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"LibreTranslate: {e}") from e
 
     def get_name(self) -> str:
         return "LibreTranslate"
@@ -184,9 +201,10 @@ class DeepLFreeAPI(TranslationAPI):
                 headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
                 timeout=10
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"DeepL: {e}") from e
 
     def get_name(self) -> str:
         return "DeepL Free (500k chars/month)"
@@ -198,34 +216,41 @@ class GeminiFreeAPI(TranslationAPI):
     Limite: 1,000 requests/dia (Flash-Lite), 15 RPM
     Qualidade: Excelente
     API Key gratuita em: https://aistudio.google.com/apikey
+    Uses new google-genai SDK (replaces deprecated google-generativeai).
     """
 
     def __init__(self, api_key: str, model: str = "gemini-2.5-flash-lite"):
         try:
-            import google.generativeai as genai
+            from google import genai
         except ImportError:
-            raise ImportError("Install: pip install google-generativeai")
+            raise ImportError("Install: pip install google-genai")
 
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
+        self.client = genai.Client(api_key=api_key)
         self.model_name = model
 
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Gemini."""
-        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them.\n\n{text}"
-        response = self.model.generate_content(
-            prompt,
-            generation_config={"temperature": 0.3, "max_output_tokens": 512}
+        prompt = (
+            TRANSLATION_PROMPT.format(source=source_lang, target=target_lang)
+            + f"\n\n{text}"
+        )
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config={"temperature": 0.3, "max_output_tokens": 512}
         )
         return response.text.strip()
 
     def test_connection(self) -> bool:
         """Testa conexão com Gemini."""
         try:
-            response = self.model.generate_content("test")
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents="test"
+            )
             return bool(response.text)
-        except Exception:
-            return False
+        except Exception as e:
+            raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
         return "Gemini Free (1k req/dia)"
@@ -257,8 +282,13 @@ class OpenRouterAPI(TranslationAPI):
             json={
                 "model": self.model,
                 "messages": [{
+                    "role": "system",
+                    "content": TRANSLATION_PROMPT.format(
+                        source=source_lang, target=target_lang
+                    )
+                }, {
                     "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
+                    "content": text
                 }],
                 "temperature": 0.3,
                 "max_tokens": 512
@@ -276,9 +306,10 @@ class OpenRouterAPI(TranslationAPI):
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 timeout=10
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"OpenRouter: {e}") from e
 
     def get_name(self) -> str:
         return "OpenRouter (18 modelos grátis)"
@@ -306,8 +337,13 @@ class MistralFreeAPI(TranslationAPI):
             json={
                 "model": self.model,
                 "messages": [{
+                    "role": "system",
+                    "content": TRANSLATION_PROMPT.format(
+                        source=source_lang, target=target_lang
+                    )
+                }, {
                     "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
+                    "content": text
                 }],
                 "temperature": 0.3,
                 "max_tokens": 512
@@ -325,9 +361,10 @@ class MistralFreeAPI(TranslationAPI):
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 timeout=10
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"Mistral: {e}") from e
 
     def get_name(self) -> str:
         return "Mistral Free"

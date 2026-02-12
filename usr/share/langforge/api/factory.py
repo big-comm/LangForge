@@ -20,7 +20,6 @@ class APIFactory:
     _PAID_APIS = {
         "openai": ("api.paid_apis", "OpenAIAPI"),
         "gemini": ("api.paid_apis", "GeminiAPI"),
-        "claude": ("api.paid_apis", "ClaudeAPI"),
         "grok": ("api.paid_apis", "GrokAPI"),
     }
 

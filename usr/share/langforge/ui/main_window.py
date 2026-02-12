@@ -139,24 +139,12 @@ class MainWindow(Adw.ApplicationWindow):
         content.set_margin_bottom(12)
 
         # ── API Translation card ──
-        api_group = Adw.PreferencesGroup()
+        self.api_group = Adw.PreferencesGroup()
 
-        self.api_type_row = Adw.ComboRow(title=_("API Type"))
-        self.api_type_row.set_model(
-            Gtk.StringList.new([_("Free"), _("Paid")])
-        )
-        api_group.add(self.api_type_row)
+        # Build API type and provider from configured settings
+        self._build_api_dropdowns(self.api_group)
 
-        self.api_provider_row = Adw.ComboRow(title=_("Provider"))
-        self.api_provider_row.set_model(
-            Gtk.StringList.new([
-                "DeepL Free", "Groq", "Gemini Free",
-                "OpenRouter", "Mistral", "LibreTranslate"
-            ])
-        )
-        api_group.add(self.api_provider_row)
-
-        content.append(api_group)
+        content.append(self.api_group)
 
         # ── Options card ──
         options_group = Adw.PreferencesGroup()
@@ -239,21 +227,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         toolbar.set_content(self.stack)
 
-        # ── Status bar at bottom ──
-        status_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        status_bar.add_css_class("statusbar")
-        status_bar.set_margin_start(12)
-        status_bar.set_margin_end(12)
-        status_bar.set_margin_top(6)
-        status_bar.set_margin_bottom(6)
 
-        self.status_label = Gtk.Label(label=_("Ready"))
-        self.status_label.add_css_class("dim-label")
-        self.status_label.set_halign(Gtk.Align.START)
-        self.status_label.set_hexpand(True)
-        status_bar.append(self.status_label)
-
-        toolbar.add_bottom_bar(status_bar)
 
         return toolbar
 
@@ -394,11 +368,136 @@ class MainWindow(Adw.ApplicationWindow):
             icons.get(status, 'content-loading-symbolic')
         )
 
+    # ── API Dropdowns ───────────────────────────────────────────
+
+    def _build_api_dropdowns(self, api_group):
+        """Build API type and provider dropdowns showing only configured options."""
+        # Determine which API types have configured providers
+        configured_types = []  # list of (label, type_key)
+        self._configured_free_providers = []  # list of (label, provider_key)
+        self._configured_paid_providers = []  # list of (label, provider_key)
+
+        # Free providers: check which have API keys or are LibreTranslate
+        free_provider_labels = {
+            "deepl-free": "DeepL Free",
+            "groq": "Groq",
+            "gemini-free": "Gemini Free",
+            "openrouter": "OpenRouter",
+            "mistral-free": "Mistral",
+            "libretranslate": "LibreTranslate",
+        }
+        free_api_key = self.settings.get("free_api.api_key", "")
+        free_provider = self.settings.get("free_api.provider", "")
+
+        for key, label in free_provider_labels.items():
+            if key == "libretranslate":
+                # LibreTranslate doesn't need API key — always available
+                self._configured_free_providers.append((label, key))
+            elif key == free_provider and free_api_key:
+                # Only show the provider that is actually configured with a key
+                self._configured_free_providers.append((label, key))
+
+        # Paid providers: check if API key is set
+        paid_provider_labels = {
+            "openai": "OpenAI",
+            "gemini": "Gemini",
+            "grok": "Grok (xAI)",
+        }
+        paid_api_key = self.settings.get("paid_api.api_key", "")
+        paid_provider = self.settings.get("paid_api.provider", "")
+
+        for key, label in paid_provider_labels.items():
+            if key == paid_provider and paid_api_key:
+                self._configured_paid_providers.append((label, key))
+
+        # Build API type dropdown with only configured types
+        if self._configured_free_providers:
+            configured_types.append((_("Free"), "free"))
+        if self._configured_paid_providers:
+            configured_types.append((_("Paid"), "paid"))
+
+        # Fallback: if nothing configured, show free with LibreTranslate
+        if not configured_types:
+            configured_types.append((_("Free"), "free"))
+            if not self._configured_free_providers:
+                self._configured_free_providers.append(("LibreTranslate", "libretranslate"))
+
+        self._configured_types = configured_types
+
+        # API Type row
+        self.api_type_row = Adw.ComboRow(title=_("API Type"))
+        type_labels = [t[0] for t in configured_types]
+        self.api_type_row.set_model(Gtk.StringList.new(type_labels))
+        self.api_type_row.connect("notify::selected", self._on_sidebar_api_type_changed)
+        api_group.add(self.api_type_row)
+
+        # Provider row
+        self.api_provider_row = Adw.ComboRow(title=_("Provider"))
+        api_group.add(self.api_provider_row)
+
+        # Set initial selection based on saved settings
+        saved_type = self.settings.get_api_type()
+        type_idx = 0
+        for i, (_lbl, key) in enumerate(configured_types):
+            if key == saved_type:
+                type_idx = i
+                break
+        self.api_type_row.set_selected(type_idx)
+        self._update_sidebar_providers()
+
+    def _on_sidebar_api_type_changed(self, combo, pspec):
+        """Update provider list when API type changes in sidebar."""
+        self._update_sidebar_providers()
+
+    def _update_sidebar_providers(self):
+        """Update provider dropdown based on selected API type."""
+        idx = self.api_type_row.get_selected()
+        if idx >= len(self._configured_types):
+            return
+        _lbl, type_key = self._configured_types[idx]
+
+        if type_key == "free":
+            providers = self._configured_free_providers
+        else:
+            providers = self._configured_paid_providers
+
+        labels = [p[0] for p in providers]
+        self.api_provider_row.set_model(Gtk.StringList.new(labels))
+
+        # Select the saved provider
+        if type_key == "free":
+            saved = self.settings.get("free_api.provider", "")
+        else:
+            saved = self.settings.get("paid_api.provider", "")
+
+        for i, (_lbl, key) in enumerate(providers):
+            if key == saved:
+                self.api_provider_row.set_selected(i)
+                break
+
     # ── Callbacks ───────────────────────────────────────────────
 
     def _on_settings_clicked(self, button):
         dialog = SettingsDialog(self, self.settings)
+        dialog.connect("close-request", self._on_settings_closed)
         dialog.present()
+
+    def _on_settings_closed(self, dialog):
+        """Refresh sidebar dropdowns after settings dialog closes."""
+        # Reload settings from disk
+        self.settings = Settings()
+        self._refresh_api_dropdowns()
+        return False
+
+    def _refresh_api_dropdowns(self):
+        """Rebuild API type and provider dropdowns with current settings."""
+        # Remove old rows
+        if hasattr(self, 'api_type_row'):
+            self.api_group.remove(self.api_type_row)
+        if hasattr(self, 'api_provider_row'):
+            self.api_group.remove(self.api_provider_row)
+        # Rebuild
+        self._build_api_dropdowns(self.api_group)
 
     def _on_select_project(self, button):
         dialog = Gtk.FileDialog()
@@ -411,7 +510,7 @@ class MainWindow(Adw.ApplicationWindow):
             if folder:
                 self._validate_and_set_project(folder.get_path())
         except Exception as e:
-            self.status_label.set_label(f"{_('Error')}: {e}")
+            self._show_toast(f"{_('Error')}: {e}")
 
     def _on_drop(self, target, value, x, y):
         if isinstance(value, Gio.File):
@@ -438,9 +537,6 @@ class MainWindow(Adw.ApplicationWindow):
             )
 
             self.translate_button.set_sensitive(True)
-            self.status_label.set_label(
-                _("Project: {}").format(textdomain)
-            )
             self.stack.set_visible_child_name("project")
 
             self._show_toast(
@@ -448,7 +544,7 @@ class MainWindow(Adw.ApplicationWindow):
             )
 
         except Exception as e:
-            self._show_toast(f"{_('Error')}: {e}")
+            self._show_toast(f"{_('Error')}: {str(e)}")
 
     def _on_start_translation(self, button):
         if not self.selected_project or self.is_translating:
@@ -470,9 +566,7 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _run_translation(self):
         try:
-            GLib.idle_add(
-                self.status_label.set_label, _("Extracting strings...")
-            )
+
             GLib.idle_add(
                 self.progress_subtitle.set_label, _("Extracting strings...")
             )
@@ -487,10 +581,7 @@ class MainWindow(Adw.ApplicationWindow):
             extractor.extract_strings(files)
             count = extractor.get_string_count()
 
-            GLib.idle_add(
-                self.status_label.set_label,
-                _("Translating {} strings...").format(count)
-            )
+
 
             api = APIFactory.create_from_settings(self.settings)
             translator = TranslationEngine(api, textdomain)
@@ -519,10 +610,6 @@ class MainWindow(Adw.ApplicationWindow):
                 GLib.idle_add(
                     self.progress_ring.set_progress, current / total
                 )
-                GLib.idle_add(
-                    self.status_label.set_label,
-                    f"[{current}/{total}] {name}"
-                )
 
             first = list(SUPPORTED_LANGUAGES.keys())[0]
             GLib.idle_add(self._update_lang_status, first, 'translating')
@@ -549,10 +636,6 @@ class MainWindow(Adw.ApplicationWindow):
             )
             GLib.idle_add(self.progress_ring.set_progress, 1.0)
             GLib.idle_add(
-                self.status_label.set_label,
-                _("Completed: {}/29 languages").format(success)
-            )
-            GLib.idle_add(
                 self._show_toast,
                 _("Translation complete! {} languages").format(success)
             )
@@ -564,9 +647,7 @@ class MainWindow(Adw.ApplicationWindow):
             GLib.idle_add(
                 self.progress_subtitle.set_label, str(e)
             )
-            GLib.idle_add(
-                self.status_label.set_label, f"{_('Error')}: {e}"
-            )
+
             GLib.idle_add(
                 self._show_toast, f"{_('Error')}: {e}"
             )

@@ -45,7 +45,7 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         # Paid API
         provider_idx = self.paid_provider_row.get_selected()
-        paid_providers = ["openai", "gemini", "claude", "grok"]
+        paid_providers = ["openai", "gemini", "grok"]
         self.settings.set("paid_api.provider", paid_providers[provider_idx])
         self.settings.set("paid_api.api_key", self.api_key.get_text())
         self.settings.set("paid_api.model", self.model_name.get_text())
@@ -113,7 +113,7 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         self.paid_provider_row = Adw.ComboRow()
         self.paid_provider_row.set_title(_("Provider"))
-        paid_model = Gtk.StringList.new(["OpenAI", "Gemini", "Claude", "Grok (xAI)"])
+        paid_model = Gtk.StringList.new(["OpenAI", "Gemini", "Grok (xAI)"])
         self.paid_provider_row.set_model(paid_model)
         self.paid_group.add(self.paid_provider_row)
 
@@ -171,7 +171,7 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         # Paid API
         paid_provider = self.settings.get("paid_api.provider", "openai")
-        paid_map = {"openai": 0, "gemini": 1, "claude": 2, "grok": 3}
+        paid_map = {"openai": 0, "gemini": 1, "grok": 2}
         self.paid_provider_row.set_selected(paid_map.get(paid_provider, 0))
 
         self.api_key.set_text(self.settings.get("paid_api.api_key", ""))
@@ -213,6 +213,7 @@ class SettingsDialog(Adw.PreferencesWindow):
 
     def _on_test_connection(self, button):
         """Test API connection."""
+        import sys
         try:
             api_type = "free" if self.api_type_row.get_selected() == 0 else "paid"
 
@@ -228,7 +229,7 @@ class SettingsDialog(Adw.PreferencesWindow):
                     api = APIFactory.create(provider, api_key)
             else:
                 provider_idx = self.paid_provider_row.get_selected()
-                paid_providers = ["openai", "gemini", "claude", "grok"]
+                paid_providers = ["openai", "gemini", "grok"]
                 provider = paid_providers[provider_idx]
                 api_key = self.api_key.get_text()
                 model = self.model_name.get_text()
@@ -240,7 +241,12 @@ class SettingsDialog(Adw.PreferencesWindow):
                 self._show_toast(_("❌ Connection failed"), Adw.ToastPriority.HIGH)
 
         except Exception as e:
-            self._show_toast(f"❌ {_('Error')}: {str(e)}", Adw.ToastPriority.HIGH)
+            error_msg = str(e)
+            # Truncar mensagem longa para caber no toast
+            if len(error_msg) > 100:
+                error_msg = error_msg[:100] + "..."
+            print(f"[LangForge] Connection test error: {e}", file=sys.stderr)
+            self._show_toast(f"❌ {error_msg}", Adw.ToastPriority.HIGH)
 
     def _on_save(self, button):
         """Save settings."""
