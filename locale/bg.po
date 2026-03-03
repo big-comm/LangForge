@@ -16,16 +16,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 25
+#: NEEDS WORK
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "Не можа да се свърже с услугата за превод. Проверете интернет връзката си."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 29
+#: NEEDS WORK
+msgid "Invalid API key. Check your key in Settings."
+msgstr "Невалиден API ключ. Проверете вашия ключ в Настройки."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 31
+#: NEEDS WORK
+msgid "Access denied. Your API key may lack the required permissions."
+msgstr "Достъпът е отказан. Вашият API ключ може да няма необходимите разрешения."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 33
+#: NEEDS WORK
+msgid "API rate limit reached. Wait a moment and try again."
+msgstr "Достигнат лимит на API заявки. Изчакайте момент и опитайте отново."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 35
+#: NEEDS WORK
+msgid "The translation service took too long to respond. Try again later."
+msgstr "Услугата за превод отне твърде много време, за да отговори. Опитайте отново по-късно."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 37
+#: NEEDS WORK
+msgid "gettext tools not found. Install gettext on your system."
+msgstr "Инструменти gettext не са намерени. Инсталирайте gettext на вашата система."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 39
+#: NEEDS WORK
+msgid "msgfmt not found. Install gettext on your system."
+msgstr "msgfmt не е намерен. Инсталирайте gettext на вашата система."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 58
+#: NEEDS WORK
+msgid "Translation progress"
+msgstr "Прогрес на превода"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 110
+#: NEEDS WORK
+#, python-brace-format
+msgid "Translation progress: {}%"
+msgstr "Прогрес на превода: {}%"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr "Компилиране на .mo файлове"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
-#, python-brace-format
-msgid "{} languages supported"
-msgstr "{} поддържани езици"
+# File: usr/share/langforge/ui/main_window.py, line: 214
+#: NEEDS WORK
+msgid "Fix context"
+msgstr "Поправи контекста"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 215
+#: NEEDS WORK
+msgid "Detect and fix translations missing context"
+msgstr "Открийте и поправете преводи, които нямат контекст"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 228
+#: NEEDS WORK
+msgid "Languages"
+msgstr "Езици"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 234
+#: NEEDS WORK
+msgid "All"
+msgstr "Всички"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 240
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 186
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
@@ -41,30 +106,60 @@ msgstr "Настройки на API..."
 msgid "Start Translation"
 msgstr "Начало на превода"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 309
+#: NEEDS WORK
+msgid "Main menu"
+msgstr "Главно меню"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 312
+#: NEEDS WORK
+msgid "Open Project"
+msgstr "Отвори проект"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 313
+#: NEEDS WORK
+msgid "Settings"
+msgstr "Настройки"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 219
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "За"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 315
+#: NEEDS WORK
+msgid "Quit"
+msgstr "Изход"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 360
+#: NEEDS WORK
+msgid "Project selection area. Drag a folder here or click to select."
+msgstr "Област за избор на проект. Плъзнете папка тук или кликнете, за да изберете."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "Няма избран проект"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 286
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
-msgid "Drag a folder here or click to select"
-msgstr "Плъзнете папка тук или щракнете, за да изберете"
+# File: usr/share/langforge/ui/main_window.py, line: 377
+#: NEEDS WORK
+msgid "Drag a folder or file here, or click to select"
+msgstr "Плъзнете папка или файл тук, или кликнете, за да изберете"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "Изберете проект"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 321
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
-msgid "Change Project"
-msgstr "Проект за промяна"
+# File: usr/share/langforge/ui/main_window.py, line: 392
+#: NEEDS WORK
+msgid "Select File"
+msgstr "Изберете файл"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 423
+#: NEEDS WORK
+msgid "Change"
+msgstr "Промяна"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 338
 # File: usr/share/langforge/ui/main_window.py, line: 459
@@ -73,10 +168,96 @@ msgstr "Проект за промяна"
 msgid "Translating..."
 msgstr "Превод..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 445
+#: NEEDS WORK
+msgid "Translation status"
+msgstr "Статус на превода"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 342
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "Подготовка..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 453
+#: NEEDS WORK
+msgid "Translation details"
+msgstr "Детайли за превод"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 466
+#: NEEDS WORK
+msgid "Language translation status"
+msgstr "Статус на превод на език"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 472
+#: NEEDS WORK
+msgid "Cancel Translation"
+msgstr "Отмени превода"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 486
+#: NEEDS WORK
+msgid "Welcome to LangForge"
+msgstr "Добре дошли в LangForge"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 489
+#: NEEDS WORK
+msgid ""
+"Automate gettext translations for your project.\n"
+"To get started, configure an API provider in Settings."
+msgstr ""
+"Автоматизирайте gettext преводите за вашия проект. За да започнете, конфигурирайте API доставчик в "
+"Настройки."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 496
+#: NEEDS WORK
+msgid "Open Settings"
+msgstr "Отворете Настройки"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 502
+#: NEEDS WORK
+msgid "Skip"
+msgstr "Пропусни"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: NEEDS WORK
+msgid "Translation Complete!"
+msgstr "Преводът е завършен!"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 539
+#: NEEDS WORK
+msgid "Translate Again"
+msgstr "Преведи отново"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 547
+#: NEEDS WORK
+msgid "New Project"
+msgstr "Нов проект"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 560
+#: NEEDS WORK
+#, python-brace-format
+msgid "{langs} languages translated in {time}"
+msgstr "{langs} езици преведени за {time}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 587
+# File: usr/share/langforge/ui/main_window.py, line: 620
+#: NEEDS WORK
+msgid "pending"
+msgstr "в очакване"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 621
+#: NEEDS WORK
+msgid "translating"
+msgstr "превеждане"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 622
+#: NEEDS WORK
+msgid "completed"
+msgstr "завършено"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: NEEDS WORK
+msgid "error"
+msgstr "грешка"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
@@ -107,6 +288,17 @@ msgstr "Тип API"
 msgid "Provider"
 msgstr "Доставчик"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 747
+#: NEEDS WORK
+#, python-brace-format
+msgid "{count} of {total} languages selected"
+msgstr "{count} от {total} избрани езика"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 813
+#: NEEDS WORK
+msgid "Translatable files (.po, .json, .txt, .md, .srt)"
+msgstr "Преводими файлове (.po, .json, .txt, .md, .srt)"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -124,22 +316,69 @@ msgstr "Доставчик"
 msgid "Error"
 msgstr "Грешка"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 428
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
-msgid "Project does not use gettext"
-msgstr "Проектът не използва gettext"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 437
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
+# File: usr/share/langforge/ui/main_window.py, line: 867
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} strings · 29 languages"
-msgstr "{} низове - 29 езика"
+msgid "{strings} strings · {langs} languages"
+msgstr "стрингове · езици"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Проектът е натоварен: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 895
+#: NEEDS WORK
+#, python-brace-format
+msgid "{items} items · {langs} languages"
+msgstr "{items} елемента · {langs} езика"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 904
+#: NEEDS WORK
+#, python-brace-format
+msgid "File loaded: {}"
+msgstr "Файлът е зареден: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 919
+#: NEEDS WORK
+msgid "Select at least one language"
+msgstr "Изберете поне един език"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 933
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {items} items to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Преведете {items} елементи на {langs} езика, използвайки {provider}. Това може да отнеме няколко "
+"минути."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 942
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {strings} strings to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Преведете {strings} низове на {langs} езици, използвайки {provider}. Това може да отнеме няколко "
+"минути."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 951
+#: NEEDS WORK
+msgid "Start Translation?"
+msgstr "Започнете превода?"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 953
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Отмяна"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 954
+#: NEEDS WORK
+msgid "Start"
+msgstr "Старт"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 474
 # File: usr/share/langforge/ui/main_window.py, line: 477
@@ -153,22 +392,32 @@ msgstr "Извличане на низове..."
 msgid "Compiling..."
 msgstr "Компилиране..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 544
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
-msgid "Completed!"
-msgstr "Завършено!"
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+#: NEEDS WORK
+msgid "Checking context-aware translations..."
+msgstr "Проверка на преводи с контекстуално осъзнаване..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 548
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
+# File: usr/share/langforge/ui/main_window.py, line: 1057
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} languages translated"
-msgstr "{} преведени езици"
+msgid "{name} ({current}/{total}) · ~{eta} remaining"
+msgstr "{name} ({current}/{total}) · ~{eta} оставащи"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 557
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: NEEDS WORK
+msgid "Cancelled"
+msgstr "Отменен"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1077
+#: NEEDS WORK
 #, python-brace-format
-msgid "Translation complete! {} languages"
-msgstr "Преводът е завършен! {} езици"
+msgid "{} languages translated before cancellation"
+msgstr "{} езици, преведени преди анулиране"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1095
+#: NEEDS WORK
+msgid "Cancelling..."
+msgstr "Отказване..."
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
@@ -197,45 +446,50 @@ msgstr "Платен API"
 msgid "Free Tier APIs"
 msgstr "Безплатни приложни програмни интерфейси"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 78
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
-msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr "Препоръчва се: DeepL (най-добро качество) или Groq (най-добра цена)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: NEEDS WORK
+msgid "Select your preferred translation provider"
+msgstr "Изберете предпочитания от вас доставчик на преводи"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 82
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
-msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL и Groq са най-добрите варианти за превод на i18n"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: NEEDS WORK
+msgid "500k chars/month — Best translation quality"
+msgstr "500 хиляди знака/месец — Най-добро качество на превода"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 84
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
-msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Безплатно (500 хил. чара/месец - Най-добро качество)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 184
+#: NEEDS WORK
+msgid "14.4k req/day — Fastest, excellent quality"
+msgstr "14.4k заявки/ден — Най-бързо, отлично качество"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 85
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
-msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14,4 хил. заявки на ден - най-бързо)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 190
+#: NEEDS WORK
+msgid "1,000 req/day — Google AI"
+msgstr "1,000 заявки/ден — Google AI"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 86
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
-msgid "Gemini Free (1k req/day)"
-msgstr "Близнаци Безплатно (1 хил. заявки на ден)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 196
+#: NEEDS WORK
+msgid "18 free models available"
+msgstr "18 безплатни модела налични"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 87
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
-msgid "OpenRouter (18 free models)"
-msgstr "OpenRouter (18 безплатни модела)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 202
+#: NEEDS WORK
+msgid "Free tier — Quality models"
+msgstr "Безплатен план — Качествени модели"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 88
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
-msgid "Mistral Free"
-msgstr "Мистрал безплатно"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 208
+#: NEEDS WORK
+msgid "Open source — No API key needed"
+msgstr "С отворен код — Не е необходим API ключ"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 89
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
-msgid "LibreTranslate (Open Source)"
-msgstr "LibreTranslate (с отворен код)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: NEEDS WORK
+msgid "More providers"
+msgstr "Повече доставчици"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: NEEDS WORK
+msgid "4 additional free options"
+msgstr "4 допълнителни безплатни опции"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 97
 # File: usr/share/langforge/ui/settings_dialog.py, line: 121
@@ -245,6 +499,21 @@ msgstr "LibreTranslate (с отворен код)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "Ключ за API"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: NEEDS WORK
+msgid "Usage"
+msgstr "Използване"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: NEEDS WORK
+msgid "Click 'Test Connection' to check"
+msgstr "Щракнете върху 'Тест на връзката', за да проверите"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
+msgid "Model"
+msgstr "Модел"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 103
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
@@ -256,10 +525,20 @@ msgstr "URL адрес на LibreTranslate"
 msgid "Paid API Settings"
 msgstr "Платени настройки на API"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
-msgid "Model"
-msgstr "Модел"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: NEEDS WORK
+msgid "GPT-4o, GPT-4.1 — Industry standard"
+msgstr "GPT-4o, GPT-4.1 — Индустриален стандарт"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: NEEDS WORK
+msgid "Gemini 2.5 Flash/Pro — Fast and capable"
+msgstr "Гемини 2.5 Флаш/Про — Бърз и способен"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 303
+#: NEEDS WORK
+msgid "$25 free credits — 2M context window"
+msgstr "$25 безплатни кредити — 2M контекстен прозорец"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
@@ -271,15 +550,30 @@ msgstr "Как да получите API ключове"
 msgid "Test Connection"
 msgstr "Тестова връзка"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 238
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
-msgid "✅ Connection OK!"
-msgstr "✅ Връзката е ОК!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 427
+#: NEEDS WORK
+msgid "Provider changed — verify your API key is correct"
+msgstr "Доставчикът е променен — проверете дали вашият API ключ е правилен"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 240
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
-msgid "❌ Connection failed"
-msgstr "❌ Връзката е неуспешна"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: NEEDS WORK
+msgid "Testing..."
+msgstr "Тестване..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: NEEDS WORK
+msgid "Testing connection..."
+msgstr "Тестване на връзката..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: NEEDS WORK
+msgid "Connection successful"
+msgstr "Свързването е успешно"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: NEEDS WORK
+msgid "Connection failed"
+msgstr "Свързването не успя"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 248
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
@@ -410,3 +704,68 @@ msgstr "Отвори"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Автоматичен преводач за gettext проекти"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: NEEDS WORK
+msgid ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+msgstr ""
+"Изберете проектна папка с преводим изходен код.\n"
+"\n"
+"Сканира за преводими низове, използвайки шаблони на gettext\n"
+"и генерира .po файлове за всеки целеви език.\n"
+"\n"
+"Поддържани типове проекти:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"и всеки проект, използващ gettext"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: NEEDS WORK
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Изберете един файл за директен превод.\n"
+"\n"
+"Поддържани формати:\n"
+".po / .pot — Файлове за превод на Gettext\n"
+".json — Файлове за превод с ключ-стойност\n"
+".srt — Файлове с субтитри SubRip\n"
+".txt / .md — Обикновен текст и Markdown"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: NEEDS WORK
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Пре-прегледайте съществуващите преводи, използвайки AI с контекстно осъзнаване.\n"
+"\n"
+"Открива записи, преведени без име на приложение/контекст\n"
+"и поправя само тях. Изисква API, базиран на LLM.\n"
+"\n"
+"Съвместими API:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Несъвместими:\n"
+"DeepL, LibreTranslate (без поддръжка на контекст)"

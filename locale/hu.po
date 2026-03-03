@@ -16,16 +16,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 25
+#: NEEDS WORK
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "Nem sikerült csatlakozni a fordító szolgáltatáshoz. Ellenőrizze az internetkapcsolatát."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 29
+#: NEEDS WORK
+msgid "Invalid API key. Check your key in Settings."
+msgstr "Érvénytelen API-kulcs. Ellenőrizze a kulcsát a Beállításokban."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 31
+#: NEEDS WORK
+msgid "Access denied. Your API key may lack the required permissions."
+msgstr "Hozzáférés megtagadva. Az API kulcsa hiányozhat a szükséges jogosultságokból."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 33
+#: NEEDS WORK
+msgid "API rate limit reached. Wait a moment and try again."
+msgstr "API sebességkorlát elérve. Kérjük, várjon egy pillanatot, és próbálja újra."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 35
+#: NEEDS WORK
+msgid "The translation service took too long to respond. Try again later."
+msgstr "A fordító szolgáltatás válaszadása túl sokáig tartott. Próbálja meg később."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 37
+#: NEEDS WORK
+msgid "gettext tools not found. Install gettext on your system."
+msgstr "A gettext eszközök nem találhatók. Telepítse a gettextet a rendszerére."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 39
+#: NEEDS WORK
+msgid "msgfmt not found. Install gettext on your system."
+msgstr "msgfmt nem található. Telepítse a gettextet a rendszerére."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 58
+#: NEEDS WORK
+msgid "Translation progress"
+msgstr "Fordítási előrehaladás"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 110
+#: NEEDS WORK
+#, python-brace-format
+msgid "Translation progress: {}%"
+msgstr "Fordítási előrehaladás: {}%"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr ".mo fájlok fordítása"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
-#, python-brace-format
-msgid "{} languages supported"
-msgstr "{} támogatott nyelvek"
+# File: usr/share/langforge/ui/main_window.py, line: 214
+#: NEEDS WORK
+msgid "Fix context"
+msgstr "Kontektszerkesztés"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 215
+#: NEEDS WORK
+msgid "Detect and fix translations missing context"
+msgstr "A kontextust nélkülöző fordítások észlelése és javítása"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 228
+#: NEEDS WORK
+msgid "Languages"
+msgstr "Nyelvek"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 234
+#: NEEDS WORK
+msgid "All"
+msgstr "Minden"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 240
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 186
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
@@ -41,30 +106,60 @@ msgstr "API beállítások..."
 msgid "Start Translation"
 msgstr "Fordítás indítása"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 309
+#: NEEDS WORK
+msgid "Main menu"
+msgstr "Főmenü"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 312
+#: NEEDS WORK
+msgid "Open Project"
+msgstr "Projekt megnyitása"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 313
+#: NEEDS WORK
+msgid "Settings"
+msgstr "Beállítások"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 219
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "A  oldalról"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 315
+#: NEEDS WORK
+msgid "Quit"
+msgstr "Kilépés"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 360
+#: NEEDS WORK
+msgid "Project selection area. Drag a folder here or click to select."
+msgstr "Projekt kiválasztási terület. Húzzon ide egy mappát, vagy kattintson a kiválasztáshoz."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "Nincs kiválasztott projekt"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 286
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
-msgid "Drag a folder here or click to select"
-msgstr "Húzza ide a mappát, vagy kattintson a kiválasztáshoz"
+# File: usr/share/langforge/ui/main_window.py, line: 377
+#: NEEDS WORK
+msgid "Drag a folder or file here, or click to select"
+msgstr "Húzzon ide egy mappát vagy fájlt, vagy kattintson a kiválasztáshoz."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "Projekt kiválasztása"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 321
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
-msgid "Change Project"
-msgstr "Változás projekt"
+# File: usr/share/langforge/ui/main_window.py, line: 392
+#: NEEDS WORK
+msgid "Select File"
+msgstr "Fájl kiválasztása"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 423
+#: NEEDS WORK
+msgid "Change"
+msgstr "Változtatás"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 338
 # File: usr/share/langforge/ui/main_window.py, line: 459
@@ -73,10 +168,96 @@ msgstr "Változás projekt"
 msgid "Translating..."
 msgstr "Fordítás..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 445
+#: NEEDS WORK
+msgid "Translation status"
+msgstr "Fordítás állapota"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 342
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "Felkészülés..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 453
+#: NEEDS WORK
+msgid "Translation details"
+msgstr "Fordítási részletek"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 466
+#: NEEDS WORK
+msgid "Language translation status"
+msgstr "Nyelvi fordítás állapota"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 472
+#: NEEDS WORK
+msgid "Cancel Translation"
+msgstr "Fordítás megszakítása"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 486
+#: NEEDS WORK
+msgid "Welcome to LangForge"
+msgstr "Üdvözöljük a LangForge-ban"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 489
+#: NEEDS WORK
+msgid ""
+"Automate gettext translations for your project.\n"
+"To get started, configure an API provider in Settings."
+msgstr ""
+"Automatizálja a gettext fordításokat a projektjéhez. \n"
+"A kezdéshez konfiguráljon egy API szolgáltatót a Beállításokban."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 496
+#: NEEDS WORK
+msgid "Open Settings"
+msgstr "Beállítások megnyitása"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 502
+#: NEEDS WORK
+msgid "Skip"
+msgstr "Átugrás"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: NEEDS WORK
+msgid "Translation Complete!"
+msgstr "Fordítás kész!"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 539
+#: NEEDS WORK
+msgid "Translate Again"
+msgstr "Fordítás újra"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 547
+#: NEEDS WORK
+msgid "New Project"
+msgstr "Új projekt"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 560
+#: NEEDS WORK
+#, python-brace-format
+msgid "{langs} languages translated in {time}"
+msgstr "{langs} nyelvek lefordítva {time}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 587
+# File: usr/share/langforge/ui/main_window.py, line: 620
+#: NEEDS WORK
+msgid "pending"
+msgstr "függőben"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 621
+#: NEEDS WORK
+msgid "translating"
+msgstr "fordítás"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 622
+#: NEEDS WORK
+msgid "completed"
+msgstr "befejezett"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: NEEDS WORK
+msgid "error"
+msgstr "hiba"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
@@ -107,6 +288,17 @@ msgstr "API típus"
 msgid "Provider"
 msgstr "Szolgáltató"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 747
+#: NEEDS WORK
+#, python-brace-format
+msgid "{count} of {total} languages selected"
+msgstr "{count} a {total} nyelv közül kiválasztva"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 813
+#: NEEDS WORK
+msgid "Translatable files (.po, .json, .txt, .md, .srt)"
+msgstr "Fordítható fájlok (.po, .json, .txt, .md, .srt)"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -124,22 +316,69 @@ msgstr "Szolgáltató"
 msgid "Error"
 msgstr "Hiba"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 428
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
-msgid "Project does not use gettext"
-msgstr "A projekt nem használja a gettextet"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 437
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
+# File: usr/share/langforge/ui/main_window.py, line: 867
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} strings · 29 languages"
-msgstr "{} karakterláncok - 29 nyelvek"
+msgid "{strings} strings · {langs} languages"
+msgstr "{szövegek} szövegek · {nyelvek} nyelvek"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Projekt betöltve: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 895
+#: NEEDS WORK
+#, python-brace-format
+msgid "{items} items · {langs} languages"
+msgstr "{items} elem · {langs} nyelv"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 904
+#: NEEDS WORK
+#, python-brace-format
+msgid "File loaded: {}"
+msgstr "Fájl betöltve: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 919
+#: NEEDS WORK
+msgid "Select at least one language"
+msgstr "Válasszon ki legalább egy nyelvet"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 933
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {items} items to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Fordítsa le a {items} elemet {langs} nyelvre a {provider} használatával. Ez több percet is igénybe "
+"vehet."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 942
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {strings} strings to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Fordítsa le a {strings} szövegeket a {langs} nyelvekre a {provider} használatával. Ez több percet "
+"is igénybe vehet."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 951
+#: NEEDS WORK
+msgid "Start Translation?"
+msgstr "Fordítás indítása?"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 953
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Mégsem"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 954
+#: NEEDS WORK
+msgid "Start"
+msgstr "Kezdés"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 474
 # File: usr/share/langforge/ui/main_window.py, line: 477
@@ -153,22 +392,32 @@ msgstr "A karakterláncok kivonása..."
 msgid "Compiling..."
 msgstr "Összeállítás..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 544
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
-msgid "Completed!"
-msgstr "Befejezve!"
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+#: NEEDS WORK
+msgid "Checking context-aware translations..."
+msgstr "A kontextusra figyelő fordítások ellenőrzése..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 548
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
+# File: usr/share/langforge/ui/main_window.py, line: 1057
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} languages translated"
-msgstr "{} lefordított nyelvek"
+msgid "{name} ({current}/{total}) · ~{eta} remaining"
+msgstr "{name} ({current}/{total}) · ~{eta} hátra"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 557
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: NEEDS WORK
+msgid "Cancelled"
+msgstr "Törölve"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1077
+#: NEEDS WORK
 #, python-brace-format
-msgid "Translation complete! {} languages"
-msgstr "A fordítás elkészült! {} nyelvek"
+msgid "{} languages translated before cancellation"
+msgstr "{} nyelvek lefordítva a lemondás előtt"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1095
+#: NEEDS WORK
+msgid "Cancelling..."
+msgstr "Mégse..."
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
@@ -197,45 +446,50 @@ msgstr "Fizetett API"
 msgid "Free Tier APIs"
 msgstr "Ingyenes API-k"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 78
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
-msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr "Ajánlott: DeepL (legjobb minőség) vagy Groq (legjobb ár-érték arány)."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: NEEDS WORK
+msgid "Select your preferred translation provider"
+msgstr "Válaszd ki a preferált fordító szolgáltatót."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 82
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
-msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL és Groq a legjobb lehetőségek i18n fordításhoz"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: NEEDS WORK
+msgid "500k chars/month — Best translation quality"
+msgstr "500 ezer karakter/hónap — Legjobb fordítási minőség"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 84
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
-msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Ingyenes (500k karakter/hónap - Legjobb minőség)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 184
+#: NEEDS WORK
+msgid "14.4k req/day — Fastest, excellent quality"
+msgstr "14,4k kérés/nap — Leggyorsabb, kiváló minőség"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 85
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
-msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14.4k req/nap - a leggyorsabb)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 190
+#: NEEDS WORK
+msgid "1,000 req/day — Google AI"
+msgstr "1.000 kérés/nap — Google AI"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 86
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
-msgid "Gemini Free (1k req/day)"
-msgstr "Gemini Free (1k req/nap)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 196
+#: NEEDS WORK
+msgid "18 free models available"
+msgstr "18 ingyenes modell érhető el"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 87
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
-msgid "OpenRouter (18 free models)"
-msgstr "OpenRouter (18 ingyenes modell)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 202
+#: NEEDS WORK
+msgid "Free tier — Quality models"
+msgstr "Ingyenes szint — Minőségi modellek"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 88
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
-msgid "Mistral Free"
-msgstr "Mistral Ingyenes"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 208
+#: NEEDS WORK
+msgid "Open source — No API key needed"
+msgstr "Nyílt forráskódú — Nincs szükség API kulcsra"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 89
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
-msgid "LibreTranslate (Open Source)"
-msgstr "LibreTranslate (nyílt forráskódú)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: NEEDS WORK
+msgid "More providers"
+msgstr "További szolgáltatók"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: NEEDS WORK
+msgid "4 additional free options"
+msgstr "4 további ingyenes lehetőség"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 97
 # File: usr/share/langforge/ui/settings_dialog.py, line: 121
@@ -245,6 +499,21 @@ msgstr "LibreTranslate (nyílt forráskódú)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "API kulcs"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: NEEDS WORK
+msgid "Usage"
+msgstr "Használat"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: NEEDS WORK
+msgid "Click 'Test Connection' to check"
+msgstr "Kattintson a 'Kapcsolat tesztelése' gombra az ellenőrzéshez"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
+msgid "Model"
+msgstr "Modell"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 103
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
@@ -256,10 +525,20 @@ msgstr "LibreTranslate URL cím"
 msgid "Paid API Settings"
 msgstr "Fizetett API beállítások"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
-msgid "Model"
-msgstr "Modell"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: NEEDS WORK
+msgid "GPT-4o, GPT-4.1 — Industry standard"
+msgstr "GPT-4o, GPT-4.1 — Iparági szabvány"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: NEEDS WORK
+msgid "Gemini 2.5 Flash/Pro — Fast and capable"
+msgstr "Gemini 2.5 Flash/Pro — Gyors és képes"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 303
+#: NEEDS WORK
+msgid "$25 free credits — 2M context window"
+msgstr "$25 ingyenes kredit — 2M kontextusablak"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
@@ -271,15 +550,30 @@ msgstr "Hogyan szerezhet API kulcsokat"
 msgid "Test Connection"
 msgstr "Tesztkapcsolat"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 238
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
-msgid "✅ Connection OK!"
-msgstr "✅ Kapcsolat OK!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 427
+#: NEEDS WORK
+msgid "Provider changed — verify your API key is correct"
+msgstr "A szolgáltató megváltozott — ellenőrizze, hogy az API kulcsa helyes-e."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 240
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
-msgid "❌ Connection failed"
-msgstr "❌ A kapcsolat sikertelen"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: NEEDS WORK
+msgid "Testing..."
+msgstr "Tesztelés..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: NEEDS WORK
+msgid "Testing connection..."
+msgstr "Kapcsolat tesztelése..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: NEEDS WORK
+msgid "Connection successful"
+msgstr "Kapcsolat sikeres"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: NEEDS WORK
+msgid "Connection failed"
+msgstr "Kapcsolódás sikertelen"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 248
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
@@ -410,3 +704,68 @@ msgstr "Nyissa meg a  címet."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Automatikus fordító a gettext projektekhez"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: NEEDS WORK
+msgid ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+msgstr ""
+"Válasszon egy projektmappát, amely fordítható forráskódot tartalmaz.\n"
+"\n"
+"Kereshető a fordítható szövegek gettext minták alapján,\n"
+"és .po fájlokat generál minden célnyelvhez.\n"
+"\n"
+"Támogatott projekt típusok:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"és bármely projekt, amely gettext-et használ."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: NEEDS WORK
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Válasszon ki egyetlen fájlt a közvetlen fordításhoz.\n"
+"\n"
+"Támogatott formátumok:\n"
+".po / .pot — Gettext fordító fájlok\n"
+".json — Kulcs-érték fordító fájlok\n"
+".srt — SubRip felirat fájlok\n"
+".txt / .md — Simaszöveg és Markdown"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: NEEDS WORK
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Ellenőrizze a meglévő fordításokat a kontextusra érzékeny AI segítségével.\n"
+"\n"
+"Észleli az alkalmazásnév/kontaktus nélküli fordításokat\n"
+"és csak azokat javítja. LLM-alapú API szükséges.\n"
+"\n"
+"Kompatibilis API-k:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Nem kompatibilis:\n"
+"DeepL, LibreTranslate (nincs kontextustámogatás)"

@@ -16,16 +16,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 25
+#: NEEDS WORK
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "Kunde inte ansluta till översättningstjänsten. Kontrollera din internetanslutning."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 29
+#: NEEDS WORK
+msgid "Invalid API key. Check your key in Settings."
+msgstr "Ogiltig API-nyckel. Kontrollera din nyckel i Inställningar."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 31
+#: NEEDS WORK
+msgid "Access denied. Your API key may lack the required permissions."
+msgstr "Åtkomst nekad. Din API-nyckel kanske saknar de nödvändiga behörigheterna."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 33
+#: NEEDS WORK
+msgid "API rate limit reached. Wait a moment and try again."
+msgstr "API-hastighetsgräns nådd. Vänta ett ögonblick och försök igen."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 35
+#: NEEDS WORK
+msgid "The translation service took too long to respond. Try again later."
+msgstr "Översättningstjänsten tog för lång tid att svara. Försök igen senare."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 37
+#: NEEDS WORK
+msgid "gettext tools not found. Install gettext on your system."
+msgstr "gettext-verktyg hittades inte. Installera gettext på ditt system."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 39
+#: NEEDS WORK
+msgid "msgfmt not found. Install gettext on your system."
+msgstr "msgfmt hittades inte. Installera gettext på ditt system."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 58
+#: NEEDS WORK
+msgid "Translation progress"
+msgstr "Översättningsframsteg"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 110
+#: NEEDS WORK
+#, python-brace-format
+msgid "Translation progress: {}%"
+msgstr "Översättningsframsteg: {}%"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr "Kompilera .mo-filer"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
-#, python-brace-format
-msgid "{} languages supported"
-msgstr "{} språk som stöds"
+# File: usr/share/langforge/ui/main_window.py, line: 214
+#: NEEDS WORK
+msgid "Fix context"
+msgstr "Åtgärda kontext"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 215
+#: NEEDS WORK
+msgid "Detect and fix translations missing context"
+msgstr "Upptäck och åtgärda översättningar som saknar sammanhang"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 228
+#: NEEDS WORK
+msgid "Languages"
+msgstr "Språk"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 234
+#: NEEDS WORK
+msgid "All"
+msgstr "Alla"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 240
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 186
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
@@ -41,30 +106,60 @@ msgstr "API-inställningar..."
 msgid "Start Translation"
 msgstr "Starta översättning"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 309
+#: NEEDS WORK
+msgid "Main menu"
+msgstr "Huvudmeny"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 312
+#: NEEDS WORK
+msgid "Open Project"
+msgstr "Öppna projekt"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 313
+#: NEEDS WORK
+msgid "Settings"
+msgstr "Inställningar"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 219
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "Om"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 315
+#: NEEDS WORK
+msgid "Quit"
+msgstr "Avsluta"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 360
+#: NEEDS WORK
+msgid "Project selection area. Drag a folder here or click to select."
+msgstr "Projektvalsområde. Dra en mapp hit eller klicka för att välja."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "Inget projekt valt"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 286
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
-msgid "Drag a folder here or click to select"
-msgstr "Dra en mapp hit eller klicka för att välja"
+# File: usr/share/langforge/ui/main_window.py, line: 377
+#: NEEDS WORK
+msgid "Drag a folder or file here, or click to select"
+msgstr "Dra en mapp eller fil hit, eller klicka för att välja"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "Välj projekt"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 321
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
-msgid "Change Project"
-msgstr "Förändringsprojekt"
+# File: usr/share/langforge/ui/main_window.py, line: 392
+#: NEEDS WORK
+msgid "Select File"
+msgstr "Välj fil"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 423
+#: NEEDS WORK
+msgid "Change"
+msgstr "Ändra"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 338
 # File: usr/share/langforge/ui/main_window.py, line: 459
@@ -73,10 +168,96 @@ msgstr "Förändringsprojekt"
 msgid "Translating..."
 msgstr "Översättning..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 445
+#: NEEDS WORK
+msgid "Translation status"
+msgstr "Översättningsstatus"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 342
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "Förbereder..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 453
+#: NEEDS WORK
+msgid "Translation details"
+msgstr "Översättningsdetaljer"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 466
+#: NEEDS WORK
+msgid "Language translation status"
+msgstr "Språköversättningsstatus"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 472
+#: NEEDS WORK
+msgid "Cancel Translation"
+msgstr "Avbryt översättning"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 486
+#: NEEDS WORK
+msgid "Welcome to LangForge"
+msgstr "Välkommen till LangForge"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 489
+#: NEEDS WORK
+msgid ""
+"Automate gettext translations for your project.\n"
+"To get started, configure an API provider in Settings."
+msgstr ""
+"Automatisera gettext-översättningar för ditt projekt. För att komma igång, konfigurera en "
+"API-leverantör i Inställningar."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 496
+#: NEEDS WORK
+msgid "Open Settings"
+msgstr "Öppna Inställningar"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 502
+#: NEEDS WORK
+msgid "Skip"
+msgstr "Hoppa"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: NEEDS WORK
+msgid "Translation Complete!"
+msgstr "Översättning klar!"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 539
+#: NEEDS WORK
+msgid "Translate Again"
+msgstr "Översätt igen"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 547
+#: NEEDS WORK
+msgid "New Project"
+msgstr "Nytt projekt"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 560
+#: NEEDS WORK
+#, python-brace-format
+msgid "{langs} languages translated in {time}"
+msgstr "{langs} språk översatta på {time}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 587
+# File: usr/share/langforge/ui/main_window.py, line: 620
+#: NEEDS WORK
+msgid "pending"
+msgstr "väntande"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 621
+#: NEEDS WORK
+msgid "translating"
+msgstr "översätter"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 622
+#: NEEDS WORK
+msgid "completed"
+msgstr "slutförd"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: NEEDS WORK
+msgid "error"
+msgstr "fel"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
@@ -107,6 +288,17 @@ msgstr "API-typ"
 msgid "Provider"
 msgstr "Leverantör"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 747
+#: NEEDS WORK
+#, python-brace-format
+msgid "{count} of {total} languages selected"
+msgstr "{count} av {total} valda språk"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 813
+#: NEEDS WORK
+msgid "Translatable files (.po, .json, .txt, .md, .srt)"
+msgstr "Översättningsbara filer (.po, .json, .txt, .md, .srt)"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -124,22 +316,67 @@ msgstr "Leverantör"
 msgid "Error"
 msgstr "Fel"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 428
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
-msgid "Project does not use gettext"
-msgstr "Projektet använder inte gettext"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 437
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
+# File: usr/share/langforge/ui/main_window.py, line: 867
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} strings · 29 languages"
-msgstr "{} strängar - 29 språk"
+msgid "{strings} strings · {langs} languages"
+msgstr "{strängar} strängar · {språk} språk"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Projekt laddat: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 895
+#: NEEDS WORK
+#, python-brace-format
+msgid "{items} items · {langs} languages"
+msgstr "{items} objekt · {langs} språk"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 904
+#: NEEDS WORK
+#, python-brace-format
+msgid "File loaded: {}"
+msgstr "Filen har laddats: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 919
+#: NEEDS WORK
+msgid "Select at least one language"
+msgstr "Välj minst ett språk"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 933
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {items} items to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr "Översätt {items} objekt till {langs} språk med hjälp av {provider}. Detta kan ta flera minuter."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 942
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {strings} strings to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Översätt {strängar} strängar till {språk} språk med hjälp av {leverantör}. Detta kan ta flera "
+"minuter."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 951
+#: NEEDS WORK
+msgid "Start Translation?"
+msgstr "Starta översättning?"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 953
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Avbryt"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 954
+#: NEEDS WORK
+msgid "Start"
+msgstr "Starta"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 474
 # File: usr/share/langforge/ui/main_window.py, line: 477
@@ -153,22 +390,32 @@ msgstr "Extrahering av strängar..."
 msgid "Compiling..."
 msgstr "Kompilerar..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 544
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
-msgid "Completed!"
-msgstr "Färdig!"
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+#: NEEDS WORK
+msgid "Checking context-aware translations..."
+msgstr "Kontrollerar kontextmedvetna översättningar..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 548
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
+# File: usr/share/langforge/ui/main_window.py, line: 1057
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} languages translated"
-msgstr "{} språk översatta"
+msgid "{name} ({current}/{total}) · ~{eta} remaining"
+msgstr "{name} ({current}/{total}) · ~{eta} återstående"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 557
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: NEEDS WORK
+msgid "Cancelled"
+msgstr "Avbruten"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1077
+#: NEEDS WORK
 #, python-brace-format
-msgid "Translation complete! {} languages"
-msgstr "Översättningen klar! {} språk"
+msgid "{} languages translated before cancellation"
+msgstr "{} språk översatta före avbokning"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1095
+#: NEEDS WORK
+msgid "Cancelling..."
+msgstr "Avbryter..."
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
@@ -197,45 +444,50 @@ msgstr "Betald API"
 msgid "Free Tier APIs"
 msgstr "API:er på gratisnivå"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 78
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
-msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr "Rekommenderas: DeepL (bästa kvalitet) eller Groq (bästa värde)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: NEEDS WORK
+msgid "Select your preferred translation provider"
+msgstr "Välj din föredragna översättningstjänst"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 82
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
-msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL och Groq är de bästa alternativen för i18n-översättning"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: NEEDS WORK
+msgid "500k chars/month — Best translation quality"
+msgstr "500k tecken/månad — Bästa översättningskvalitet"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 84
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
-msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Gratis (500k chars/månad - Bästa kvalitet)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 184
+#: NEEDS WORK
+msgid "14.4k req/day — Fastest, excellent quality"
+msgstr "14,4k begär/dag — Snabbast, utmärkt kvalitet"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 85
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
-msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14,4k req/dag - snabbast)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 190
+#: NEEDS WORK
+msgid "1,000 req/day — Google AI"
+msgstr "1 000 begär/dag — Google AI"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 86
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
-msgid "Gemini Free (1k req/day)"
-msgstr "Gemini Free (1k req/dag)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 196
+#: NEEDS WORK
+msgid "18 free models available"
+msgstr "18 gratis modeller tillgängliga"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 87
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
-msgid "OpenRouter (18 free models)"
-msgstr "OpenRouter (18 kostnadsfria modeller)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 202
+#: NEEDS WORK
+msgid "Free tier — Quality models"
+msgstr "Gratisnivå — Kvalitetsmodeller"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 88
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
-msgid "Mistral Free"
-msgstr "Mistral Gratis"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 208
+#: NEEDS WORK
+msgid "Open source — No API key needed"
+msgstr "Öppen källkod — Ingen API-nyckel behövs"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 89
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
-msgid "LibreTranslate (Open Source)"
-msgstr "LibreTranslate (öppen källkod)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: NEEDS WORK
+msgid "More providers"
+msgstr "Fler leverantörer"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: NEEDS WORK
+msgid "4 additional free options"
+msgstr "4 ytterligare gratisalternativ"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 97
 # File: usr/share/langforge/ui/settings_dialog.py, line: 121
@@ -245,6 +497,21 @@ msgstr "LibreTranslate (öppen källkod)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "API-nyckel"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: NEEDS WORK
+msgid "Usage"
+msgstr "Användning"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: NEEDS WORK
+msgid "Click 'Test Connection' to check"
+msgstr "Klicka på 'Testa anslutning' för att kontrollera"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
+msgid "Model"
+msgstr "Modell"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 103
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
@@ -256,10 +523,20 @@ msgstr "LibreTranslate URL"
 msgid "Paid API Settings"
 msgstr "Betalda API-inställningar"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
-msgid "Model"
-msgstr "Modell"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: NEEDS WORK
+msgid "GPT-4o, GPT-4.1 — Industry standard"
+msgstr "GPT-4o, GPT-4.1 — Branschstandard"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: NEEDS WORK
+msgid "Gemini 2.5 Flash/Pro — Fast and capable"
+msgstr "Gemini 2.5 Flash/Pro — Snabb och kapabel"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 303
+#: NEEDS WORK
+msgid "$25 free credits — 2M context window"
+msgstr "$25 gratis krediter — 2M kontextfönster"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
@@ -271,15 +548,30 @@ msgstr "Så här får du API-nycklar"
 msgid "Test Connection"
 msgstr "Testanslutning"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 238
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
-msgid "✅ Connection OK!"
-msgstr "✅ Anslutning OK!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 427
+#: NEEDS WORK
+msgid "Provider changed — verify your API key is correct"
+msgstr "Leverantör ändrad — kontrollera att din API-nyckel är korrekt"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 240
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
-msgid "❌ Connection failed"
-msgstr "❌ Anslutningen misslyckades"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: NEEDS WORK
+msgid "Testing..."
+msgstr "Testar..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: NEEDS WORK
+msgid "Testing connection..."
+msgstr "Testar anslutning..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: NEEDS WORK
+msgid "Connection successful"
+msgstr "Anslutning lyckades"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: NEEDS WORK
+msgid "Connection failed"
+msgstr "Anslutning misslyckades"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 248
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
@@ -410,3 +702,68 @@ msgstr "Öppna"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Automatisk översättare för gettext-projekt"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: NEEDS WORK
+msgid ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+msgstr ""
+"Välj en projektmapp med översättningsbar källkod.\n"
+"\n"
+"Söker efter översättningsbara strängar med hjälp av gettext-mönster\n"
+"och genererar .po-filer för varje målspråk.\n"
+"\n"
+"Stödda projekttyper:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"och alla projekt som använder gettext"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: NEEDS WORK
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Välj en enda fil för att översätta direkt.\n"
+"\n"
+"Stödda format:\n"
+".po / .pot — Gettext översättningsfiler\n"
+".json — Nyckel-värde översättningsfiler\n"
+".srt — SubRip undertextfiler\n"
+".txt / .md — Ren text och Markdown"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: NEEDS WORK
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Kontrollera befintliga översättningar med hjälp av kontextmedveten AI.\n"
+"\n"
+"Upptäcker poster som översatts utan appnamn/kontekst\n"
+"och åtgärdar endast dessa. Kräver en LLM-baserad API.\n"
+"\n"
+"Kompatibla API:er:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Inte kompatibla:\n"
+"DeepL, LibreTranslate (ingen kontextstöd)"

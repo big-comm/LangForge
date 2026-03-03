@@ -16,16 +16,81 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 25
+#: NEEDS WORK
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "Δεν ήταν δυνατή η σύνδεση με την υπηρεσία μετάφρασης. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 29
+#: NEEDS WORK
+msgid "Invalid API key. Check your key in Settings."
+msgstr "Μη έγκυρο κλειδί API. Ελέγξτε το κλειδί σας στις Ρυθμίσεις."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 31
+#: NEEDS WORK
+msgid "Access denied. Your API key may lack the required permissions."
+msgstr "Η πρόσβαση απορρίφθηκε. Το κλειδί API σας μπορεί να μην έχει τις απαιτούμενες άδειες."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 33
+#: NEEDS WORK
+msgid "API rate limit reached. Wait a moment and try again."
+msgstr "Η όριο ρυθμού API έχει επιτευχθεί. Περιμένετε λίγο και δοκιμάστε ξανά."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 35
+#: NEEDS WORK
+msgid "The translation service took too long to respond. Try again later."
+msgstr "Η υπηρεσία μετάφρασης χρειάστηκε πολύ χρόνο για να απαντήσει. Δοκιμάστε ξανά αργότερα."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 37
+#: NEEDS WORK
+msgid "gettext tools not found. Install gettext on your system."
+msgstr "Τα εργαλεία gettext δεν βρέθηκαν. Εγκαταστήστε το gettext στο σύστημά σας."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 39
+#: NEEDS WORK
+msgid "msgfmt not found. Install gettext on your system."
+msgstr "Δεν βρέθηκε το msgfmt. Εγκαταστήστε το gettext στο σύστημά σας."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 58
+#: NEEDS WORK
+msgid "Translation progress"
+msgstr "Πρόοδος μετάφρασης"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 110
+#: NEEDS WORK
+#, python-brace-format
+msgid "Translation progress: {}%"
+msgstr "Πρόοδος μετάφρασης: {}%"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:153
 msgid "Compile .mo files"
 msgstr "Μεταγλώττιση αρχείων .mo"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:168
-#, python-brace-format
-msgid "{} languages supported"
-msgstr "{} υποστηριζόμενες γλώσσες"
+# File: usr/share/langforge/ui/main_window.py, line: 214
+#: NEEDS WORK
+msgid "Fix context"
+msgstr "Διόρθωση συμφραζομένων"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 215
+#: NEEDS WORK
+msgid "Detect and fix translations missing context"
+msgstr "Ανίχνευση και διόρθωση μεταφράσεων που λείπει το πλαίσιο"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 228
+#: NEEDS WORK
+msgid "Languages"
+msgstr "Γλώσσες"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 234
+#: NEEDS WORK
+msgid "All"
+msgstr "Όλα"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 240
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 186
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:178
@@ -41,30 +106,60 @@ msgstr "Ρυθμίσεις API..."
 msgid "Start Translation"
 msgstr "Έναρξη μετάφρασης"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 309
+#: NEEDS WORK
+msgid "Main menu"
+msgstr "Κύριο μενού"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 312
+#: NEEDS WORK
+msgid "Open Project"
+msgstr "Άνοιγμα Έργου"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 313
+#: NEEDS WORK
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 219
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:104
 msgid "About"
 msgstr "Σχετικά με το"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 315
+#: NEEDS WORK
+msgid "Quit"
+msgstr "Έξοδος"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 360
+#: NEEDS WORK
+msgid "Project selection area. Drag a folder here or click to select."
+msgstr "Περιοχή επιλογής έργου. Σύρετε έναν φάκελο εδώ ή κάντε κλικ για να επιλέξετε."
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:222
 msgid "No project selected"
 msgstr "Δεν έχει επιλεγεί έργο"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 286
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:226
-msgid "Drag a folder here or click to select"
-msgstr "Σύρετε έναν φάκελο εδώ ή κάντε κλικ για να επιλέξετε"
+# File: usr/share/langforge/ui/main_window.py, line: 377
+#: NEEDS WORK
+msgid "Drag a folder or file here, or click to select"
+msgstr "Σύρετε έναν φάκελο ή αρχείο εδώ, ή κάντε κλικ για να επιλέξετε"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:230
 msgid "Select Project"
 msgstr "Επιλέξτε Έργο"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 321
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:259
-msgid "Change Project"
-msgstr "Έργο αλλαγής"
+# File: usr/share/langforge/ui/main_window.py, line: 392
+#: NEEDS WORK
+msgid "Select File"
+msgstr "Επιλέξτε Αρχείο"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 423
+#: NEEDS WORK
+msgid "Change"
+msgstr "Αλλαγή"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 338
 # File: usr/share/langforge/ui/main_window.py, line: 459
@@ -73,10 +168,96 @@ msgstr "Έργο αλλαγής"
 msgid "Translating..."
 msgstr "Μετάφραση..."
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 445
+#: NEEDS WORK
+msgid "Translation status"
+msgstr "Κατάσταση μετάφρασης"
+# 
 # File: usr/share/langforge/ui/main_window.py, line: 342
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:279
 msgid "Preparing..."
 msgstr "Προετοιμασία..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 453
+#: NEEDS WORK
+msgid "Translation details"
+msgstr "Λεπτομέρειες μετάφρασης"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 466
+#: NEEDS WORK
+msgid "Language translation status"
+msgstr "Κατάσταση μετάφρασης γλώσσας"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 472
+#: NEEDS WORK
+msgid "Cancel Translation"
+msgstr "Ακύρωση Μετάφρασης"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 486
+#: NEEDS WORK
+msgid "Welcome to LangForge"
+msgstr "Καλώς ήρθατε στο LangForge"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 489
+#: NEEDS WORK
+msgid ""
+"Automate gettext translations for your project.\n"
+"To get started, configure an API provider in Settings."
+msgstr ""
+"Αυτοματοποιήστε τις μεταφράσεις gettext για το έργο σας. Για να ξεκινήσετε, ρυθμίστε έναν πάροχο "
+"API στις Ρυθμίσεις."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 496
+#: NEEDS WORK
+msgid "Open Settings"
+msgstr "Άνοιγμα Ρυθμίσεων"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 502
+#: NEEDS WORK
+msgid "Skip"
+msgstr "Παράλειψη"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: NEEDS WORK
+msgid "Translation Complete!"
+msgstr "Μετάφραση Ολοκληρωμένη!"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 539
+#: NEEDS WORK
+msgid "Translate Again"
+msgstr "Μετάφραση Ξανά"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 547
+#: NEEDS WORK
+msgid "New Project"
+msgstr "Νέο Έργο"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 560
+#: NEEDS WORK
+#, python-brace-format
+msgid "{langs} languages translated in {time}"
+msgstr "{langs} γλώσσες μεταφρασμένες σε {time}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 587
+# File: usr/share/langforge/ui/main_window.py, line: 620
+#: NEEDS WORK
+msgid "pending"
+msgstr "εκκρεμές"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 621
+#: NEEDS WORK
+msgid "translating"
+msgstr "μετάφραση"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 622
+#: NEEDS WORK
+msgid "completed"
+msgstr "ολοκληρώθηκε"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: NEEDS WORK
+msgid "error"
+msgstr "σφάλμα"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:139
@@ -107,6 +288,17 @@ msgstr "Τύπος API"
 msgid "Provider"
 msgstr "Πάροχος"
 # 
+# File: usr/share/langforge/ui/main_window.py, line: 747
+#: NEEDS WORK
+#, python-brace-format
+msgid "{count} of {total} languages selected"
+msgstr "{count} από {total} γλώσσες επιλεγμένες"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 813
+#: NEEDS WORK
+msgid "Translatable files (.po, .json, .txt, .md, .srt)"
+msgstr "Μεταφράσιμα αρχεία (.po, .json, .txt, .md, .srt)"
+# 
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -124,22 +316,69 @@ msgstr "Πάροχος"
 msgid "Error"
 msgstr "Σφάλμα"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 428
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:438
-msgid "Project does not use gettext"
-msgstr "Το έργο δεν χρησιμοποιεί το gettext"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 437
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:446
+# File: usr/share/langforge/ui/main_window.py, line: 867
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} strings · 29 languages"
-msgstr "{} συμβολοσειρές - 29 γλώσσες"
+msgid "{strings} strings · {langs} languages"
+msgstr "{συμβολοσειρές} συμβολοσειρές · {γλώσσες} γλώσσες"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:452
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Το έργο φορτώθηκε: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 895
+#: NEEDS WORK
+#, python-brace-format
+msgid "{items} items · {langs} languages"
+msgstr "{items} στοιχεία · {langs} γλώσσες"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 904
+#: NEEDS WORK
+#, python-brace-format
+msgid "File loaded: {}"
+msgstr "Αρχείο φορτώθηκε: {}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 919
+#: NEEDS WORK
+msgid "Select at least one language"
+msgstr "Επιλέξτε τουλάχιστον μία γλώσσα"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 933
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {items} items to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Μεταφράστε {items} στοιχεία σε {langs} γλώσσες χρησιμοποιώντας {provider}. Αυτό μπορεί να διαρκέσει "
+"αρκετά λεπτά."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 942
+#: NEEDS WORK
+#, python-brace-format
+msgid ""
+"Translate {strings} strings to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr ""
+"Μεταφράστε {strings} συμβολοσειρές σε {langs} γλώσσες χρησιμοποιώντας {provider}. Αυτό μπορεί να "
+"διαρκέσει αρκετά λεπτά."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 951
+#: NEEDS WORK
+msgid "Start Translation?"
+msgstr "Ξεκινήστε τη μετάφραση;"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 953
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Ακύρωση"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 954
+#: NEEDS WORK
+msgid "Start"
+msgstr "Έναρξη"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 474
 # File: usr/share/langforge/ui/main_window.py, line: 477
@@ -153,22 +392,32 @@ msgstr "Εξαγωγή συμβολοσειρών..."
 msgid "Compiling..."
 msgstr "Σύνταξη..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 544
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:523
-msgid "Completed!"
-msgstr "Ολοκληρώθηκε!"
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+#: NEEDS WORK
+msgid "Checking context-aware translations..."
+msgstr "Έλεγχος μεταφράσεων με γνώση του συμφραζομένου..."
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 548
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:524
+# File: usr/share/langforge/ui/main_window.py, line: 1057
+#: NEEDS WORK
 #, python-brace-format
-msgid "{} languages translated"
-msgstr "{} μεταφρασμένες γλώσσες"
+msgid "{name} ({current}/{total}) · ~{eta} remaining"
+msgstr "{name} ({current}/{total}) · ~{eta} υπολειπόμενος"
 # 
-# File: usr/share/langforge/ui/main_window.py, line: 557
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:527
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: NEEDS WORK
+msgid "Cancelled"
+msgstr "Ακυρώθηκε"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1077
+#: NEEDS WORK
 #, python-brace-format
-msgid "Translation complete! {} languages"
-msgstr "Η μετάφραση ολοκληρώθηκε! {} γλώσσες"
+msgid "{} languages translated before cancellation"
+msgstr "{} γλώσσες μεταφρασμένες πριν από την ακύρωση"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1095
+#: NEEDS WORK
+msgid "Cancelling..."
+msgstr "Ακύρωση..."
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:136
@@ -197,45 +446,50 @@ msgstr "Πληρωμένο API"
 msgid "Free Tier APIs"
 msgstr "APIs ελεύθερης βαθμίδας"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 78
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:78
-msgid "Recommended: DeepL (best quality) or Groq (best value)"
-msgstr "Συνιστάται: DeepL (καλύτερη ποιότητα) ή Groq (καλύτερη τιμή)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: NEEDS WORK
+msgid "Select your preferred translation provider"
+msgstr "Επιλέξτε τον προτιμώμενο πάροχο μετάφρασης σας"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 82
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:82
-msgid "DeepL and Groq are the best options for i18n translation"
-msgstr "DeepL και Groq είναι οι καλύτερες επιλογές για μετάφραση i18n"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: NEEDS WORK
+msgid "500k chars/month — Best translation quality"
+msgstr "500k χαρακτήρες/μήνα — Καλύτερη ποιότητα μετάφρασης"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 84
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:84
-msgid "DeepL Free (500k chars/month - Best quality)"
-msgstr "DeepL Δωρεάν (500k chars/μήνα - Καλύτερη ποιότητα)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 184
+#: NEEDS WORK
+msgid "14.4k req/day — Fastest, excellent quality"
+msgstr "14.4k αιτήματα/ημέρα — Ταχύτερο, εξαιρετική ποιότητα"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 85
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:85
-msgid "Groq (14.4k req/day - Fastest)"
-msgstr "Groq (14,4k req/day - το ταχύτερο)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 190
+#: NEEDS WORK
+msgid "1,000 req/day — Google AI"
+msgstr "1.000 αιτήματα/ημέρα — Google AI"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 86
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:86
-msgid "Gemini Free (1k req/day)"
-msgstr "Gemini Free (1k req/day)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 196
+#: NEEDS WORK
+msgid "18 free models available"
+msgstr "18 δωρεάν μοντέλα διαθέσιμα"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 87
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:87
-msgid "OpenRouter (18 free models)"
-msgstr "OpenRouter (18 δωρεάν μοντέλα)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 202
+#: NEEDS WORK
+msgid "Free tier — Quality models"
+msgstr "Δωρεάν επίπεδο — Ποιοτικά μοντέλα"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 88
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:88
-msgid "Mistral Free"
-msgstr "Mistral Δωρεάν"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 208
+#: NEEDS WORK
+msgid "Open source — No API key needed"
+msgstr "Ανοιχτού κώδικα — Δεν απαιτείται κλειδί API"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 89
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:89
-msgid "LibreTranslate (Open Source)"
-msgstr "LibreTranslate (ανοικτού κώδικα)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: NEEDS WORK
+msgid "More providers"
+msgstr "Περισσότεροι πάροχοι"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: NEEDS WORK
+msgid "4 additional free options"
+msgstr "4 επιπλέον δωρεάν επιλογές"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 97
 # File: usr/share/langforge/ui/settings_dialog.py, line: 121
@@ -245,6 +499,21 @@ msgstr "LibreTranslate (ανοικτού κώδικα)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:212
 msgid "API Key"
 msgstr "Κλειδί API"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: NEEDS WORK
+msgid "Usage"
+msgstr "Χρήση"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: NEEDS WORK
+msgid "Click 'Test Connection' to check"
+msgstr "Κάντε κλικ στο 'Δοκιμή Σύνδεσης' για έλεγχο"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
+msgid "Model"
+msgstr "Μοντέλο"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 103
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:103
@@ -256,10 +525,20 @@ msgstr "Διεύθυνση URL του LibreTranslate"
 msgid "Paid API Settings"
 msgstr "Ρυθμίσεις API επί πληρωμή"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:125
-msgid "Model"
-msgstr "Μοντέλο"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: NEEDS WORK
+msgid "GPT-4o, GPT-4.1 — Industry standard"
+msgstr "GPT-4o, GPT-4.1 — Βιομηχανικό πρότυπο"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: NEEDS WORK
+msgid "Gemini 2.5 Flash/Pro — Fast and capable"
+msgstr "Gemini 2.5 Flash/Pro — Γρήγορος και ικανός"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 303
+#: NEEDS WORK
+msgid "$25 free credits — 2M context window"
+msgstr "$25 δωρεάν πιστώσεις — 2M παράθυρο συμφραζομένων"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:140
@@ -271,15 +550,30 @@ msgstr "Πώς να αποκτήσετε κλειδιά API"
 msgid "Test Connection"
 msgstr "Σύνδεση δοκιμής"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 238
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:238
-msgid "✅ Connection OK!"
-msgstr "✅ Σύνδεση OK!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 427
+#: NEEDS WORK
+msgid "Provider changed — verify your API key is correct"
+msgstr "Ο πάροχος άλλαξε — επαληθεύστε ότι το κλειδί API σας είναι σωστό"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 240
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:240
-msgid "❌ Connection failed"
-msgstr "❌ Η σύνδεση απέτυχε"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: NEEDS WORK
+msgid "Testing..."
+msgstr "Δοκιμή..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: NEEDS WORK
+msgid "Testing connection..."
+msgstr "Δοκιμή σύνδεσης..."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: NEEDS WORK
+msgid "Connection successful"
+msgstr "Η σύνδεση ήταν επιτυχής"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: NEEDS WORK
+msgid "Connection failed"
+msgstr "Η σύνδεση απέτυχε"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 248
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:248
@@ -410,3 +704,68 @@ msgstr "Ανοίξτε το"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:60
 msgid "Automatic translator for gettext projects"
 msgstr "Αυτόματος μεταφραστής για έργα gettext"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: NEEDS WORK
+msgid ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+msgstr ""
+"Επιλέξτε έναν φάκελο έργου με μεταφράσιμα πηγαία κώδικα.\n"
+"\n"
+"Σαρώστε για μεταφράσιμες συμβολοσειρές χρησιμοποιώντας πρότυπα gettext\n"
+"και δημιουργήστε αρχεία .po για κάθε γλώσσα στόχο.\n"
+"\n"
+"Υποστηριζόμενοι τύποι έργων:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"και οποιοδήποτε έργο χρησιμοποιεί gettext"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: NEEDS WORK
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Επιλέξτε ένα μόνο αρχείο για άμεση μετάφραση.\n"
+"\n"
+"Υποστηριζόμενες μορφές:\n"
+".po / .pot — Αρχεία μετάφρασης Gettext\n"
+".json — Αρχεία μετάφρασης κλειδιού-τιμής\n"
+".srt — Αρχεία υποτίτλων SubRip\n"
+".txt / .md — Απλό κείμενο και Markdown"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: NEEDS WORK
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Επαναξιολόγηση υπαρχουσών μεταφράσεων χρησιμοποιώντας AI που λαμβάνει υπόψη το πλαίσιο.\n"
+"\n"
+"Ανιχνεύει καταχωρήσεις που έχουν μεταφραστεί χωρίς όνομα/πλαίσιο εφαρμογής\n"
+"και διορθώνει μόνο αυτές. Απαιτεί API βασισμένο σε LLM.\n"
+"\n"
+"Συμβατά APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Μη συμβατά:\n"
+"DeepL, LibreTranslate (χωρίς υποστήριξη πλαισίου)"
