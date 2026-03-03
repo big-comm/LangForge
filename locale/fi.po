@@ -241,7 +241,7 @@ msgstr "Uusi projekti"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:561
 #, python-brace-format
 msgid "{langs} languages translated in {time}"
-msgstr "{kieli} kieltä käännetty {aika}"
+msgstr "{langs} kieltä käännetty {time}"
 
 # File: usr/share/langforge/ui/main_window.py, line: 587
 # File: usr/share/langforge/ui/main_window.py, line: 620

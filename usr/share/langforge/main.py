@@ -36,7 +36,7 @@ from utils.i18n import _
 try:
     from __init__ import __version__ as APP_VERSION
 except ImportError:
-    APP_VERSION = "1.0.2"
+    APP_VERSION = "1.1.3"
 
 
 class LangForgeApp(Adw.Application):

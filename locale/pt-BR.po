@@ -12,44 +12,44 @@ msgstr ""
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
 msgid "Automatic translator for gettext projects"
-msgstr "Configurações da API"
+msgstr "Tradutor automático para projetos gettext"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:314
 msgid "About"
-msgstr "Iniciar Tradução"
+msgstr "Sobre"
 
 #. Centered translate button as title widget
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1172
 msgid "Start Translation"
-msgstr "API de Tradução"
+msgstr "Iniciar Tradução"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
-msgstr "Tipo"
+msgstr "API de Tradução"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:684
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:690
 msgid "Free"
-msgstr "Pago"
+msgstr "Grátis"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
 msgid "Paid"
-msgstr "Provedor"
+msgstr "Pago"
 
 #. Provider row
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
 msgid "Provider"
-msgstr "Opções"
+msgstr "Provedor"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:206
 msgid "Compile .mo files"
-msgstr "Sobrescrever existentes"
+msgstr "Compilar arquivos .mo"
 
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:228
 msgid "Languages"
-msgstr "<x1/> idiomas suportados"
+msgstr "Idiomas"
 
 #. ── API Settings button ──
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
@@ -683,89 +683,3 @@ msgstr ""
 "\n"
 "Não compatível:\n"
 "DeepL, LibreTranslate (sem suporte a contexto)"
-
-#~ msgid "API Settings"
-#~ msgstr "Sobre"
-
-#~ msgid "Type"
-#~ msgstr "Grátis"
-
-#~ msgid "Options"
-#~ msgstr "Compilar arquivos .mo"
-
-#~ msgid "Overwrite existing"
-#~ msgstr "Idiomas"
-
-#, python-brace-format
-#~ msgid "{} languages supported"
-#~ msgstr "Configurações da API..."
-
-#~ msgid "Drag a folder here or click to select"
-#~ msgstr "Arraste uma pasta para cá ou clique para selecionar"
-
-#~ msgid "Change Project"
-#~ msgstr "Alterar Projeto"
-
-#~ msgid "Ready"
-#~ msgstr "Pronto"
-
-#, python-brace-format
-#~ msgid "{} strings · 29 languages"
-#~ msgstr "{} strings · 29 idiomas"
-
-#, python-brace-format
-#~ msgid "Project: {}"
-#~ msgstr "Projeto: {}"
-
-#, python-brace-format
-#~ msgid "Translating {} strings..."
-#~ msgstr "Traduzindo {} strings..."
-
-#~ msgid "Completed!"
-#~ msgstr "Concluído!"
-
-#, python-brace-format
-#~ msgid "{} languages translated"
-#~ msgstr "{} idiomas traduzidos"
-
-#, python-brace-format
-#~ msgid "Completed: {}/29 languages"
-#~ msgstr "Concluído: {}/29 idiomas"
-
-#, python-brace-format
-#~ msgid "Translation complete! {} languages"
-#~ msgstr "Tradução concluída! {} idiomas"
-
-#~ msgid "Recommended: DeepL (best quality) or Groq (best value)"
-#~ msgstr ""
-#~ "Recomendado: DeepL (melhor qualidade) ou Groq (melhor custo-benefício)"
-
-#~ msgid "DeepL and Groq are the best options for i18n translation"
-#~ msgstr "DeepL e Groq são as melhores opções para tradução i18n"
-
-#~ msgid "DeepL Free (500k chars/month - Best quality)"
-#~ msgstr "DeepL Gratuito (500k caracteres/mês - Melhor qualidade)"
-
-#~ msgid "Groq (14.4k req/day - Fastest)"
-#~ msgstr "Groq (14.4k requisições/dia - Mais rápido)"
-
-#~ msgid "Gemini Free (1k req/day)"
-#~ msgstr "Gemini Gratuito (1k requisições/dia)"
-
-#~ msgid "OpenRouter (18 free models)"
-#~ msgstr "OpenRouter (18 modelos gratuitos)"
-
-#~ msgid "Mistral Free"
-#~ msgstr "Mistral Gratuito"
-
-#~ msgid "LibreTranslate (Open Source)"
-#~ msgstr "LibreTranslate (Código Aberto)"
-
-#~ msgid "✅ Connection OK!"
-#~ msgstr "✅ Conexão OK!"
-
-#~ msgid "❌ Connection failed"
-#~ msgstr "❌ Conexão falhou"
-
-#~ msgid "How to Get API Keys"
-#~ msgstr "Como Obter Chaves da API"

@@ -8,6 +8,7 @@ from api.base import (
     TranslationAPI,
     build_batch_prompt,
     build_translation_prompt,
+    clean_batch_parts,
     retry_on_rate_limit,
 )
 
@@ -94,7 +95,7 @@ class OpenAIAPI(TranslationAPI):
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content or ""
-        parts = [p.strip() for p in content.split("|||NEXT|||")]
+        parts = clean_batch_parts(content)
         if len(parts) != len(texts):
             log.warning(
                 "Batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -213,7 +214,7 @@ class GeminiAPI(TranslationAPI):
             config={"temperature": 0.3, "max_output_tokens": 2048},
         )
         self._track_gemini_response(response)
-        parts = [p.strip() for p in response.text.split("|||NEXT|||")]
+        parts = clean_batch_parts(response.text)
         if len(parts) != len(texts):
             log.warning(
                 "Batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -333,10 +334,10 @@ class GrokAPI(TranslationAPI):
         data = response.json()
         self._track_grok_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        parts = [p.strip() for p in content.split("|||NEXT|||")]
+        parts = clean_batch_parts(content)
         if len(parts) != len(texts):
             log.warning(
-                "Batch mismatch: expected %d, got %d. Translating remaining individually.",
+                "Grok batch mismatch: expected %d, got %d. Translating remaining individually.",
                 len(texts),
                 len(parts),
             )

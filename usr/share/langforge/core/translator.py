@@ -75,16 +75,26 @@ def _validate_placeholders(original: str, translated: str) -> bool:
 def _fix_placeholders(original: str, translated: str) -> str:
     """Tenta reparar placeholders corrompidos na tradução.
 
-    Se um placeholder do original está ausente na tradução,
-    tenta inserí-lo de volta na posição mais provável.
+    Handles three cases:
+    1. Placeholder missing entirely — append it.
+    2. Placeholder with corrupted syntax (e.g. {word without closing }).
+    3. Placeholder RENAMED by the LLM (e.g. {langs} → {kieli}) —
+       match by position and replace translated names with originals.
     """
     for pattern in _FORMAT_PATTERNS:
         orig_matches = pattern.findall(original)
         trans_matches = pattern.findall(translated)
+
+        # Quick path: counts match but names differ → positional rename
+        if len(orig_matches) == len(trans_matches) and orig_matches != trans_matches:
+            for orig_ph, trans_ph in zip(orig_matches, trans_matches):
+                if orig_ph != trans_ph:
+                    translated = translated.replace(trans_ph, orig_ph, 1)
+            continue
+
         for placeholder in orig_matches:
             if placeholder not in trans_matches:
-                # Placeholder ausente - tenta inserir onde faria sentido
-                # Procura por versões corrompidas (ex: {palavra) e substitui
+                # Try to find a corrupted version (e.g. {word without })
                 corrupted = re.compile(re.escape(placeholder[0]) + r"[^}\s]*(?!\})")
                 match = corrupted.search(translated)
                 if match:
@@ -94,7 +104,7 @@ def _fix_placeholders(original: str, translated: str) -> str:
                         + translated[match.end() :]
                     )
                 else:
-                    # Não encontrou versão corrompida, adiciona ao final
+                    # Not found at all — append
                     translated = translated.rstrip() + " " + placeholder
     return translated
 

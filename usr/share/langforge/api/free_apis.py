@@ -8,6 +8,7 @@ from api.base import (
     TranslationAPI,
     build_batch_prompt,
     build_translation_prompt,
+    clean_batch_parts,
     retry_on_rate_limit,
 )
 from core.languages import get_api_lang_code
@@ -93,7 +94,7 @@ class GroqAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = [p.strip() for p in content.split("|||NEXT|||")]
+        parts = clean_batch_parts(content)
         if len(parts) != len(texts):
             log.warning(
                 "Groq batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -379,7 +380,7 @@ class GeminiFreeAPI(TranslationAPI):
             contents=prompt,
             config={"temperature": 0.3, "max_output_tokens": 2048},
         )
-        parts = [p.strip() for p in response.text.split("|||NEXT|||")]
+        parts = clean_batch_parts(response.text)
         if len(parts) != len(texts):
             log.warning(
                 "GeminiFree batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -491,7 +492,7 @@ class OpenRouterAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = [p.strip() for p in content.split("|||NEXT|||")]
+        parts = clean_batch_parts(content)
         if len(parts) != len(texts):
             log.warning(
                 "OpenRouter batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -596,7 +597,7 @@ class MistralFreeAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = [p.strip() for p in content.split("|||NEXT|||")]
+        parts = clean_batch_parts(content)
         if len(parts) != len(texts):
             log.warning(
                 "Mistral batch mismatch: expected %d, got %d. Translating remaining individually.",

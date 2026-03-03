@@ -120,6 +120,20 @@ def build_batch_prompt(
     )
 
 
+def clean_batch_parts(raw: str) -> list[str]:
+    """Split batch response and strip empty parts from leading/trailing separators.
+
+    LLMs sometimes return '|||NEXT|||Trans1|||NEXT|||Trans2' which produces
+    an empty first element after split, shifting all translations by one.
+    """
+    parts = [p.strip() for p in raw.split("|||NEXT|||")]
+    while parts and not parts[0]:
+        parts.pop(0)
+    while parts and not parts[-1]:
+        parts.pop()
+    return parts
+
+
 class TranslationAPI(ABC):
     """Classe base para todas as APIs de tradução."""
 
