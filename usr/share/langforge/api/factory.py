@@ -77,7 +77,7 @@ class APIFactory:
 
         if api_type == "free":
             provider = settings.get_free_provider()
-            api_key = settings.get("free_api.api_key", "")
+            api_key = settings.get_provider_key("free_api", provider)
             model = settings.get("free_api.model", "")
 
             if provider == "libretranslate":
@@ -92,7 +92,7 @@ class APIFactory:
 
         else:  # paid
             provider = settings.get_paid_provider()
-            api_key = settings.get("paid_api.api_key", "")
+            api_key = settings.get_provider_key("paid_api", provider)
             model = settings.get("paid_api.model", "")
 
             return cls.create(provider, api_key, model=model)

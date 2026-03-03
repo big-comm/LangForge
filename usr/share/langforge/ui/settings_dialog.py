@@ -122,7 +122,11 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Free API
         free_provider = self._get_selected_free_provider()
         self.settings.set("free_api.provider", free_provider)
-        self.settings.set("free_api.api_key", self.free_api_key.get_text())
+        # Save key per-provider (not shared)
+        free_key = self.free_api_key.get_text()
+        self.settings.set_provider_key("free_api", free_provider, free_key)
+        # Also keep legacy field in sync for backward compat
+        self.settings.set("free_api.api_key", free_key)
         self.settings.set(
             "free_api.libretranslate_url", self.libretranslate_url.get_text()
         )
@@ -136,7 +140,11 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Paid API
         paid_provider = self._get_selected_paid_provider()
         self.settings.set("paid_api.provider", paid_provider)
-        self.settings.set("paid_api.api_key", self.api_key.get_text())
+        # Save key per-provider (not shared)
+        paid_key = self.api_key.get_text()
+        self.settings.set_provider_key("paid_api", paid_provider, paid_key)
+        # Also keep legacy field in sync for backward compat
+        self.settings.set("paid_api.api_key", paid_key)
         # Save selected paid model
         for model_id, check in self._paid_model_checks.items():
             if check.get_active():
@@ -393,7 +401,10 @@ class SettingsDialog(Adw.PreferencesWindow):
             if free_provider not in ("deepl-free", "groq"):
                 self._more_providers_row.set_expanded(True)
 
-        self.free_api_key.set_text(self.settings.get("free_api.api_key", ""))
+        # Load per-provider key (falls back to legacy shared key)
+        self.free_api_key.set_text(
+            self.settings.get_provider_key("free_api", free_provider)
+        )
         self.libretranslate_url.set_text(
             self.settings.get(
                 "free_api.libretranslate_url", "https://libretranslate.com"
@@ -405,7 +416,8 @@ class SettingsDialog(Adw.PreferencesWindow):
         if paid_provider in self._paid_provider_checks:
             self._paid_provider_checks[paid_provider].set_active(True)
 
-        self.api_key.set_text(self.settings.get("paid_api.api_key", ""))
+        # Load per-provider key (falls back to legacy shared key)
+        self.api_key.set_text(self.settings.get_provider_key("paid_api", paid_provider))
         self._update_paid_provider_subtitle()
         self._update_paid_model_list()
 
@@ -420,13 +432,16 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Called when a free provider radio button is toggled."""
         if not check.get_active():
             return
+        # Save current key for old provider before switching
+        old_provider = self.settings.get("free_api.provider", "")
+        if old_provider and old_provider != provider_id:
+            current_key = self.free_api_key.get_text()
+            if current_key:
+                self.settings.set_provider_key("free_api", old_provider, current_key)
+        # Load key for the new provider
+        new_key = self.settings.get_provider_key("free_api", provider_id)
+        self.free_api_key.set_text(new_key)
         self._update_free_api_fields()
-        # M7: Warn user that existing key may not work with new provider
-        if self.free_api_key.get_text():
-            self._set_connection_status(
-                _("Provider changed — verify your API key is correct"),
-                "warning",
-            )
 
     def _update_visibility(self):
         """Update group visibility based on type."""
@@ -442,8 +457,24 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Called when a paid provider radio button is toggled."""
         if not check.get_active():
             return
+        # Save current key for old provider before switching
+        old_provider = self._get_selected_paid_provider_except(provider_id)
+        if old_provider:
+            current_key = self.api_key.get_text()
+            if current_key:
+                self.settings.set_provider_key("paid_api", old_provider, current_key)
+        # Load key for the new provider
+        new_key = self.settings.get_provider_key("paid_api", provider_id)
+        self.api_key.set_text(new_key)
         self._update_paid_provider_subtitle()
         self._update_paid_model_list()
+
+    def _get_selected_paid_provider_except(self, exclude: str) -> str:
+        """Return the previously active paid provider (before the toggle)."""
+        # Since toggled fires on the new check becoming active,
+        # the 'old' provider is tracked via settings
+        current = self.settings.get("paid_api.provider", "")
+        return current if current != exclude else ""
 
     def _get_selected_paid_provider(self) -> str:
         """Return the currently selected paid provider ID."""

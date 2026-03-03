@@ -14,7 +14,7 @@ class TestSettings:
         monkeypatch.setattr(Path, "home", lambda: tmp_path)
         s = Settings()
         assert s.get_api_type() == "free"
-        assert s.get("free_api.provider") == "libretranslate"
+        assert s.get("free_api.provider") == "groq"
         assert s.get("paid_api.provider") == "openai"
 
     def test_save_and_load(self, tmp_path, monkeypatch):

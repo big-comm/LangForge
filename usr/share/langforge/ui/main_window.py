@@ -556,11 +556,25 @@ class MainWindow(Adw.ApplicationWindow):
         """Show the success celebration page."""
         mins, secs = divmod(int(elapsed_secs), 60)
         time_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
-        self.success_page.set_description(
-            _("{langs} languages translated in {time}").format(
-                langs=success_count, time=time_str
-            )
+
+        # Build description with optional cost info
+        desc = _("{langs} languages translated in {time}").format(
+            langs=success_count, time=time_str
         )
+        usage = getattr(self.controller, "_last_usage", {})
+        cost = usage.get("cost_usd", 0)
+        if cost > 0:
+            total_tokens = usage.get("total_tokens", 0)
+            calls = usage.get("api_calls", 0)
+            if total_tokens >= 1_000_000:
+                token_str = f"{total_tokens / 1_000_000:.1f}M"
+            elif total_tokens >= 1_000:
+                token_str = f"{total_tokens / 1_000:.0f}K"
+            else:
+                token_str = str(total_tokens)
+            desc += f"\n💰 ${cost:.4f} · {token_str} tokens · {calls} API calls"
+
+        self.success_page.set_description(desc)
         self.stack.set_visible_child_name("success")
 
     # ── Language Grid ───────────────────────────────────────────
@@ -645,28 +659,22 @@ class MainWindow(Adw.ApplicationWindow):
             "mistral-free": "Mistral",
             "libretranslate": "LibreTranslate",
         }
-        free_api_key = self.settings.get("free_api.api_key", "")
-        free_provider = self.settings.get("free_api.provider", "")
 
         for key, label in free_provider_labels.items():
             if key == "libretranslate":
-                # LibreTranslate doesn't need API key — always available
                 self._configured_free_providers.append((label, key))
-            elif key == free_provider and free_api_key:
-                # Only show the provider that is actually configured with a key
+            elif self.settings.get_provider_key("free_api", key):
                 self._configured_free_providers.append((label, key))
 
-        # Paid providers: check if API key is set
+        # Paid providers: check if API key is set (per-provider)
         paid_provider_labels = {
             "openai": "OpenAI",
             "gemini": "Gemini",
             "grok": "Grok (xAI)",
         }
-        paid_api_key = self.settings.get("paid_api.api_key", "")
-        paid_provider = self.settings.get("paid_api.provider", "")
 
         for key, label in paid_provider_labels.items():
-            if key == paid_provider and paid_api_key:
+            if self.settings.get_provider_key("paid_api", key):
                 self._configured_paid_providers.append((label, key))
 
         # Build API type dropdown with only configured types
@@ -1039,18 +1047,52 @@ class MainWindow(Adw.ApplicationWindow):
                 self.progress_ring.set_progress(current / total)
             return
 
+        # Already-fixed langs from resume: mark success but skip ETA calc
+        if "already fixed" in status:
+            self._update_lang_status(lang, "success")
+            if total > 0:
+                self.progress_ring.set_progress(current / total)
+            self.progress_subtitle.set_label(
+                _("Resuming… {current}/{total} languages already done").format(
+                    current=current, total=total
+                )
+            )
+            # Track resumed offset so ETA calc discounts them
+            self._resumed_offset = current
+            self._resumed_time = time.monotonic()
+            return
+
+        # In-progress string-level feedback during fix_context Phase 2
+        if status.startswith("translating:"):
+            # Clear spinner from previous lang if still marked translating
+            prev = getattr(self, "_translating_lang", None)
+            if prev and prev != lang:
+                self._update_lang_status(prev, "pending")
+            self._translating_lang = lang
+            self._update_lang_status(lang, "translating")
+            detail = f"{name}: {status.removeprefix('translating:').strip()}"
+            self.progress_subtitle.set_label(detail)
+            # Keep progress ring at the language-level fraction
+            if total > 0:
+                self.progress_ring.set_progress((current - 1 + 0.5) / total)
+            return
+
         if "error" in status.lower():
             self._update_lang_status(lang, "error")
         else:
             self._update_lang_status(lang, "success")
 
-        active = getattr(self, "_active_langs", list(SUPPORTED_LANGUAGES.keys()))
-        if current < total and current < len(active):
-            self._update_lang_status(active[current], "translating")
+        # Clear translating tracker so next "translating:" callback starts clean
+        if getattr(self, "_translating_lang", None) == lang:
+            self._translating_lang = None
 
-        elapsed = time.monotonic() - self._translation_start
-        if current > 0:
-            avg_per_lang = elapsed / current
+        elapsed = time.monotonic() - getattr(
+            self, "_resumed_time", self._translation_start
+        )
+        offset = getattr(self, "_resumed_offset", 0)
+        done_since_resume = current - offset
+        if done_since_resume > 0:
+            avg_per_lang = elapsed / done_since_resume
             remaining = avg_per_lang * (total - current)
             mins, secs = divmod(int(remaining), 60)
             eta_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
@@ -1073,9 +1115,12 @@ class MainWindow(Adw.ApplicationWindow):
         if was_cancelled:
             self.progress_ring.set_progress(0.0)
             self.progress_title.set_label(_("Cancelled"))
-            self.progress_subtitle.set_label(
-                _("{} languages translated before cancellation").format(success),
-            )
+            cancel_msg = _("{} languages translated before cancellation").format(success)
+            usage = getattr(self.controller, "_last_usage", {})
+            cost = usage.get("cost_usd", 0)
+            if cost > 0:
+                cancel_msg += f"\n💰 ${cost:.4f}"
+            self.progress_subtitle.set_label(cancel_msg)
         else:
             self.progress_ring.set_progress(1.0)
             self._show_success_page(success, elapsed)

@@ -98,6 +98,16 @@ class Settings:
                 secret = _lookup_secret(f"{section}_api_key")
                 if secret:
                     config.setdefault(section, {})["api_key"] = secret
+
+            # Recover per-provider keys from keyring
+            keys = config.get(section, {}).get("keys", {})
+            for provider in list(keys.keys()):
+                if not keys[provider]:
+                    secret = _lookup_secret(f"{section}_{provider}_key")
+                    if secret:
+                        keys[provider] = secret
+            config.setdefault(section, {})["keys"] = keys
+
         return config
 
     def _get_default_config(self) -> Dict[str, Any]:
@@ -105,14 +115,16 @@ class Settings:
         return {
             "api_type": "free",
             "free_api": {
-                "provider": "libretranslate",  # Works out of the box without API key
+                "provider": "groq",  # Best free option: 14.4k req/day, excellent quality
                 "api_key": "",
+                "keys": {},  # Per-provider keys: {"groq": "key1", "deepl-free": "key2"}
                 "libretranslate_url": "https://libretranslate.com",
                 "model": "",
             },
             "paid_api": {
                 "provider": "openai",  # openai, gemini, grok
                 "api_key": "",
+                "keys": {},  # Per-provider keys: {"openai": "sk-...", "gemini": "AI..."}
                 "model": "gpt-4o-mini",
             },
         }
@@ -120,12 +132,20 @@ class Settings:
     def save(self):
         """Salva configurações no arquivo JSON. API keys go to system keyring."""
         self.config_dir.mkdir(parents=True, exist_ok=True)
-        # Try to move API keys to keyring, keep file-based fallback
         config_to_save = json.loads(json.dumps(self.config))
+
+        # Move legacy api_key to keyring
         for section in ("free_api", "paid_api"):
             api_key = config_to_save.get(section, {}).get("api_key", "")
             if api_key and _store_secret(f"{section}_api_key", api_key):
                 config_to_save[section]["api_key"] = ""
+
+            # Move per-provider keys to keyring
+            keys = config_to_save.get(section, {}).get("keys", {})
+            for provider, key in keys.items():
+                if key and _store_secret(f"{section}_{provider}_key", key):
+                    keys[provider] = ""
+
         with open(self.config_file, "w", encoding="utf-8") as f:
             json.dump(config_to_save, f, indent=2, ensure_ascii=False)
 
@@ -169,3 +189,28 @@ class Settings:
     def get_paid_provider(self) -> str:
         """Retorna provider de API paga."""
         return self.config.get("paid_api", {}).get("provider", "openai")
+
+    def get_provider_key(self, section: str, provider: str) -> str:
+        """Get API key for a specific provider.
+
+        Checks per-provider keys first, then falls back to the legacy
+        shared api_key field for backward compatibility.
+
+        Args:
+            section: 'free_api' or 'paid_api'
+            provider: Provider ID (e.g. 'openai', 'groq')
+        """
+        # Per-provider key (new format)
+        keys = self.config.get(section, {}).get("keys", {})
+        key = keys.get(provider, "")
+        if not key:
+            # Try keyring
+            key = _lookup_secret(f"{section}_{provider}_key")
+        if key:
+            return key
+        # Fallback to legacy shared key (old format, backward compat)
+        return self.config.get(section, {}).get("api_key", "")
+
+    def set_provider_key(self, section: str, provider: str, key: str) -> None:
+        """Set API key for a specific provider."""
+        self.config.setdefault(section, {}).setdefault("keys", {})[provider] = key

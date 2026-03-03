@@ -30,6 +30,7 @@ class TranslationController:
         self.is_translating: bool = False
         self._cancel_event = threading.Event()
         self._api_client: Optional[TranslationAPI] = None
+        self._last_usage: dict = {}
 
     # ── Project validation ──────────────────────────────────────
 
@@ -228,6 +229,16 @@ class TranslationController:
             on_error(e)
 
         finally:
+            # Capture usage stats before losing the api client reference
+            if self._api_client:
+                self._last_usage = self._api_client.get_usage()
+                u = self._last_usage
+                if u.get("cost_usd", 0) > 0:
+                    log.info(
+                        "API usage: $%.4f | %d tokens (%d in + %d out) | %d calls",
+                        u["cost_usd"], u["total_tokens"],
+                        u["input_tokens"], u["output_tokens"], u["api_calls"],
+                    )
             self.is_translating = False
 
     def _run_file(
@@ -258,4 +269,6 @@ class TranslationController:
             on_error(e)
 
         finally:
+            if self._api_client:
+                self._last_usage = self._api_client.get_usage()
             self.is_translating = False

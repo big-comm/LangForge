@@ -190,6 +190,7 @@ class TranslationEngine:
         project_path: Path,
         force_retranslate: bool = False,
         fix_msgids: Optional[set] = None,
+        batch_progress: Optional[Callable[[int, int], None]] = None,
     ) -> int:
         """
         Traduz um idioma específico.
@@ -199,6 +200,7 @@ class TranslationEngine:
             lang: Código do idioma (ex: 'pt-BR')
             project_path: Diretório do projeto
             force_retranslate: If True, retranslate ALL entries (fix context)
+            batch_progress: Optional callback(done_strings, total_strings)
 
         Returns:
             Número de strings traduzidas
@@ -244,17 +246,55 @@ class TranslationEngine:
                     entries_to_translate.append(entry)
 
         translated_count = 0
-        for entry in entries_to_translate:
-            if not entry.msgid:
+
+        # Use batch translation when available (reduces API calls dramatically)
+        batch_size = 15
+        for batch_start in range(0, len(entries_to_translate), batch_size):
+            # Respect API rate limits between outer batches
+            if batch_start > 0 and self.api.batch_delay > 0:
+                import time as _time
+
+                _time.sleep(self.api.batch_delay)
+
+            batch_entries = entries_to_translate[batch_start : batch_start + batch_size]
+            batch_entries = [e for e in batch_entries if e.msgid]
+            if not batch_entries:
                 continue
 
-            try:
-                # Protege placeholders de formato antes de enviar à API
-                protected_text, tokens = _protect_placeholders(entry.msgid)
+            # Protect placeholders for all entries in the batch
+            protected_texts = []
+            token_maps = []
+            for entry in batch_entries:
+                protected, tokens = _protect_placeholders(entry.msgid)
+                protected_texts.append(protected)
+                token_maps.append(tokens)
 
-                translation = self.api.translate(
-                    text=protected_text, source_lang="en", target_lang=lang
+            try:
+                translations = self.api.translate_batch(
+                    texts=protected_texts, source_lang="en", target_lang=lang
                 )
+            except Exception:
+                # Batch failed — fall back to individual calls
+                translations = []
+                for text in protected_texts:
+                    try:
+                        translations.append(
+                            self.api.translate(
+                                text=text, source_lang="en", target_lang=lang
+                            )
+                        )
+                    except Exception:
+                        translations.append(None)
+
+            for entry, translation, tokens in zip(
+                batch_entries, translations, token_maps
+            ):
+                if translation is None:
+                    if "fuzzy" not in entry.flags:
+                        entry.flags.append("fuzzy")
+                    if not entry.msgstr:
+                        entry.msgstr = entry.msgid
+                    continue
 
                 # Restaura placeholders originais
                 if tokens:
@@ -262,28 +302,23 @@ class TranslationEngine:
 
                 # Valida se placeholders estão intactos
                 if not _validate_placeholders(entry.msgid, translation):
-                    # Tenta reparar automaticamente
                     translation = _fix_placeholders(entry.msgid, translation)
-
-                    # Valida novamente após reparo
                     if not _validate_placeholders(entry.msgid, translation):
-                        # Não conseguiu reparar - copia original como fallback
                         translation = entry.msgid
                         if "fuzzy" not in entry.flags:
                             entry.flags.append("fuzzy")
 
                 entry.msgstr = translation
-                # Remove fuzzy flag apenas se validação passou
                 if _validate_placeholders(entry.msgid, translation):
                     if "fuzzy" in entry.flags:
                         entry.flags.remove("fuzzy")
                 translated_count += 1
-            except Exception:
-                # If translation fails, mark as fuzzy for manual review
-                if "fuzzy" not in entry.flags:
-                    entry.flags.append("fuzzy")
-                if not entry.msgstr:
-                    entry.msgstr = entry.msgid  # Copy original as placeholder
+
+            if batch_progress:
+                batch_progress(
+                    min(batch_start + batch_size, len(entries_to_translate)),
+                    len(entries_to_translate),
+                )
 
         # Save .po file
         po.save(str(po_path))
@@ -339,7 +374,7 @@ class TranslationEngine:
             except Exception:
                 pass
 
-        # Phase 1: find entries that change when translated with context
+        # Phase 1: find entries that change when translated with context (batch)
         if ref_po_path.exists():
             ref_po = polib.pofile(str(ref_po_path))
             all_entries = [e for e in ref_po.translated_entries() if e.msgid]
@@ -361,24 +396,62 @@ class TranslationEngine:
                     total_entries,
                 )
 
-            for entry in remaining:
+            # Process in batches for efficiency
+            batch_size = 15
+            for batch_start in range(0, len(remaining), batch_size):
                 if cancel_event and cancel_event.is_set():
                     break
-                if not entry.msgid:
+
+                # Respect API rate limits between outer batches
+                if batch_start > 0 and self.api.batch_delay > 0:
+                    import time as _time
+
+                    _time.sleep(self.api.batch_delay)
+
+                batch_entries = remaining[batch_start : batch_start + batch_size]
+                batch_entries = [e for e in batch_entries if e.msgid]
+                if not batch_entries:
                     continue
-                checked += 1
-                already_checked.add(entry.msgid)
-                try:
+
+                # Protect placeholders
+                protected_texts = []
+                token_maps = []
+                for entry in batch_entries:
                     protected, tokens = _protect_placeholders(entry.msgid)
-                    log.debug(
-                        "fix_context [%d/%d]: translating '%s'",
-                        checked,
-                        total_entries,
-                        entry.msgid[:50],
+                    protected_texts.append(protected)
+                    token_maps.append(tokens)
+
+                try:
+                    new_translations = self.api.translate_batch(
+                        texts=protected_texts,
+                        source_lang="en",
+                        target_lang=reference_lang,
                     )
-                    new_translation = self.api.translate(
-                        text=protected, source_lang="en", target_lang=reference_lang
-                    )
+                except Exception:
+                    # Batch failed — fall back to individual
+                    new_translations = []
+                    for text in protected_texts:
+                        try:
+                            new_translations.append(
+                                self.api.translate(
+                                    text=text,
+                                    source_lang="en",
+                                    target_lang=reference_lang,
+                                )
+                            )
+                        except Exception as exc:
+                            log.warning("fix_context: error: %s", exc)
+                            new_translations.append(None)
+
+                for entry, new_translation, tokens in zip(
+                    batch_entries, new_translations, token_maps
+                ):
+                    checked += 1
+                    already_checked.add(entry.msgid)
+
+                    if new_translation is None:
+                        continue
+
                     if tokens:
                         new_translation = _restore_placeholders(new_translation, tokens)
 
@@ -390,14 +463,11 @@ class TranslationEngine:
                             entry.msgstr[:40],
                             new_translation[:40],
                         )
-                        # Update reference file immediately
                         entry.msgstr = new_translation
                         if "fuzzy" in entry.flags:
                             entry.flags.remove("fuzzy")
-                except Exception as exc:
-                    log.warning("fix_context: error on '%s': %s", entry.msgid[:40], exc)
 
-                if progress_callback and checked % 5 == 0:
+                if progress_callback:
                     progress_callback(
                         reference_lang,
                         f"checking context: {checked}/{total_entries} "
@@ -433,14 +503,59 @@ class TranslationEngine:
             lc for lc in lang_list if lc != reference_lang and lc not in fixed_langs
         ]
         results: Dict[str, bool] = {reference_lang: True}
-        total = len(other_langs)
+        # Total includes reference lang + already fixed + remaining
+        already_fixed_count = len(fixed_langs)
+        total_langs = len(lang_list)  # all languages including reference
+
+        # Report already-fixed langs so the UI starts at the right offset
+        # Reference lang counts as 1, then each fixed lang adds 1
+        done_count = 1  # reference lang
+        for done_lang in fixed_langs:
+            results[done_lang] = True
+            done_count += 1
+            if progress_callback:
+                progress_callback(
+                    done_lang,
+                    "success: already fixed",
+                    done_count,
+                    total_langs,
+                )
 
         for i, lang in enumerate(other_langs):
             if cancel_event and cancel_event.is_set():
                 break
+            lang_idx = done_count + i + 1
+            log.info(
+                "fix_context phase2: translating %s (%d/%d)",
+                lang,
+                lang_idx,
+                total_langs,
+            )
+
+            # Sub-language progress callback for UI feedback
+            def _batch_cb(
+                done_strings: int, total_strings: int, _lang=lang, _idx=lang_idx
+            ) -> None:
+                if progress_callback:
+                    progress_callback(
+                        _lang,
+                        f"translating: {done_strings}/{total_strings} strings",
+                        _idx,
+                        total_langs,
+                    )
+
+            if progress_callback:
+                progress_callback(
+                    lang, "translating: starting...", lang_idx, total_langs
+                )
+
             try:
                 self.translate_language(
-                    pot_file, lang, project_path, fix_msgids=changed_msgids
+                    pot_file,
+                    lang,
+                    project_path,
+                    fix_msgids=changed_msgids,
+                    batch_progress=_batch_cb,
                 )
                 results[lang] = True
                 fixed_langs.add(lang)
@@ -448,13 +563,15 @@ class TranslationEngine:
                     progress_callback(
                         lang,
                         f"success: fixed {len(changed_msgids)} entries",
-                        i + 1,
-                        total,
+                        done_count + i + 1,
+                        total_langs,
                     )
             except Exception as e:
                 results[lang] = False
                 if progress_callback:
-                    progress_callback(lang, f"error: {e}", i + 1, total)
+                    progress_callback(
+                        lang, f"error: {e}", done_count + i + 1, total_langs
+                    )
 
             # Save cache periodically for resume
             _save_context_cache(

@@ -10,6 +10,14 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     stream=sys.stderr,
 )
+# Show translation progress in terminal
+for _logger_name in (
+    "core.translator",
+    "core.controller",
+    "api.paid_apis",
+    "api.free_apis",
+):
+    logging.getLogger(_logger_name).setLevel(logging.INFO)
 
 # Add src directory to path for imports
 src_dir = Path(__file__).parent
