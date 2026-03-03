@@ -166,6 +166,7 @@ class TranslationEngine:
                     lang_code,
                     project_path,
                     force_retranslate=force_retranslate,
+                    cancel_event=cancel_event,
                 )
                 results[lang_code] = True
 
@@ -191,6 +192,7 @@ class TranslationEngine:
         force_retranslate: bool = False,
         fix_msgids: Optional[set] = None,
         batch_progress: Optional[Callable[[int, int], None]] = None,
+        cancel_event: Optional[threading.Event] = None,
     ) -> int:
         """
         Traduz um idioma específico.
@@ -250,6 +252,9 @@ class TranslationEngine:
         # Use batch translation when available (reduces API calls dramatically)
         batch_size = 15
         for batch_start in range(0, len(entries_to_translate), batch_size):
+            if cancel_event and cancel_event.is_set():
+                break
+
             # Respect API rate limits between outer batches
             if batch_start > 0 and self.api.batch_delay > 0:
                 import time as _time
@@ -556,6 +561,7 @@ class TranslationEngine:
                     project_path,
                     fix_msgids=changed_msgids,
                     batch_progress=_batch_cb,
+                    cancel_event=cancel_event,
                 )
                 results[lang] = True
                 fixed_langs.add(lang)

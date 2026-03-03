@@ -1113,14 +1113,16 @@ class MainWindow(Adw.ApplicationWindow):
         """Handle translation pipeline completion."""
         success = sum(1 for v in results.values() if v)
         if was_cancelled:
-            self.progress_ring.set_progress(0.0)
-            self.progress_title.set_label(_("Cancelled"))
-            cancel_msg = _("{} languages translated before cancellation").format(success)
+            # Cancel UI already shown by _on_cancel_translation; just update
+            # with the final cost which may be more accurate.
             usage = getattr(self.controller, "_last_usage", {})
             cost = usage.get("cost_usd", 0)
             if cost > 0:
+                cancel_msg = _("{} languages translated before cancellation").format(
+                    success
+                )
                 cancel_msg += f"\n💰 ${cost:.4f}"
-            self.progress_subtitle.set_label(cancel_msg)
+                self.progress_subtitle.set_label(cancel_msg)
         else:
             self.progress_ring.set_progress(1.0)
             self._show_success_page(success, elapsed)
@@ -1134,10 +1136,32 @@ class MainWindow(Adw.ApplicationWindow):
         self._finish_translation()
 
     def _on_cancel_translation(self, button):
-        """Signal the translation thread to stop."""
+        """Signal the translation thread to stop and show cancelled state."""
         self.controller.cancel()
         self.cancel_button.set_sensitive(False)
-        self.progress_title.set_label(_("Cancelling..."))
+        self.progress_title.set_label(_("Cancelled"))
+
+        # Count languages already marked as success in the grid
+        success_count = 0
+        for code, w in self.lang_widgets.items():
+            if w.has_css_class("success"):
+                success_count += 1
+
+        cancel_msg = _("{} languages translated before cancellation").format(
+            success_count
+        )
+
+        # Snapshot cost from the live API client
+        api = getattr(self.controller, "_api_client", None)
+        if api:
+            usage = api.get_usage()
+            cost = usage.get("cost_usd", 0)
+            if cost > 0:
+                cancel_msg += f"\n💰 ${cost:.4f}"
+
+        self.progress_subtitle.set_label(cancel_msg)
+        self.progress_ring.set_progress(0.0)
+        self._finish_translation()
 
     def _finish_translation(self):
         self.translate_button.set_sensitive(True)

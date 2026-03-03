@@ -32,6 +32,18 @@ class TranslationController:
         self._api_client: Optional[TranslationAPI] = None
         self._last_usage: dict = {}
 
+    def _capture_usage(self) -> None:
+        """Snapshot API usage stats into _last_usage and log if paid."""
+        if self._api_client:
+            self._last_usage = self._api_client.get_usage()
+            u = self._last_usage
+            if u.get("cost_usd", 0) > 0:
+                log.info(
+                    "API usage: $%.4f | %d tokens (%d in + %d out) | %d calls",
+                    u["cost_usd"], u["total_tokens"],
+                    u["input_tokens"], u["output_tokens"], u["api_calls"],
+                )
+
     # ── Project validation ──────────────────────────────────────
 
     def validate_project(self, path: str) -> tuple[str, int]:
@@ -222,23 +234,17 @@ class TranslationController:
                 compiler = MoCompiler(project_path, textdomain)
                 compiler.compile_all()
 
+            # Capture usage BEFORE on_complete so the UI callback can read it
+            self._capture_usage()
+
             on_complete(results, elapsed, self._cancel_event.is_set())
 
         except Exception as e:
             log.exception("Translation pipeline failed")
+            self._capture_usage()
             on_error(e)
 
         finally:
-            # Capture usage stats before losing the api client reference
-            if self._api_client:
-                self._last_usage = self._api_client.get_usage()
-                u = self._last_usage
-                if u.get("cost_usd", 0) > 0:
-                    log.info(
-                        "API usage: $%.4f | %d tokens (%d in + %d out) | %d calls",
-                        u["cost_usd"], u["total_tokens"],
-                        u["input_tokens"], u["output_tokens"], u["api_calls"],
-                    )
             self.is_translating = False
 
     def _run_file(
@@ -262,13 +268,13 @@ class TranslationController:
             )
 
             elapsed = time.monotonic() - start_time
+            self._capture_usage()
             on_complete(results, elapsed, self._cancel_event.is_set())
 
         except Exception as e:
             log.exception("File translation failed")
+            self._capture_usage()
             on_error(e)
 
         finally:
-            if self._api_client:
-                self._last_usage = self._api_client.get_usage()
             self.is_translating = False
