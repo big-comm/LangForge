@@ -15,91 +15,74 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
-
 # File: usr/share/langforge/ui/main_window.py, line: 25
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
 msgid ""
 "Could not connect to the translation service. Check your internet "
 "connection."
 msgstr "번역 서비스에 연결할 수 없습니다. 인터넷 연결을 확인하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 29
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:29
 msgid "Invalid API key. Check your key in Settings."
 msgstr "유효하지 않은 API 키입니다. 설정에서 키를 확인하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 31
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:31
 msgid "Access denied. Your API key may lack the required permissions."
 msgstr "액세스 거부됨. API 키에 필요한 권한이 부족할 수 있습니다."
-
 # File: usr/share/langforge/ui/main_window.py, line: 33
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:33
 msgid "API rate limit reached. Wait a moment and try again."
 msgstr "API 호출 제한에 도달했습니다. 잠시 기다린 후 다시 시도하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 35
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:35
 msgid "The translation service took too long to respond. Try again later."
 msgstr "번역 서비스의 응답이 너무 오래 걸렸습니다. 나중에 다시 시도하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 37
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "gettext 도구를 찾을 수 없습니다. 시스템에 gettext를 설치하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 39
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:39
 msgid "msgfmt not found. Install gettext on your system."
 msgstr "msgfmt를 찾을 수 없습니다. 시스템에 gettext를 설치하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"
 msgstr "번역 진행률"
-
 # File: usr/share/langforge/ui/main_window.py, line: 110
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:110
 #, python-brace-format
 msgid "Translation progress: {}%"
 msgstr "번역 진행률: {}%"
-
 # File: usr/share/langforge/ui/main_window.py, line: 164
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:206
 msgid "Compile .mo files"
 msgstr ".mo 파일 컴파일"
-
 # File: usr/share/langforge/ui/main_window.py, line: 214
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:214
 msgid "Fix context"
 msgstr "컨텍스트 수정"
-
 # File: usr/share/langforge/ui/main_window.py, line: 215
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:215
 msgid "Detect and fix translations missing context"
 msgstr "컨텍스트가 누락된 번역 감지 및 수정"
-
 # File: usr/share/langforge/ui/main_window.py, line: 228
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:228
 msgid "Languages"
 msgstr "언어"
-
 # File: usr/share/langforge/ui/main_window.py, line: 234
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:234
 msgid "All"
 msgstr "모두"
-
 # File: usr/share/langforge/ui/main_window.py, line: 240
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:240
 msgid "None"
 msgstr "없음"
-
 # File: usr/share/langforge/ui/main_window.py, line: 186
 #. ── API Settings button ──
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
 msgid "API Settings..."
 msgstr "API 설정..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 209
 # File: usr/share/langforge/ui/main_window.py, line: 580
 #. Centered translate button as title widget
@@ -107,62 +90,50 @@ msgstr "API 설정..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1172
 msgid "Start Translation"
 msgstr "번역 시작"
-
 # File: usr/share/langforge/ui/main_window.py, line: 309
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:309
 msgid "Main menu"
 msgstr "메인 메뉴"
-
 # File: usr/share/langforge/ui/main_window.py, line: 312
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:312
 msgid "Open Project"
 msgstr "프로젝트 열기"
-
 # File: usr/share/langforge/ui/main_window.py, line: 313
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:313
 msgid "Settings"
 msgstr "설정"
-
 # File: usr/share/langforge/ui/main_window.py, line: 219
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:314
 msgid "About"
 msgstr "정보"
-
 # File: usr/share/langforge/ui/main_window.py, line: 315
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:315
 msgid "Quit"
 msgstr "종료"
-
 # File: usr/share/langforge/ui/main_window.py, line: 360
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:360
 msgid "Project selection area. Drag a folder here or click to select."
 msgstr "프로젝트 선택 영역. 폴더를 여기로 드래그하거나 클릭하여 선택하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:372
 msgid "No project selected"
 msgstr "선택된 프로젝트 없음"
-
 # File: usr/share/langforge/ui/main_window.py, line: 377
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:377
 msgid "Drag a folder or file here, or click to select"
 msgstr "폴더나 파일을 여기로 드래그하거나 클릭하여 선택하세요"
-
 # File: usr/share/langforge/ui/main_window.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:385
 msgid "Select Project"
 msgstr "프로젝트 선택"
-
 # File: usr/share/langforge/ui/main_window.py, line: 392
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:392
 msgid "Select File"
 msgstr "파일 선택"
-
 # File: usr/share/langforge/ui/main_window.py, line: 423
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:423
 msgid "Change"
 msgstr "변경"
-
 # File: usr/share/langforge/ui/main_window.py, line: 338
 # File: usr/share/langforge/ui/main_window.py, line: 459
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:440
@@ -170,110 +141,90 @@ msgstr "변경"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1033
 msgid "Translating..."
 msgstr "번역 중..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 445
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:445
 msgid "Translation status"
 msgstr "번역 상태"
-
 # File: usr/share/langforge/ui/main_window.py, line: 342
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
 msgid "Preparing..."
 msgstr "준비 중..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 453
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:453
 msgid "Translation details"
 msgstr "번역 상세 정보"
-
 # File: usr/share/langforge/ui/main_window.py, line: 466
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "언어 번역 상태"
-
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #. Cancel button (visible only during translation)
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 msgid "Cancel Translation"
 msgstr "번역 취소"
-
 # File: usr/share/langforge/ui/main_window.py, line: 486
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:486
 msgid "Welcome to LangForge"
 msgstr "LangForge에 오신 것을 환영합니다"
-
 # File: usr/share/langforge/ui/main_window.py, line: 489
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:489
 msgid ""
 "Automate gettext translations for your project.\n"
 "To get started, configure an API provider in Settings."
 msgstr "프로젝트의 gettext 번역을 자동화하세요. 시작하려면 설정에서 API 제공업체를 구성하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 496
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:496
 msgid "Open Settings"
 msgstr "설정 열기"
-
 # File: usr/share/langforge/ui/main_window.py, line: 502
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
 msgid "Skip"
 msgstr "건너뛰기"
-
 # File: usr/share/langforge/ui/main_window.py, line: 533
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
 msgid "Translation Complete!"
 msgstr "번역 완료!"
-
 # File: usr/share/langforge/ui/main_window.py, line: 539
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
 msgid "Translate Again"
 msgstr "다시 번역하기"
-
 # File: usr/share/langforge/ui/main_window.py, line: 547
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:547
 msgid "New Project"
 msgstr "새 프로젝트"
-
 # File: usr/share/langforge/ui/main_window.py, line: 560
 #. Build description with optional cost info
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:561
 #, python-brace-format
 msgid "{langs} languages translated in {time}"
 msgstr "{langs} 언어가 {time}에 번역됨"
-
 # File: usr/share/langforge/ui/main_window.py, line: 587
 # File: usr/share/langforge/ui/main_window.py, line: 620
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:601
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:635
 msgid "pending"
 msgstr "보류 중"
-
 # File: usr/share/langforge/ui/main_window.py, line: 621
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:636
 msgid "translating"
 msgstr "번역 중"
-
 # File: usr/share/langforge/ui/main_window.py, line: 622
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
 msgid "completed"
 msgstr "완료됨"
-
 # File: usr/share/langforge/ui/main_window.py, line: 623
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
 msgid "error"
 msgstr "오류"
-
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:684
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:690
 msgid "Free"
 msgstr "무료"
-
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
 msgid "Paid"
 msgstr "유료"
-
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 144
@@ -283,7 +234,6 @@ msgstr "유료"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
 msgid "API Type"
 msgstr "API 유형"
-
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 150
@@ -294,18 +244,15 @@ msgstr "API 유형"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
 msgid "Provider"
 msgstr "제공자"
-
 # File: usr/share/langforge/ui/main_window.py, line: 747
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
 #, python-brace-format
 msgid "{count} of {total} languages selected"
 msgstr "{count}개 중 {total}개 언어가 선택되었습니다."
-
 # File: usr/share/langforge/ui/main_window.py, line: 813
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
 msgid "Translatable files (.po, .json, .txt, .md, .srt)"
 msgstr "번역 가능한 파일 (.po, .json, .txt, .md, .srt)"
-
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 414
@@ -323,36 +270,30 @@ msgstr "번역 가능한 파일 (.po, .json, .txt, .md, .srt)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
 msgid "Error"
 msgstr "오류"
-
 # File: usr/share/langforge/ui/main_window.py, line: 867
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
 #, python-brace-format
 msgid "{strings} strings · {langs} languages"
 msgstr "{strings} 문자열 · {langs} 언어"
-
 # File: usr/share/langforge/ui/main_window.py, line: 447
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:886
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "프로젝트가 로드되었습니다: {}"
-
 # File: usr/share/langforge/ui/main_window.py, line: 895
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:905
 #, python-brace-format
 msgid "{items} items · {langs} languages"
 msgstr "{items} 항목 · {langs} 언어"
-
 # File: usr/share/langforge/ui/main_window.py, line: 904
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:914
 #, python-brace-format
 msgid "File loaded: {}"
 msgstr "파일이 로드되었습니다: {}"
-
 # File: usr/share/langforge/ui/main_window.py, line: 919
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "최소한 하나의 언어를 선택하세요."
-
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -362,7 +303,6 @@ msgid ""
 msgstr ""
 "{items}개 항목을 {langs}개 언어로 {provider}을(를) 사용하여 번역합니다.\n"
 "몇 분 정도 소요될 수 있습니다."
-
 # File: usr/share/langforge/ui/main_window.py, line: 942
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:952
 #, python-brace-format
@@ -372,126 +312,102 @@ msgid ""
 msgstr ""
 "{strings}개 문자열을 {langs}개 언어로 {provider}을(를) 사용하여 번역합니다.\n"
 "몇 분 정도 소요될 수 있습니다."
-
 # File: usr/share/langforge/ui/main_window.py, line: 951
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:961
 msgid "Start Translation?"
 msgstr "번역 시작?"
-
 # File: usr/share/langforge/ui/main_window.py, line: 953
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:963
 msgid "Cancel"
 msgstr "취소"
-
 # File: usr/share/langforge/ui/main_window.py, line: 954
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:964
 msgid "Start"
 msgstr "시작"
-
 # File: usr/share/langforge/ui/main_window.py, line: 474
 # File: usr/share/langforge/ui/main_window.py, line: 477
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1032
 msgid "Extracting strings..."
 msgstr "문자열 추출 중..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 538
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1034
 msgid "Compiling..."
 msgstr "컴파일 중..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 1025
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1035
 msgid "Checking context-aware translations..."
 msgstr "컨텍스트 인식 번역 확인 중..."
-
 # File: usr/share/langforge/ui/main_window.py, line: 1057
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1103
 #, python-brace-format
 msgid "{name} ({current}/{total}) · ~{eta} remaining"
 msgstr "{name} ({current}/{total}) · ~{eta} 남음"
-
 # File: usr/share/langforge/ui/main_window.py, line: 1075
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
 msgid "Cancelled"
 msgstr "취소됨"
-
 # File: usr/share/langforge/ui/main_window.py, line: 1077
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1125
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1154
 #, python-brace-format
 msgid "{} languages translated before cancellation"
 msgstr "{} 언어가 취소되기 전에 번역됨"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
 msgstr "번역 API"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
 msgid "Select type"
 msgstr "유형 선택"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 68
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
 msgid "Free API"
 msgstr "무료 API"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 68
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
 msgid "Paid API"
 msgstr "유료 API"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 77
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
 msgid "Free Tier APIs"
 msgstr "무료 등급 API"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 171
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
 msgid "Select your preferred translation provider"
 msgstr "선호하는 번역 제공자를 선택하세요."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 178
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
 msgid "500k chars/month — Best translation quality"
 msgstr "500k 문자/월 — 최고의 번역 품질"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 184
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:197
 msgid "14.4k req/day — Fastest, excellent quality"
 msgstr "14.4k 요청/일 — 가장 빠름, 뛰어난 품질"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 190
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:203
 msgid "1,000 req/day — Google AI"
 msgstr "1,000 요청/일 — Google AI"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 196
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:209
 msgid "18 free models available"
 msgstr "18개의 무료 모델 사용 가능"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 202
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:215
 msgid "Free tier — Quality models"
 msgstr "무료 요금제 — 품질 모델"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 208
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:221
 msgid "Open source — No API key needed"
 msgstr "오픈 소스 — API 키 필요 없음"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 236
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
 msgid "More providers"
 msgstr "더 많은 제공자"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 237
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
 msgid "4 additional free options"
 msgstr "4가지 추가 무료 옵션"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 97
 # File: usr/share/langforge/ui/settings_dialog.py, line: 121
 # File: usr/share/langforge/ui/settings_dialog.py, line: 212
@@ -500,211 +416,170 @@ msgstr "4가지 추가 무료 옵션"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
 msgid "API Key"
 msgstr "API 키"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 263
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
 msgid "Usage"
 msgstr "사용량"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 264
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
 msgid "Click 'Test Connection' to check"
 msgstr "'연결 테스트'를 클릭하여 확인하십시오."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 125
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
 msgid "Model"
 msgstr "모델"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 103
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
 msgid "LibreTranslate URL"
 msgstr "LibreTranslate URL"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 112
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "Paid API Settings"
 msgstr "유료 API 설정"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 293
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:306
 msgid "GPT-4o, GPT-4.1 — Industry standard"
 msgstr "GPT-4o, GPT-4.1 — 업계 표준"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Gemini 2.5 Flash/Pro — Fast and capable"
 msgstr "제미니 2.5 플래시/프로 — 빠르고 유능한"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 303
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "$25 무료 크레딧 — 2M 컨텍스트 창"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
 msgid "How to get API Keys"
 msgstr "API 키 발급 방법"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 144
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
 msgid "Test Connection"
 msgstr "연결 테스트"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 559
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
 msgid "Testing..."
 msgstr "테스트 중..."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 560
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
 msgid "Testing connection..."
 msgstr "연결 테스트 중..."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 598
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
 msgid "Connection successful"
 msgstr "연결 성공"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 615
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
 msgid "Connection failed"
 msgstr "연결 실패"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 248
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
 msgid "✓ Settings saved!"
 msgstr "✓ 설정이 저장되었습니다!"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 276
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
 msgid "Available Free APIs"
 msgstr "사용 가능한 무료 API"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 280
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
 msgid "Click the links to create your account and get your key"
 msgstr "링크를 클릭하여 계정을 만들고 키를 받으세요."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 289
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
 msgid "Recommended"
 msgstr "추천"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 290
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
 msgid "500k characters/month"
 msgstr "월 500만 글자"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 291
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
 msgid "Best translation quality"
 msgstr "최고의 번역 품질"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 293
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
 msgid "Create account → Free Plan → API Keys"
 msgstr "계정 생성 → 무료 플랜 → API 키"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
 msgid "Fastest"
 msgstr "가장 빠른"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 299
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:774
 msgid "14,400 requests/day"
 msgstr "일일 요청 14,400회"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 300
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:775
 msgid "LLaMA 3 - Excellent value"
 msgstr "LLaMA 3 - 가성비 우수"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 302
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
 msgid "Create account → API Keys → Create"
 msgstr "계정 만들기 → API 키 → 만들기"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 308
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:783
 msgid "1,000 requests/day"
 msgstr "일일 요청 1,000회"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 309
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:784
 msgid "Google AI - Good quality"
 msgstr "Google AI - 좋은 품질"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 311
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
 msgid "Google Login → Get API Key"
 msgstr "Google Login → API 키 발급"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 317
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:792
 msgid "18 free models"
 msgstr "18개 무료 모델"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 318
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:793
 msgid "Multiple models available"
 msgstr "여러 모델 사용 가능"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 320
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
 msgid "Create account → Keys → Create Key"
 msgstr "계정 생성 → 키 → 키 생성"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 326
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
 msgid "Free tier available"
 msgstr "무료 등급 사용 가능"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 327
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
 msgid "Quality Mistral models"
 msgstr "고품질 미스트랄 모델"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 329
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
 msgid "Create account → API Keys → Generate"
 msgstr "계정 만들기 → API 키 생성 → 생성"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 334
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:809
 msgid "No API Key"
 msgstr "API 키 없음"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 335
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
 msgid "Unlimited (self-hosted)"
 msgstr "무제한(자체 호스팅)"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 336
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
 msgid "Open source - Basic quality"
 msgstr "오픈 소스 - 기본 품질"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 338
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:813
 msgid "Use default URL or your own server"
 msgstr "기본 URL 사용 또는 자체 서버"
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 398
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
 msgid "Open"
 msgstr "열기"
-
 # File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
 msgid "Automatic translator for gettext projects"
 msgstr "gettext 프로젝트용 자동 번역기"
-
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 28
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
 msgid ""
@@ -725,7 +600,6 @@ msgstr ""
 "지원되는 프로젝트 유형:\n"
 "Python, C/C++, JavaScript, Shell, Vala\n"
 "및 gettext를 사용하는 모든 프로젝트"
-
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 36
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
 msgid ""
@@ -744,7 +618,6 @@ msgstr ""
 ".json — 키-값 번역 파일\n"
 ".srt — SubRip 자막 파일\n"
 ".txt / .md — 일반 텍스트 및 Markdown"
-
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 44
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
 msgid ""
@@ -769,34 +642,27 @@ msgstr ""
 "\n"
 "호환되지 않는 API:\n"
 "DeepL, LibreTranslate (문맥 지원 없음)"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
 msgid "reference"
 msgstr "참조"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1058
 #, python-brace-format
 msgid "Resuming… {current}/{total} languages already done"
 msgstr "재개 중… {current}/{total}개 언어 완료"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
 msgid "Project does not use gettext"
 msgstr "프로젝트에서 gettext를 사용하지 않습니다."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:74
 #, python-brace-format
 msgid "Not a file: {}"
 msgstr "파일이 아닙니다: {}"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:77
 #, python-brace-format
 msgid "Unsupported file type: {ext}. Supported: .po, .pot, .json, .txt, .md"
 msgstr "지원되지 않는 파일 형식: {ext}. 지원되는 형식: .po, .pot, .json, .txt, .md"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
 msgid "Fix Context"
 msgstr "컨텍스트 수정"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
 msgid ""
 "Reference language used to detect context-sensitive translations. Romance "
@@ -805,15 +671,12 @@ msgid ""
 msgstr ""
 "컨텍스트에 민감한 번역을 감지하는 데 사용되는 참조 언어입니다. 로망스어는 성별과 활용을 통해 영어의 모호성을 드러내므로 가장 "
 "효과적입니다."
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
 msgid "Reference language"
 msgstr "참조 언어"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
 msgid "★ = recommended"
 msgstr "★ = 권장됨"
-
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
@@ -822,11 +685,9 @@ msgstr "★ = 권장됨"
 #, python-brace-format
 msgid "{provider} API Key"
 msgstr "{provider} API 키"
-
 # File: usr/share/langforge/ui/main_window.py, line: 1095
 #~ msgid "Cancelling..."
 #~ msgstr "취소 중..."
-
 # File: usr/share/langforge/ui/settings_dialog.py, line: 427
 #~ msgid "Provider changed — verify your API key is correct"
 #~ msgstr "제공자가 변경되었습니다 — API 키가 올바른지 확인하세요."
