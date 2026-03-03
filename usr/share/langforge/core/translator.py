@@ -1,6 +1,8 @@
 """Motor de tradução que coordena APIs e arquivos .po."""
 
+import logging
 import re
+import threading
 import polib
 from pathlib import Path
 from typing import Dict, List, Tuple, Callable, Optional
@@ -9,11 +11,13 @@ from datetime import datetime
 from core.languages import SUPPORTED_LANGUAGES
 from api.base import TranslationAPI
 
+log = logging.getLogger(__name__)
+
 # Padrões de formato Python que devem ser preservados durante a tradução
 _FORMAT_PATTERNS = [
-    re.compile(r'%\([^)]+\)[sdifcr]'),  # %(name)s, %(count)d
-    re.compile(r'%[sdifcr%]'),            # %s, %d, %i, %f, %c, %r, %%
-    re.compile(r'\{[^}]*\}'),             # {}, {0}, {name}, {count:.2f}
+    re.compile(r"%\([^)]+\)[sdifcr]"),  # %(name)s, %(count)d
+    re.compile(r"%[sdifcr%]"),  # %s, %d, %i, %f, %c, %r, %%
+    re.compile(r"\{[^}]*\}"),  # {}, {0}, {name}, {count:.2f}
 ]
 
 
@@ -81,16 +85,40 @@ def _fix_placeholders(original: str, translated: str) -> str:
             if placeholder not in trans_matches:
                 # Placeholder ausente - tenta inserir onde faria sentido
                 # Procura por versões corrompidas (ex: {palavra) e substitui
-                corrupted = re.compile(
-                    re.escape(placeholder[0]) + r'[^}\s]*(?!\})'
-                )
+                corrupted = re.compile(re.escape(placeholder[0]) + r"[^}\s]*(?!\})")
                 match = corrupted.search(translated)
                 if match:
-                    translated = translated[:match.start()] + placeholder + translated[match.end():]
+                    translated = (
+                        translated[: match.start()]
+                        + placeholder
+                        + translated[match.end() :]
+                    )
                 else:
                     # Não encontrou versão corrompida, adiciona ao final
-                    translated = translated.rstrip() + ' ' + placeholder
+                    translated = translated.rstrip() + " " + placeholder
     return translated
+
+
+def _save_context_cache(
+    cache_path: Path,
+    checked: set[str],
+    changed: set[str],
+    fixed_langs: set[str],
+) -> None:
+    """Persist fix_context progress for resume after cancellation."""
+    import json as _json
+
+    cache_path.write_text(
+        _json.dumps(
+            {
+                "checked": list(checked),
+                "changed": list(changed),
+                "fixed_langs": list(fixed_langs),
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
 
 
 class TranslationEngine:
@@ -104,27 +132,41 @@ class TranslationEngine:
         self,
         pot_file: Path,
         project_path: Path,
-        progress_callback: Optional[Callable[[str, str, int, int], None]] = None
+        progress_callback: Optional[Callable[[str, str, int, int], None]] = None,
+        cancel_event: Optional[threading.Event] = None,
+        languages: Optional[List[str]] = None,
+        force_retranslate: bool = False,
     ) -> Dict[str, bool]:
         """
-        Traduz projeto para todos os 29 idiomas.
+        Traduz projeto para os idiomas selecionados (ou todos).
 
         Args:
             pot_file: Arquivo .pot template
             project_path: Diretório do projeto
             progress_callback: Callback(lang_code, status, current, total)
+            cancel_event: Threading event to signal cancellation
+            languages: List of language codes to translate; None = all
+            force_retranslate: If True, retranslate all entries including already translated ones
 
         Returns:
             Dict com resultado de cada idioma {lang: success}
         """
+        lang_list = languages if languages else list(SUPPORTED_LANGUAGES.keys())
         results = {}
-        total_langs = len(SUPPORTED_LANGUAGES)
+        total_langs = len(lang_list)
         current = 0
 
-        for lang_code in SUPPORTED_LANGUAGES:
+        for lang_code in lang_list:
+            if cancel_event and cancel_event.is_set():
+                break
             current += 1
             try:
-                strings_translated = self.translate_language(pot_file, lang_code, project_path)
+                strings_translated = self.translate_language(
+                    pot_file,
+                    lang_code,
+                    project_path,
+                    force_retranslate=force_retranslate,
+                )
                 results[lang_code] = True
 
                 if progress_callback:
@@ -132,7 +174,7 @@ class TranslationEngine:
                         lang_code,
                         f"success: {strings_translated} strings",
                         current,
-                        total_langs
+                        total_langs,
                     )
             except Exception as e:
                 results[lang_code] = False
@@ -141,7 +183,14 @@ class TranslationEngine:
 
         return results
 
-    def translate_language(self, pot_file: Path, lang: str, project_path: Path) -> int:
+    def translate_language(
+        self,
+        pot_file: Path,
+        lang: str,
+        project_path: Path,
+        force_retranslate: bool = False,
+        fix_msgids: Optional[set] = None,
+    ) -> int:
         """
         Traduz um idioma específico.
 
@@ -149,12 +198,17 @@ class TranslationEngine:
             pot_file: Arquivo .pot template
             lang: Código do idioma (ex: 'pt-BR')
             project_path: Diretório do projeto
+            force_retranslate: If True, retranslate ALL entries (fix context)
 
         Returns:
             Número de strings traduzidas
         """
         # Carrega template .pot
         pot = polib.pofile(str(pot_file))
+
+        # Provide app context to LLM-based APIs (name + sample strings)
+        context_strings = [e.msgid for e in pot if e.msgid][:20]
+        self.api.set_context(self.textdomain, context_strings)
 
         # Caminho do arquivo .po
         locale_dir = project_path / "locale"
@@ -173,10 +227,21 @@ class TranslationEngine:
             for entry in pot:
                 po.append(entry)
 
-        # Get entries that need translation:
-        # 1. Untranslated entries (empty msgstr)
-        # 2. Fuzzy entries (marked for review - likely failed before)
-        entries_to_translate = list(po.untranslated_entries()) + list(po.fuzzy_entries())
+        if force_retranslate:
+            # Retranslate ALL entries (including already translated ones)
+            entries_to_translate = [e for e in po if e.msgid]
+        else:
+            # Only untranslated + fuzzy
+            entries_to_translate = list(po.untranslated_entries()) + list(
+                po.fuzzy_entries()
+            )
+
+        # If fix_msgids is set, also include translated entries whose msgid is in that set
+        if fix_msgids:
+            existing_ids = {e.msgid for e in entries_to_translate}
+            for entry in po.translated_entries():
+                if entry.msgid in fix_msgids and entry.msgid not in existing_ids:
+                    entries_to_translate.append(entry)
 
         translated_count = 0
         for entry in entries_to_translate:
@@ -188,9 +253,7 @@ class TranslationEngine:
                 protected_text, tokens = _protect_placeholders(entry.msgid)
 
                 translation = self.api.translate(
-                    text=protected_text,
-                    source_lang='en',
-                    target_lang=lang
+                    text=protected_text, source_lang="en", target_lang=lang
                 )
 
                 # Restaura placeholders originais
@@ -206,19 +269,19 @@ class TranslationEngine:
                     if not _validate_placeholders(entry.msgid, translation):
                         # Não conseguiu reparar - copia original como fallback
                         translation = entry.msgid
-                        if 'fuzzy' not in entry.flags:
-                            entry.flags.append('fuzzy')
+                        if "fuzzy" not in entry.flags:
+                            entry.flags.append("fuzzy")
 
                 entry.msgstr = translation
                 # Remove fuzzy flag apenas se validação passou
                 if _validate_placeholders(entry.msgid, translation):
-                    if 'fuzzy' in entry.flags:
-                        entry.flags.remove('fuzzy')
+                    if "fuzzy" in entry.flags:
+                        entry.flags.remove("fuzzy")
                 translated_count += 1
-            except Exception as e:
+            except Exception:
                 # If translation fails, mark as fuzzy for manual review
-                if 'fuzzy' not in entry.flags:
-                    entry.flags.append('fuzzy')
+                if "fuzzy" not in entry.flags:
+                    entry.flags.append("fuzzy")
                 if not entry.msgstr:
                     entry.msgstr = entry.msgid  # Copy original as placeholder
 
@@ -226,17 +289,196 @@ class TranslationEngine:
         po.save(str(po_path))
         return translated_count
 
+    def fix_context(
+        self,
+        pot_file: Path,
+        project_path: Path,
+        reference_lang: str,
+        progress_callback: Optional[Callable[[str, str, int, int], None]] = None,
+        cancel_event: Optional[threading.Event] = None,
+        languages: Optional[List[str]] = None,
+    ) -> Dict[str, bool]:
+        """Re-translate only entries whose context-aware translation differs.
+
+        1. Retranslate all entries for *reference_lang* using context.
+        2. Compare with existing translations — collect msgids that changed.
+        3. For all other languages, retranslate only those msgids.
+
+        Supports resuming: saves progress to a cache file so that cancelled
+        runs can be continued without re-checking already verified entries.
+        """
+        import json as _json
+
+        pot = polib.pofile(str(pot_file))
+        context_strings = [e.msgid for e in pot if e.msgid][:20]
+        self.api.set_context(self.textdomain, context_strings)
+
+        locale_dir = project_path / "locale"
+        ref_po_path = locale_dir / f"{reference_lang}.po"
+        cache_path = locale_dir / ".langforge_context_cache.json"
+        log.info(
+            "fix_context: ref_po_path=%s exists=%s", ref_po_path, ref_po_path.exists()
+        )
+
+        # Load resume cache (msgids already checked + changed)
+        already_checked: set[str] = set()
+        changed_msgids: set[str] = set()
+        fixed_langs: set[str] = set()
+        if cache_path.exists():
+            try:
+                cache = _json.loads(cache_path.read_text(encoding="utf-8"))
+                already_checked = set(cache.get("checked", []))
+                changed_msgids = set(cache.get("changed", []))
+                fixed_langs = set(cache.get("fixed_langs", []))
+                log.info(
+                    "fix_context: resuming — %d checked, %d changed, %d langs fixed",
+                    len(already_checked),
+                    len(changed_msgids),
+                    len(fixed_langs),
+                )
+            except Exception:
+                pass
+
+        # Phase 1: find entries that change when translated with context
+        if ref_po_path.exists():
+            ref_po = polib.pofile(str(ref_po_path))
+            all_entries = [e for e in ref_po.translated_entries() if e.msgid]
+            remaining = [e for e in all_entries if e.msgid not in already_checked]
+            total_entries = len(all_entries)
+            checked = len(already_checked)
+            log.info(
+                "fix_context: %d total, %d already checked, %d remaining",
+                total_entries,
+                checked,
+                len(remaining),
+            )
+
+            if progress_callback:
+                progress_callback(
+                    reference_lang,
+                    f"checking context: {checked}/{total_entries}",
+                    checked,
+                    total_entries,
+                )
+
+            for entry in remaining:
+                if cancel_event and cancel_event.is_set():
+                    break
+                if not entry.msgid:
+                    continue
+                checked += 1
+                already_checked.add(entry.msgid)
+                try:
+                    protected, tokens = _protect_placeholders(entry.msgid)
+                    log.debug(
+                        "fix_context [%d/%d]: translating '%s'",
+                        checked,
+                        total_entries,
+                        entry.msgid[:50],
+                    )
+                    new_translation = self.api.translate(
+                        text=protected, source_lang="en", target_lang=reference_lang
+                    )
+                    if tokens:
+                        new_translation = _restore_placeholders(new_translation, tokens)
+
+                    if new_translation.strip() != entry.msgstr.strip():
+                        changed_msgids.add(entry.msgid)
+                        log.info(
+                            "fix_context: CHANGED '%s' old='%s' new='%s'",
+                            entry.msgid[:40],
+                            entry.msgstr[:40],
+                            new_translation[:40],
+                        )
+                        # Update reference file immediately
+                        entry.msgstr = new_translation
+                        if "fuzzy" in entry.flags:
+                            entry.flags.remove("fuzzy")
+                except Exception as exc:
+                    log.warning("fix_context: error on '%s': %s", entry.msgid[:40], exc)
+
+                if progress_callback and checked % 5 == 0:
+                    progress_callback(
+                        reference_lang,
+                        f"checking context: {checked}/{total_entries} "
+                        f"({len(changed_msgids)} to fix)",
+                        checked,
+                        total_entries,
+                    )
+
+            ref_po.save(str(ref_po_path))
+
+            # Save cache for resume
+            _save_context_cache(
+                cache_path, already_checked, changed_msgids, fixed_langs
+            )
+
+            if progress_callback:
+                progress_callback(
+                    reference_lang,
+                    f"checking context: done — {len(changed_msgids)} entries to fix",
+                    total_entries,
+                    total_entries,
+                )
+
+        if not changed_msgids:
+            # All done — remove cache
+            cache_path.unlink(missing_ok=True)
+            return {}
+
+        # Phase 2: fix those entries in all other languages
+        lang_list = languages if languages else list(SUPPORTED_LANGUAGES.keys())
+        # Remove reference language (already fixed) and already-fixed langs
+        other_langs = [
+            lc for lc in lang_list if lc != reference_lang and lc not in fixed_langs
+        ]
+        results: Dict[str, bool] = {reference_lang: True}
+        total = len(other_langs)
+
+        for i, lang in enumerate(other_langs):
+            if cancel_event and cancel_event.is_set():
+                break
+            try:
+                self.translate_language(
+                    pot_file, lang, project_path, fix_msgids=changed_msgids
+                )
+                results[lang] = True
+                fixed_langs.add(lang)
+                if progress_callback:
+                    progress_callback(
+                        lang,
+                        f"success: fixed {len(changed_msgids)} entries",
+                        i + 1,
+                        total,
+                    )
+            except Exception as e:
+                results[lang] = False
+                if progress_callback:
+                    progress_callback(lang, f"error: {e}", i + 1, total)
+
+            # Save cache periodically for resume
+            _save_context_cache(
+                cache_path, already_checked, changed_msgids, fixed_langs
+            )
+
+        # If all languages completed, remove cache
+        all_langs = set(languages if languages else SUPPORTED_LANGUAGES.keys())
+        if fixed_langs | {reference_lang} >= all_langs:
+            cache_path.unlink(missing_ok=True)
+
+        return results
+
     def _create_metadata(self, lang: str) -> Dict[str, str]:
         """Cria metadata para arquivo .po."""
         return {
-            'Project-Id-Version': self.textdomain,
-            'Report-Msgid-Bugs-To': '',
-            'POT-Creation-Date': datetime.now().strftime('%Y-%m-%d %H:%M%z'),
-            'PO-Revision-Date': datetime.now().strftime('%Y-%m-%d %H:%M%z'),
-            'Last-Translator': 'Translation Automator <auto@translator.ai>',
-            'Language-Team': f'{SUPPORTED_LANGUAGES[lang]} <{lang}@li.org>',
-            'Language': lang,
-            'MIME-Version': '1.0',
-            'Content-Type': 'text/plain; charset=UTF-8',
-            'Content-Transfer-Encoding': '8bit',
+            "Project-Id-Version": self.textdomain,
+            "Report-Msgid-Bugs-To": "",
+            "POT-Creation-Date": datetime.now().strftime("%Y-%m-%d %H:%M%z"),
+            "PO-Revision-Date": datetime.now().strftime("%Y-%m-%d %H:%M%z"),
+            "Last-Translator": "Translation Automator <auto@translator.ai>",
+            "Language-Team": f"{SUPPORTED_LANGUAGES[lang]} <{lang}@li.org>",
+            "Language": lang,
+            "MIME-Version": "1.0",
+            "Content-Type": "text/plain; charset=UTF-8",
+            "Content-Transfer-Encoding": "8bit",
         }

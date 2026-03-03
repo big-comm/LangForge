@@ -1,6 +1,5 @@
 """Factory para criação de clientes de API."""
 
-from typing import Optional
 from api.base import TranslationAPI
 
 
@@ -48,6 +47,7 @@ class APIFactory:
 
         # Import dinâmico
         import importlib
+
         module = importlib.import_module(module_name)
         api_class = getattr(module, class_name)
 
@@ -78,11 +78,16 @@ class APIFactory:
         if api_type == "free":
             provider = settings.get_free_provider()
             api_key = settings.get("free_api.api_key", "")
+            model = settings.get("free_api.model", "")
 
             if provider == "libretranslate":
-                url = settings.get("free_api.libretranslate_url", "https://libretranslate.com")
+                url = settings.get(
+                    "free_api.libretranslate_url", "https://libretranslate.com"
+                )
                 return cls.create(provider, url=url)
 
+            if model:
+                return cls.create(provider, api_key, model=model)
             return cls.create(provider, api_key)
 
         else:  # paid

@@ -25,14 +25,16 @@ class ProjectScanner:
         """
         # Pattern: gettext.textdomain("name") or textdomain("name")
         # Must be actual code, not in comments
-        pattern = re.compile(r'^[^#]*gettext\.textdomain\s*\(\s*["\']([^"\']+)["\']\s*\)', re.MULTILINE)
+        pattern = re.compile(
+            r'^[^#]*gettext\.textdomain\s*\(\s*["\']([^"\']+)["\']\s*\)', re.MULTILINE
+        )
 
         for py_file in self.find_python_files():
             # Skip scanner.py itself to avoid matching example in docstring
-            if py_file.name == 'scanner.py':
+            if py_file.name == "scanner.py":
                 continue
             try:
-                content = py_file.read_text(encoding='utf-8')
+                content = py_file.read_text(encoding="utf-8")
                 match = pattern.search(content)
                 if match:
                     return match.group(1)
@@ -48,9 +50,9 @@ class ProjectScanner:
         Looks for gettext imports and _() usage.
         """
         gettext_patterns = [
-            re.compile(r'import\s+gettext'),
-            re.compile(r'from\s+gettext\s+import'),
-            re.compile(r'_\s*\('),  # _() function
+            re.compile(r"import\s+gettext"),
+            re.compile(r"from\s+gettext\s+import"),
+            re.compile(r"_\s*\("),  # _() function
         ]
 
         python_files = self.find_python_files()
@@ -59,7 +61,7 @@ class ProjectScanner:
 
         for py_file in python_files:
             try:
-                content = py_file.read_text(encoding='utf-8')
+                content = py_file.read_text(encoding="utf-8")
                 if any(pattern.search(content) for pattern in gettext_patterns):
                     return True
             except Exception:
@@ -74,7 +76,7 @@ class ProjectScanner:
 
         for py_file in self.find_python_files():
             try:
-                content = py_file.read_text(encoding='utf-8')
+                content = py_file.read_text(encoding="utf-8")
                 count += len(pattern.findall(content))
             except Exception:
                 continue
