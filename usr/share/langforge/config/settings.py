@@ -127,6 +127,9 @@ class Settings:
                 "keys": {},  # Per-provider keys: {"openai": "sk-...", "gemini": "AI..."}
                 "model": "gpt-4o-mini",
             },
+            "fix_context": {
+                "reference_lang": "fr",  # pt-BR, fr, or es
+            },
         }
 
     def save(self):
@@ -214,3 +217,11 @@ class Settings:
     def set_provider_key(self, section: str, provider: str, key: str) -> None:
         """Set API key for a specific provider."""
         self.config.setdefault(section, {}).setdefault("keys", {})[provider] = key
+
+    def get_reference_lang(self) -> str:
+        """Return the fix_context reference language ('auto' or a code like 'pt-BR')."""
+        return self.config.get("fix_context", {}).get("reference_lang", "fr")
+
+    def set_reference_lang(self, lang: str) -> None:
+        """Set the fix_context reference language."""
+        self.config.setdefault("fix_context", {})["reference_lang"] = lang

@@ -14,6 +14,7 @@ from core.extractor import GettextExtractor
 from core.file_translator import FileTranslator, is_supported_file
 from core.scanner import ProjectScanner
 from core.translator import TranslationEngine
+from utils.i18n import _
 
 log = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ class TranslationController:
         """
         scanner = ProjectScanner(path)
         if not scanner.validate_project():
-            raise ValueError("Project does not use gettext")
+            raise ValueError(_("Project does not use gettext"))
         textdomain = scanner.detect_textdomain()
         strings = scanner.count_translatable_strings()
         return textdomain, strings
@@ -70,11 +71,11 @@ class TranslationController:
         """
         p = Path(path)
         if not p.is_file():
-            raise ValueError(f"Not a file: {p.name}")
+            raise ValueError(_("Not a file: {}").format(p.name))
         if not is_supported_file(p):
             raise ValueError(
-                f"Unsupported file type: {p.suffix}. "
-                "Supported: .po, .pot, .json, .txt, .md"
+                _("Unsupported file type: {ext}. "
+                  "Supported: .po, .pot, .json, .txt, .md").format(ext=p.suffix)
             )
 
         # Rough item count for the confirmation dialog
@@ -201,19 +202,15 @@ class TranslationController:
             start_time = time.monotonic()
 
             if force_retranslate:
-                # Smart context fix: detect changed translations in system
+                # Smart context fix: detect changed translations in a reference
                 # language, then fix only those entries in all languages
-                import locale as _locale
-
-                sys_lang = _locale.getlocale()[0] or "en"
-                # Normalise: pt_BR → pt-BR
-                sys_lang = sys_lang.replace("_", "-")
-                log.info("Fix context: reference language = %s", sys_lang)
+                ref_lang = self.settings.get_reference_lang()
+                log.info("Fix context: reference language = %s", ref_lang)
                 on_phase("checking context")
                 results = translator.fix_context(
                     extractor.pot_file,
                     project_path,
-                    reference_lang=sys_lang,
+                    reference_lang=ref_lang,
                     progress_callback=on_lang_progress,
                     cancel_event=self._cancel_event,
                     languages=languages,

@@ -151,6 +151,11 @@ class SettingsDialog(Adw.PreferencesWindow):
                 self.settings.set("paid_api.model", model_id)
                 break
 
+        # Fix Context reference language
+        ref_idx = self.ref_lang_row.get_selected()
+        if 0 <= ref_idx < len(self._ref_lang_options):
+            self.settings.set_reference_lang(self._ref_lang_options[ref_idx][0])
+
         self.settings.save()
 
     def _build_ui(self):
@@ -349,6 +354,35 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         api_page.add(self.paid_group)
 
+        # Group: Fix Context — Reference Language
+        fix_group = Adw.PreferencesGroup()
+        fix_group.set_title(_("Fix Context"))
+        fix_group.set_description(
+            _(
+                "Reference language used to detect context-sensitive "
+                "translations. Romance languages work best because they "
+                "reveal English ambiguities through gender and conjugation."
+            )
+        )
+
+        self.ref_lang_row = Adw.ComboRow()
+        self.ref_lang_row.set_title(_("Reference language"))
+        self.ref_lang_row.set_subtitle(
+            _("★ = recommended")
+        )
+        self._ref_lang_options = [
+            ("fr", "★ Français"),
+            ("pt-BR", "★ Português (Brasil)"),
+            ("es", "★ Español"),
+        ]
+        ref_model = Gtk.StringList.new(
+            [label for _, label in self._ref_lang_options]
+        )
+        self.ref_lang_row.set_model(ref_model)
+        fix_group.add(self.ref_lang_row)
+
+        api_page.add(fix_group)
+
         # Action buttons (centered)
         action_group = Adw.PreferencesGroup()
 
@@ -423,6 +457,14 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         self._update_visibility()
         self._update_free_api_fields()
+
+        # Fix Context reference language
+        saved_ref = self.settings.get_reference_lang()
+        ref_codes = [code for code, _ in self._ref_lang_options]
+        if saved_ref in ref_codes:
+            self.ref_lang_row.set_selected(ref_codes.index(saved_ref))
+        else:
+            self.ref_lang_row.set_selected(0)  # fr (default)
 
     def _on_api_type_changed(self, combo, _):
         """Called when API type changes."""
@@ -572,11 +614,11 @@ class SettingsDialog(Adw.PreferencesWindow):
             self.free_model_row.set_visible(False)
 
         key_titles = {
-            "deepl-free": "DeepL API Key",
-            "groq": "Groq API Key",
-            "gemini-free": "Gemini API Key",
-            "openrouter": "OpenRouter API Key",
-            "mistral-free": "Mistral API Key",
+            "deepl-free": _("{provider} API Key").format(provider="DeepL"),
+            "groq": _("{provider} API Key").format(provider="Groq"),
+            "gemini-free": _("{provider} API Key").format(provider="Gemini"),
+            "openrouter": _("{provider} API Key").format(provider="OpenRouter"),
+            "mistral-free": _("{provider} API Key").format(provider="Mistral"),
         }
         if needs_key:
             self.free_api_key.set_title(key_titles.get(provider, _("API Key")))
