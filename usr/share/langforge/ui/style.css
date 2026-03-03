@@ -47,6 +47,12 @@
     opacity: 1;
 }
 
+.lang-item.reference {
+    border-color: @accent_bg_color;
+    background: alpha(@accent_bg_color, 0.18);
+    opacity: 1;
+}
+
 /* === Animations === */
 /* box-shadow animation may not work in GTK < 4.10;
    opacity pulse serves as a universal fallback */

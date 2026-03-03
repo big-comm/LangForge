@@ -512,6 +512,15 @@ class TranslationEngine:
         already_fixed_count = len(fixed_langs)
         total_langs = len(lang_list)  # all languages including reference
 
+        # Report reference language as done (it was the baseline)
+        if progress_callback:
+            progress_callback(
+                reference_lang,
+                "success: reference language",
+                1,
+                total_langs,
+            )
+
         # Report already-fixed langs so the UI starts at the right offset
         # Reference lang counts as 1, then each fixed lang adds 1
         done_count = 1  # reference lang

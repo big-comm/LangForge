@@ -618,7 +618,7 @@ class MainWindow(Adw.ApplicationWindow):
         if code not in self.lang_widgets:
             return
         w = self.lang_widgets[code]
-        for c in ["pending", "translating", "success", "error"]:
+        for c in ["pending", "translating", "success", "error", "reference"]:
             w.remove_css_class(c)
         w.add_css_class(status)
         icons = {
@@ -626,6 +626,7 @@ class MainWindow(Adw.ApplicationWindow):
             "translating": "emblem-synchronizing-symbolic",
             "success": "emblem-ok-symbolic",
             "error": "dialog-error-symbolic",
+            "reference": "starred-symbolic",
         }
         w.status_icon.set_from_icon_name(icons.get(status, "content-loading-symbolic"))
         # Update accessible label so Orca announces the new status
@@ -635,6 +636,7 @@ class MainWindow(Adw.ApplicationWindow):
             "translating": _("translating"),
             "success": _("completed"),
             "error": _("error"),
+            "reference": _("reference"),
         }
         w.update_property(
             [Gtk.AccessibleProperty.LABEL],
@@ -1079,6 +1081,8 @@ class MainWindow(Adw.ApplicationWindow):
 
         if "error" in status.lower():
             self._update_lang_status(lang, "error")
+        elif "reference" in status.lower():
+            self._update_lang_status(lang, "reference")
         else:
             self._update_lang_status(lang, "success")
 
