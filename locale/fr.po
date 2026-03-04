@@ -485,6 +485,21 @@ msgstr "Langue de référence"
 #: NEEDS WORK
 msgid "★ = recommended"
 msgstr "★ = recommandé"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 374
+#: NEEDS WORK
+msgid "★ French"
+msgstr "★ Français"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+#: NEEDS WORK
+msgid "★ Portuguese (Brazil)"
+msgstr "★ Portugais (Brésil)"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+#: NEEDS WORK
+msgid "★ Spanish"
+msgstr "★ Espagnol"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:365
