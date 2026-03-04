@@ -155,6 +155,16 @@ msgstr "פרטי תרגום"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "סטטוס תרגום שפה"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 477
+#: NEEDS WORK
+msgid "View Live"
+msgstr "צפה בשידור חי"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 484
+#: NEEDS WORK
+msgid "View live translation details"
+msgstr "צפה בפרטי תרגום חיים"
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 #. Cancel button (visible only during translation)
@@ -361,6 +371,31 @@ msgstr "{} שפות תורגמו לפני ביטול"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
 msgid "Cancelled"
 msgstr "בוטל"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+#: NEEDS WORK
+msgid "Live Translation"
+msgstr "תרגום חי"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
+#: NEEDS WORK
+msgid "Clear"
+msgstr "נקה"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 40
+#: NEEDS WORK
+msgid "Auto-scroll"
+msgstr "גלילה אוטומטית"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+#: NEEDS WORK
+msgid "Waiting..."
+msgstr "ממתין..."
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 77
+#: NEEDS WORK
+msgid "Live translation diff view"
+msgstr "תצוגת הבדל בתרגום חי"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
