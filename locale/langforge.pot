@@ -364,3 +364,15 @@ msgstr ""
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:398
 msgid "Open"
 msgstr ""
+
+#. Reference language option in settings
+msgid "★ French"
+msgstr ""
+
+#. Reference language option in settings
+msgid "★ Portuguese (Brazil)"
+msgstr ""
+
+#. Reference language option in settings
+msgid "★ Spanish"
+msgstr ""

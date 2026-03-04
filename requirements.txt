@@ -1,4 +1,10 @@
+# Core
 PyGObject
 PyCairo
 requests
 polib
+
+# AI APIs
+openai              # OpenAI (GPT-4, GPT-4o-mini)
+google-genai        # Google Gemini (Free & Paid) - replaces deprecated google-generativeai
+# Groq, OpenRouter, Mistral, Grok, DeepL, LibreTranslate use only 'requests' (no extra package)

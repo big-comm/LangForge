@@ -2,7 +2,7 @@
 
 import subprocess
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 import polib
 
 
@@ -47,12 +47,7 @@ class GettextExtractor:
         ] + file_paths
 
         try:
-            result = subprocess.run(
-                cmd,
-                check=True,
-                capture_output=True,
-                text=True
-            )
+            subprocess.run(cmd, check=True, capture_output=True, text=True)
             return self.pot_file.exists()
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Erro ao executar xgettext: {e.stderr}")

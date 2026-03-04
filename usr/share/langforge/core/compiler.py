@@ -4,8 +4,6 @@ import subprocess
 from pathlib import Path
 from typing import Dict, Optional, Callable
 
-from core.languages import SUPPORTED_LANGUAGES
-
 
 class MoCompiler:
     """Compilador de arquivos .po para .mo binários."""
@@ -16,8 +14,7 @@ class MoCompiler:
         self.locale_dir = self.project_path / "locale"
 
     def compile_all(
-        self,
-        progress_callback: Optional[Callable[[str, str, int, int], None]] = None
+        self, progress_callback: Optional[Callable[[str, str, int, int], None]] = None
     ) -> Dict[str, bool]:
         """
         Compila todos os arquivos .po para .mo.
@@ -66,7 +63,9 @@ class MoCompiler:
         locale_code = lang.replace("-", "_")
 
         # Estrutura: usr/share/locale/{locale_code}/LC_MESSAGES/{textdomain}.mo
-        mo_dir = self.project_path / "usr" / "share" / "locale" / locale_code / "LC_MESSAGES"
+        mo_dir = (
+            self.project_path / "usr" / "share" / "locale" / locale_code / "LC_MESSAGES"
+        )
         mo_file = mo_dir / f"{self.textdomain}.mo"
 
         # Cria diretórios
@@ -78,7 +77,7 @@ class MoCompiler:
                 ["msgfmt", str(po_file), "-o", str(mo_file)],
                 check=True,
                 capture_output=True,
-                text=True
+                text=True,
             )
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Erro ao compilar {lang}: {e.stderr}")
@@ -87,7 +86,7 @@ class MoCompiler:
 
     def get_compiled_languages(self) -> list[str]:
         """Retorna lista de idiomas já compilados."""
-        compiled = []
+        compiled: list[str] = []
         mo_base = self.project_path / "usr" / "share" / "locale"
 
         if not mo_base.exists():

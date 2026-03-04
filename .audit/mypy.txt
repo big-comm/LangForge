@@ -1,0 +1,11 @@
+usr/share/langforge/core/extractor.py:6: error: Library stubs not installed for "polib"  [import-untyped]
+usr/share/langforge/core/extractor.py:6: note: Hint: "python3 -m pip install types-polib"
+usr/share/langforge/core/compiler.py:90: error: Need type annotation for "compiled" (hint: "compiled: list[<type>] = ...")  [var-annotated]
+usr/share/langforge/api/free_apis.py:3: error: Library stubs not installed for "requests"  [import-untyped]
+usr/share/langforge/api/free_apis.py:3: note: Hint: "python3 -m pip install types-requests"
+usr/share/langforge/api/free_apis.py:3: note: (or run "mypy --install-types" to install all missing stub packages)
+usr/share/langforge/api/free_apis.py:3: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+usr/share/langforge/api/free_apis.py:189: error: Incompatible types in assignment (expression has type "float", variable has type "int")  [assignment]
+usr/share/langforge/core/translator.py:4: error: Library stubs not installed for "polib"  [import-untyped]
+usr/share/langforge/api/paid_apis.py:48: error: Item "None" of "str | None" has no attribute "strip"  [union-attr]
+Found 6 errors in 5 files (checked 20 source files)

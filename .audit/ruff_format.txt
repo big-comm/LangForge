@@ -1,0 +1,15 @@
+Would reformat: usr/share/langforge/api/factory.py
+Would reformat: usr/share/langforge/api/free_apis.py
+Would reformat: usr/share/langforge/api/paid_apis.py
+Would reformat: usr/share/langforge/config/settings.py
+Would reformat: usr/share/langforge/core/compiler.py
+Would reformat: usr/share/langforge/core/extractor.py
+Would reformat: usr/share/langforge/core/languages.py
+Would reformat: usr/share/langforge/core/scanner.py
+Would reformat: usr/share/langforge/core/translator.py
+Would reformat: usr/share/langforge/main.py
+Would reformat: usr/share/langforge/ui/main_window.py
+Would reformat: usr/share/langforge/ui/settings_dialog.py
+Would reformat: usr/share/langforge/utils/__init__.py
+Would reformat: usr/share/langforge/utils/i18n.py
+14 files would be reformatted, 6 files already formatted

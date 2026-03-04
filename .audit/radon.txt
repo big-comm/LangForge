@@ -1,0 +1,4 @@
+usr/share/langforge/core/translator.py
+    M 144:4 TranslationEngine.translate_language - C (14)
+usr/share/langforge/ui/main_window.py
+    M 373:4 MainWindow._build_api_dropdowns - C (15)

@@ -47,15 +47,22 @@
     opacity: 1;
 }
 
-/* === Animations === */
-@keyframes pulse {
+.lang-item.reference {
+    border-color: @accent_bg_color;
+    background: alpha(@accent_bg_color, 0.18);
+    opacity: 1;
+}
 
+/* === Animations === */
+/* box-shadow animation may not work in GTK < 4.10;
+   opacity pulse serves as a universal fallback */
+@keyframes pulse {
     0%,
     100% {
-        box-shadow: 0 0 0 0 alpha(@accent_bg_color, 0.4);
+        opacity: 1;
     }
 
     50% {
-        box-shadow: 0 0 0 4px alpha(@accent_bg_color, 0);
+        opacity: 0.6;
     }
 }

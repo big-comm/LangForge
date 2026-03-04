@@ -1,9 +1,22 @@
 """Implementações de APIs de tradução com tier gratuito."""
 
+import logging
+
 import requests
-from typing import Optional
-from api.base import TranslationAPI
+
+from api.base import (
+    TranslationAPI,
+    build_batch_prompt,
+    build_translation_prompt,
+    clean_batch_parts,
+    retry_on_rate_limit,
+)
 from core.languages import get_api_lang_code
+
+log = logging.getLogger(__name__)
+
+# Maximum strings per batch call
+_BATCH_SIZE = 15
 
 
 class GroqAPI(TranslationAPI):
@@ -20,27 +33,80 @@ class GroqAPI(TranslationAPI):
         self.session = requests.Session()
         self.base_url = "https://api.groq.com/openai/v1"
 
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Groq."""
+        system_prompt = build_translation_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
             json={
                 "model": self.model,
-                "messages": [{
-                    "role": "system",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them."
-                }, {
-                    "role": "user",
-                    "content": text
-                }],
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text},
+                ],
                 "temperature": 0.3,
-                "max_tokens": 512
+                "max_tokens": 512,
             },
-            timeout=30
+            timeout=30,
         )
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"].strip()
+
+    def translate_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        """Translate multiple texts in a single Groq call."""
+        if len(texts) == 1:
+            return [self.translate(texts[0], source_lang, target_lang)]
+        return self._do_batch(texts, source_lang, target_lang)
+
+    @retry_on_rate_limit
+    def _do_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        system_prompt = build_batch_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        user_msg = "|||NEXT|||".join(texts)
+        response = self.session.post(
+            f"{self.base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_msg},
+                ],
+                "temperature": 0.3,
+                "max_tokens": 2048,
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
+        content = response.json()["choices"][0]["message"]["content"].strip()
+        parts = clean_batch_parts(content)
+        if len(parts) != len(texts):
+            log.warning(
+                "Groq batch mismatch: expected %d, got %d. Translating remaining individually.",
+                len(texts),
+                len(parts),
+            )
+            if len(parts) < len(texts):
+                for t in texts[len(parts):]:
+                    parts.append(self.translate(t, source_lang, target_lang))
+            else:
+                parts = parts[: len(texts)]
+        return parts
 
     def test_connection(self) -> bool:
         """Testa conexão com Groq."""
@@ -48,11 +114,12 @@ class GroqAPI(TranslationAPI):
             response = self.session.get(
                 f"{self.base_url}/models",
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                timeout=10
+                timeout=10,
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"Groq: {e}") from e
 
     def get_name(self) -> str:
         return "Groq (14.4k req/dia)"
@@ -66,9 +133,10 @@ class LibreTranslateAPI(TranslationAPI):
     """
 
     def __init__(self, url: str = "https://libretranslate.com"):
-        self.url = url.rstrip('/')
+        self.url = url.rstrip("/")
         self.session = requests.Session()
 
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando LibreTranslate."""
         source = get_api_lang_code(source_lang)
@@ -76,13 +144,8 @@ class LibreTranslateAPI(TranslationAPI):
 
         response = self.session.post(
             f"{self.url}/translate",
-            json={
-                "q": text,
-                "source": source,
-                "target": target,
-                "format": "text"
-            },
-            timeout=30
+            json={"q": text, "source": source, "target": target, "format": "text"},
+            timeout=30,
         )
         response.raise_for_status()
         return response.json()["translatedText"]
@@ -91,9 +154,10 @@ class LibreTranslateAPI(TranslationAPI):
         """Testa conexão com LibreTranslate."""
         try:
             response = self.session.get(f"{self.url}/languages", timeout=10)
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"LibreTranslate: {e}") from e
 
     def get_name(self) -> str:
         return "LibreTranslate"
@@ -109,45 +173,75 @@ class DeepLFreeAPI(TranslationAPI):
 
     # DeepL supported target languages (as of 2024)
     DEEPL_LANG_MAP = {
-        'bg': 'BG',
-        'cs': 'CS',
-        'da': 'DA',
-        'de': 'DE',
-        'el': 'EL',
-        'en': 'EN-US',
-        'es': 'ES',
-        'et': 'ET',
-        'fi': 'FI',
-        'fr': 'FR',
-        'hu': 'HU',
-        'it': 'IT',
-        'ja': 'JA',
-        'ko': 'KO',
-        'nl': 'NL',
-        'no': 'NB',  # Norwegian Bokmål
-        'pl': 'PL',
-        'pt-BR': 'PT-BR',
-        'pt': 'PT-PT',
-        'ro': 'RO',
-        'ru': 'RU',
-        'sk': 'SK',
-        'sv': 'SV',
-        'tr': 'TR',
-        'uk': 'UK',
-        'zh': 'ZH',
+        "bg": "BG",
+        "cs": "CS",
+        "da": "DA",
+        "de": "DE",
+        "el": "EL",
+        "en": "EN-US",
+        "es": "ES",
+        "et": "ET",
+        "fi": "FI",
+        "fr": "FR",
+        "hu": "HU",
+        "it": "IT",
+        "ja": "JA",
+        "ko": "KO",
+        "nl": "NL",
+        "no": "NB",  # Norwegian Bokmål
+        "pl": "PL",
+        "pt-BR": "PT-BR",
+        "pt": "PT-PT",
+        "ro": "RO",
+        "ru": "RU",
+        "sk": "SK",
+        "sv": "SV",
+        "tr": "TR",
+        "uk": "UK",
+        "zh": "ZH",
         # Not supported by DeepL: he (Hebrew), hr (Croatian), is (Icelandic)
     }
 
     def __init__(self, api_key: str):
         import time
+
         self.api_key = api_key
         self.session = requests.Session()
-        self.base_url = "https://api-free.deepl.com/v2"
+        # Keys ending in ':fx' use the free API, others use the pro API
+        if api_key.strip().endswith(":fx"):
+            self.base_url = "https://api-free.deepl.com/v2"
+        else:
+            self.base_url = "https://api.deepl.com/v2"
         self._time = time
-        self._last_request = 0
+        self._last_request: float = 0.0
+        self._resolved = False
 
+    def _ensure_endpoint(self) -> None:
+        """Try current endpoint; on 403 swap to the other one."""
+        if self._resolved:
+            return
+        try:
+            r = self.session.get(
+                f"{self.base_url}/usage",
+                headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
+                timeout=10,
+            )
+            if r.status_code != 403:
+                self._resolved = True
+                return
+        except Exception:
+            pass
+        # Swap endpoint and retry
+        if "api-free" in self.base_url:
+            self.base_url = "https://api.deepl.com/v2"
+        else:
+            self.base_url = "https://api-free.deepl.com/v2"
+        self._resolved = True
+
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Translate text using DeepL."""
+        self._ensure_endpoint()
         target = self.DEEPL_LANG_MAP.get(target_lang)
         if not target:
             raise ValueError(f"Language '{target_lang}' is not supported by DeepL")
@@ -167,7 +261,7 @@ class DeepLFreeAPI(TranslationAPI):
                 "tag_handling": "xml",
                 "ignore_tags": "x",
             },
-            timeout=30
+            timeout=30,
         )
         self._last_request = self._time.time()
 
@@ -178,15 +272,35 @@ class DeepLFreeAPI(TranslationAPI):
 
     def test_connection(self) -> bool:
         """Test connection with DeepL."""
+        self._ensure_endpoint()
         try:
             response = self.session.get(
                 f"{self.base_url}/usage",
                 headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
-                timeout=10
+                timeout=10,
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            if response.status_code == 403:
+                raise ConnectionError("DeepL: Invalid API key")
+            response.raise_for_status()
+            return True
+        except ConnectionError:
+            raise
+        except Exception as e:
+            raise ConnectionError(f"DeepL: {e}") from e
+
+    def get_usage(self) -> dict:
+        """Fetch DeepL usage statistics.
+
+        Returns dict with 'character_count' and 'character_limit'.
+        """
+        self._ensure_endpoint()
+        response = self.session.get(
+            f"{self.base_url}/usage",
+            headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
+            timeout=10,
+        )
+        response.raise_for_status()
+        return response.json()
 
     def get_name(self) -> str:
         return "DeepL Free (500k chars/month)"
@@ -198,34 +312,97 @@ class GeminiFreeAPI(TranslationAPI):
     Limite: 1,000 requests/dia (Flash-Lite), 15 RPM
     Qualidade: Excelente
     API Key gratuita em: https://aistudio.google.com/apikey
+    Uses new google-genai SDK (replaces deprecated google-generativeai).
     """
+
+    batch_delay = 4.0  # Gemini RPM limits are strict
 
     def __init__(self, api_key: str, model: str = "gemini-2.5-flash-lite"):
         try:
-            import google.generativeai as genai
+            from google import genai
         except ImportError:
-            raise ImportError("Install: pip install google-generativeai")
+            raise ImportError("Install: pip install google-genai")
 
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
+        self.client = genai.Client(
+            api_key=api_key,
+            http_options={"timeout": 60_000},
+        )
         self.model_name = model
 
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Gemini."""
-        prompt = f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are, do not translate or modify them.\n\n{text}"
-        response = self.model.generate_content(
-            prompt,
-            generation_config={"temperature": 0.3, "max_output_tokens": 512}
+        system_prompt = build_translation_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        prompt = f"{system_prompt}\n\n{text}"
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config={"temperature": 0.3, "max_output_tokens": 512},
         )
         return response.text.strip()
+
+    def translate_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        """Gemini Free has strict rate limits (15 RPM) — use sub-batches."""
+        import time as _time
+
+        if len(texts) == 1:
+            return [self.translate(texts[0], source_lang, target_lang)]
+        sub_batch_size = 10
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            if start > 0:
+                _time.sleep(self.batch_delay)
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
+
+    @retry_on_rate_limit
+    def _do_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        system_prompt = build_batch_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        user_msg = "|||NEXT|||".join(texts)
+        prompt = f"{system_prompt}\n\n{user_msg}"
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=prompt,
+            config={"temperature": 0.3, "max_output_tokens": 2048},
+        )
+        parts = clean_batch_parts(response.text)
+        if len(parts) != len(texts):
+            log.warning(
+                "GeminiFree batch mismatch: expected %d, got %d. Translating remaining individually.",
+                len(texts),
+                len(parts),
+            )
+            if len(parts) < len(texts):
+                for t in texts[len(parts) :]:
+                    parts.append(self.translate(t, source_lang, target_lang))
+            else:
+                parts = parts[: len(texts)]
+        return parts
 
     def test_connection(self) -> bool:
         """Testa conexão com Gemini."""
         try:
-            response = self.model.generate_content("test")
+            response = self.client.models.generate_content(
+                model=self.model_name, contents="test"
+            )
             return bool(response.text)
-        except Exception:
-            return False
+        except Exception as e:
+            raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
         return "Gemini Free (1k req/dia)"
@@ -239,34 +416,95 @@ class OpenRouterAPI(TranslationAPI):
     API Key gratuita em: https://openrouter.ai/
     """
 
-    def __init__(self, api_key: str, model: str = "meta-llama/llama-3.1-8b-instruct:free"):
+    def __init__(
+        self, api_key: str, model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    ):
         self.api_key = api_key
         self.model = model
         self.session = requests.Session()
         self.base_url = "https://openrouter.ai/api/v1"
 
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando OpenRouter."""
+        system_prompt = build_translation_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={
                 "Authorization": f"Bearer {self.api_key}",
                 "HTTP-Referer": "https://github.com/translation-automator",
-                "X-Title": "Translation Automator"
+                "X-Title": "Translation Automator",
             },
             json={
                 "model": self.model,
-                "messages": [{
-                    "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
-                }],
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text},
+                ],
                 "temperature": 0.3,
-                "max_tokens": 512
+                "max_tokens": 512,
             },
-            timeout=30
+            timeout=30,
         )
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"].strip()
+
+    def translate_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        if len(texts) == 1:
+            return [self.translate(texts[0], source_lang, target_lang)]
+        return self._do_batch(texts, source_lang, target_lang)
+
+    @retry_on_rate_limit
+    def _do_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        system_prompt = build_batch_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        user_msg = "|||NEXT|||".join(texts)
+        response = self.session.post(
+            f"{self.base_url}/chat/completions",
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "HTTP-Referer": "https://github.com/translation-automator",
+                "X-Title": "Translation Automator",
+            },
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_msg},
+                ],
+                "temperature": 0.3,
+                "max_tokens": 2048,
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
+        content = response.json()["choices"][0]["message"]["content"].strip()
+        parts = clean_batch_parts(content)
+        if len(parts) != len(texts):
+            log.warning(
+                "OpenRouter batch mismatch: expected %d, got %d. Translating remaining individually.",
+                len(texts),
+                len(parts),
+            )
+            if len(parts) < len(texts):
+                for t in texts[len(parts):]:
+                    parts.append(self.translate(t, source_lang, target_lang))
+            else:
+                parts = parts[: len(texts)]
+        return parts
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenRouter."""
@@ -274,11 +512,12 @@ class OpenRouterAPI(TranslationAPI):
             response = self.session.get(
                 f"{self.base_url}/models",
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                timeout=10
+                timeout=10,
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"OpenRouter: {e}") from e
 
     def get_name(self) -> str:
         return "OpenRouter (18 modelos grátis)"
@@ -298,24 +537,79 @@ class MistralFreeAPI(TranslationAPI):
         self.session = requests.Session()
         self.base_url = "https://api.mistral.ai/v1"
 
+    @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """Traduz texto usando Mistral."""
+        system_prompt = build_translation_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
             json={
                 "model": self.model,
-                "messages": [{
-                    "role": "user",
-                    "content": f"Translate from {source_lang} to {target_lang}. Return ONLY the translation. IMPORTANT: preserve any XML tags like <x1/>, <x2/> etc. exactly as they are.\n\n{text}"
-                }],
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text},
+                ],
                 "temperature": 0.3,
-                "max_tokens": 512
+                "max_tokens": 512,
             },
-            timeout=30
+            timeout=30,
         )
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"].strip()
+
+    def translate_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        if len(texts) == 1:
+            return [self.translate(texts[0], source_lang, target_lang)]
+        return self._do_batch(texts, source_lang, target_lang)
+
+    @retry_on_rate_limit
+    def _do_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        system_prompt = build_batch_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        user_msg = "|||NEXT|||".join(texts)
+        response = self.session.post(
+            f"{self.base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {self.api_key}"},
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_msg},
+                ],
+                "temperature": 0.3,
+                "max_tokens": 2048,
+            },
+            timeout=60,
+        )
+        response.raise_for_status()
+        content = response.json()["choices"][0]["message"]["content"].strip()
+        parts = clean_batch_parts(content)
+        if len(parts) != len(texts):
+            log.warning(
+                "Mistral batch mismatch: expected %d, got %d. Translating remaining individually.",
+                len(texts),
+                len(parts),
+            )
+            if len(parts) < len(texts):
+                for t in texts[len(parts):]:
+                    parts.append(self.translate(t, source_lang, target_lang))
+            else:
+                parts = parts[: len(texts)]
+        return parts
 
     def test_connection(self) -> bool:
         """Testa conexão com Mistral."""
@@ -323,11 +617,12 @@ class MistralFreeAPI(TranslationAPI):
             response = self.session.get(
                 f"{self.base_url}/models",
                 headers={"Authorization": f"Bearer {self.api_key}"},
-                timeout=10
+                timeout=10,
             )
-            return response.status_code == 200
-        except Exception:
-            return False
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            raise ConnectionError(f"Mistral: {e}") from e
 
     def get_name(self) -> str:
         return "Mistral Free"

@@ -61,7 +61,7 @@ sudo pacman -S python gtk4 libadwaita python-gobject
 
 # Install
 sudo cp -r usr/share/langforge /usr/share/
-sudo cp usr/share/applications/com.biglinux.langforge.desktop /usr/share/applications/
+sudo cp usr/share/applications/org.communitybig.langforge.desktop /usr/share/applications/
 sudo cp usr/share/icons/hicolor/scalable/apps/langforge.svg /usr/share/icons/hicolor/scalable/apps/
 sudo cp usr/bin/langforge /usr/bin/
 sudo chmod +x /usr/bin/langforge
@@ -123,7 +123,7 @@ LangForge/
 │       │   └── utils/
 │       │       └── i18n.py              # Internationalization
 │       ├── applications/
-│       │   └── com.biglinux.langforge.desktop
+│       │   └── org.communitybig.langforge.desktop
 │       └── icons/
 │           └── hicolor/scalable/apps/langforge.svg
 ├── locale/                              # Translation files (29 languages)

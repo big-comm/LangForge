@@ -1,0 +1,319 @@
+F401 [*] `typing.Optional` imported but unused
+ --> usr/share/langforge/api/factory.py:3:20
+  |
+1 | """Factory para criação de clientes de API."""
+2 |
+3 | from typing import Optional
+  |                    ^^^^^^^^
+4 | from api.base import TranslationAPI
+  |
+help: Remove unused import: `typing.Optional`
+
+F401 [*] `typing.Optional` imported but unused
+ --> usr/share/langforge/api/free_apis.py:4:20
+  |
+3 | import requests
+4 | from typing import Optional
+  |                    ^^^^^^^^
+5 | from api.base import TranslationAPI
+6 | from core.languages import get_api_lang_code
+  |
+help: Remove unused import: `typing.Optional`
+
+F401 [*] `typing.Optional` imported but unused
+ --> usr/share/langforge/api/paid_apis.py:3:20
+  |
+1 | """Implementações de APIs de tradução pagas."""
+2 |
+3 | from typing import Optional
+  |                    ^^^^^^^^
+4 | from api.base import TranslationAPI
+  |
+help: Remove unused import: `typing.Optional`
+
+F401 [*] `typing.Optional` imported but unused
+ --> usr/share/langforge/config/settings.py:5:20
+  |
+3 | import json
+4 | from pathlib import Path
+5 | from typing import Optional, Dict, Any
+  |                    ^^^^^^^^
+  |
+help: Remove unused import: `typing.Optional`
+
+F401 [*] `core.languages.SUPPORTED_LANGUAGES` imported but unused
+ --> usr/share/langforge/core/compiler.py:7:28
+  |
+5 | from typing import Dict, Optional, Callable
+6 |
+7 | from core.languages import SUPPORTED_LANGUAGES
+  |                            ^^^^^^^^^^^^^^^^^^^
+  |
+help: Remove unused import: `core.languages.SUPPORTED_LANGUAGES`
+
+F401 [*] `typing.Optional` imported but unused
+ --> usr/share/langforge/core/extractor.py:5:26
+  |
+3 | import subprocess
+4 | from pathlib import Path
+5 | from typing import List, Optional
+  |                          ^^^^^^^^
+6 | import polib
+  |
+help: Remove unused import: `typing.Optional`
+
+F841 Local variable `result` is assigned to but never used
+  --> usr/share/langforge/core/extractor.py:50:13
+   |
+49 |         try:
+50 |             result = subprocess.run(
+   |             ^^^^^^
+51 |                 cmd,
+52 |                 check=True,
+   |
+help: Remove assignment to unused variable `result`
+
+F841 [*] Local variable `e` is assigned to but never used
+   --> usr/share/langforge/core/translator.py:218:33
+    |
+216 |                         entry.flags.remove('fuzzy')
+217 |                 translated_count += 1
+218 |             except Exception as e:
+    |                                 ^
+219 |                 # If translation fails, mark as fuzzy for manual review
+220 |                 if 'fuzzy' not in entry.flags:
+    |
+help: Remove assignment to unused variable `e`
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/main.py:11:1
+   |
+ 9 |     sys.path.insert(0, str(src_dir))
+10 |
+11 | import gi
+   | ^^^^^^^^^
+12 | gi.require_version('Gtk', '4.0')
+13 | gi.require_version('Adw', '1')
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/main.py:14:1
+   |
+12 | gi.require_version('Gtk', '4.0')
+13 | gi.require_version('Adw', '1')
+14 | from gi.repository import Adw, Gio, Gtk
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 |
+16 | from ui.main_window import MainWindow
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/main.py:16:1
+   |
+14 | from gi.repository import Adw, Gio, Gtk
+15 |
+16 | from ui.main_window import MainWindow
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | from utils.i18n import _
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/main.py:17:1
+   |
+16 | from ui.main_window import MainWindow
+17 | from utils.i18n import _
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+18 |
+19 | APP_VERSION = "1.2.3"
+   |
+
+E402 Module level import not at top of file
+ --> usr/share/langforge/ui/main_window.py:6:1
+  |
+4 | gi.require_version('Gtk', '4.0')
+5 | gi.require_version('Adw', '1')
+6 | from gi.repository import Gtk, Adw, GLib, Gdk, Gio
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+7 | import threading
+8 | import math
+  |
+
+E402 Module level import not at top of file
+ --> usr/share/langforge/ui/main_window.py:7:1
+  |
+5 | gi.require_version('Adw', '1')
+6 | from gi.repository import Gtk, Adw, GLib, Gdk, Gio
+7 | import threading
+  | ^^^^^^^^^^^^^^^^
+8 | import math
+9 | from pathlib import Path
+  |
+
+E402 Module level import not at top of file
+ --> usr/share/langforge/ui/main_window.py:8:1
+  |
+6 | from gi.repository import Gtk, Adw, GLib, Gdk, Gio
+7 | import threading
+8 | import math
+  | ^^^^^^^^^^^
+9 | from pathlib import Path
+  |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:9:1
+   |
+ 7 | import threading
+ 8 | import math
+ 9 | from pathlib import Path
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+10 |
+11 | from config.settings import Settings
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:11:1
+   |
+ 9 | from pathlib import Path
+10 |
+11 | from config.settings import Settings
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 | from core.scanner import ProjectScanner
+13 | from core.extractor import GettextExtractor
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:12:1
+   |
+11 | from config.settings import Settings
+12 | from core.scanner import ProjectScanner
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from core.extractor import GettextExtractor
+14 | from core.translator import TranslationEngine
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:13:1
+   |
+11 | from config.settings import Settings
+12 | from core.scanner import ProjectScanner
+13 | from core.extractor import GettextExtractor
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | from core.translator import TranslationEngine
+15 | from core.compiler import MoCompiler
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:14:1
+   |
+12 | from core.scanner import ProjectScanner
+13 | from core.extractor import GettextExtractor
+14 | from core.translator import TranslationEngine
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from core.compiler import MoCompiler
+16 | from core.languages import SUPPORTED_LANGUAGES
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:15:1
+   |
+13 | from core.extractor import GettextExtractor
+14 | from core.translator import TranslationEngine
+15 | from core.compiler import MoCompiler
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from core.languages import SUPPORTED_LANGUAGES
+17 | from api.factory import APIFactory
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:16:1
+   |
+14 | from core.translator import TranslationEngine
+15 | from core.compiler import MoCompiler
+16 | from core.languages import SUPPORTED_LANGUAGES
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | from api.factory import APIFactory
+18 | from ui.settings_dialog import SettingsDialog
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:17:1
+   |
+15 | from core.compiler import MoCompiler
+16 | from core.languages import SUPPORTED_LANGUAGES
+17 | from api.factory import APIFactory
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 | from ui.settings_dialog import SettingsDialog
+19 | from utils.i18n import _
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:18:1
+   |
+16 | from core.languages import SUPPORTED_LANGUAGES
+17 | from api.factory import APIFactory
+18 | from ui.settings_dialog import SettingsDialog
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+19 | from utils.i18n import _
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/main_window.py:19:1
+   |
+17 | from api.factory import APIFactory
+18 | from ui.settings_dialog import SettingsDialog
+19 | from utils.i18n import _
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+F841 Local variable `count` is assigned to but never used
+   --> usr/share/langforge/ui/main_window.py:582:13
+    |
+580 |             )
+581 |             extractor.extract_strings(files)
+582 |             count = extractor.get_string_count()
+    |             ^^^^^
+    |
+help: Remove assignment to unused variable `count`
+
+E402 Module level import not at top of file
+ --> usr/share/langforge/ui/settings_dialog.py:6:1
+  |
+4 | gi.require_version('Gtk', '4.0')
+5 | gi.require_version('Adw', '1')
+6 | from gi.repository import Gtk, Adw
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+7 |
+8 | from config.settings import Settings
+  |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/settings_dialog.py:8:1
+   |
+ 6 | from gi.repository import Gtk, Adw
+ 7 |
+ 8 | from config.settings import Settings
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 9 | from api.factory import APIFactory
+10 | from utils.i18n import _
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/settings_dialog.py:9:1
+   |
+ 8 | from config.settings import Settings
+ 9 | from api.factory import APIFactory
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 | from utils.i18n import _
+   |
+
+E402 Module level import not at top of file
+  --> usr/share/langforge/ui/settings_dialog.py:10:1
+   |
+ 8 | from config.settings import Settings
+ 9 | from api.factory import APIFactory
+10 | from utils.i18n import _
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+Found 30 errors.
+[*] 7 fixable with the `--fix` option (2 hidden fixes can be enabled with the `--unsafe-fixes` option).
