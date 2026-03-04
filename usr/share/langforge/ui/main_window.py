@@ -18,6 +18,19 @@ from utils.i18n import _
 from utils.tooltip_helper import TooltipHelper
 
 
+def _apply_row_tooltip(row: Gtk.Widget, text: str) -> None:
+    """Apply a tooltip to an Adw row using query-tooltip signal."""
+    if not text:
+        return
+    row.set_has_tooltip(True)
+
+    def _on_query(widget, x, y, keyboard, tooltip):
+        tooltip.set_text(text)
+        return True
+
+    row.connect("query-tooltip", _on_query)
+
+
 def _humanize_error(e: Exception) -> str:
     """Convert common exceptions to user-friendly messages (M5)."""
     msg = str(e).lower()
@@ -483,6 +496,7 @@ class MainWindow(Adw.ApplicationWindow):
             [Gtk.AccessibleProperty.LABEL],
             [_("View live translation details")],
         )
+        self.tooltip_helper.add_tooltip(self.live_view_button, "live_view")
         btn_box.append(self.live_view_button)
 
         self.cancel_button = Gtk.Button(label=_("Cancel Translation"))
@@ -710,10 +724,18 @@ class MainWindow(Adw.ApplicationWindow):
         type_labels = [t[0] for t in configured_types]
         self.api_type_row.set_model(Gtk.StringList.new(type_labels))
         self.api_type_row.connect("notify::selected", self._on_sidebar_api_type_changed)
+        _apply_row_tooltip(
+            self.api_type_row,
+            self.tooltip_helper.tooltips.get("api_type", ""),
+        )
         api_group.add(self.api_type_row)
 
         # Provider row
         self.api_provider_row = Adw.ComboRow(title=_("Provider"))
+        _apply_row_tooltip(
+            self.api_provider_row,
+            self.tooltip_helper.tooltips.get("api_provider", ""),
+        )
         api_group.add(self.api_provider_row)
 
         # Set initial selection based on saved settings
