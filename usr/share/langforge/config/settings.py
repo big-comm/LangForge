@@ -16,7 +16,7 @@ try:
     from gi.repository import Secret
 
     _SECRET_SCHEMA = Secret.Schema.new(
-        "com.biglinux.langforge",
+        "org.communitybig.langforge",
         Secret.SchemaFlags.NONE,
         {"key_name": Secret.SchemaAttributeType.STRING},
     )

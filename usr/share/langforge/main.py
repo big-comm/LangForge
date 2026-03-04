@@ -43,7 +43,7 @@ class LangForgeApp(Adw.Application):
     """Main application."""
 
     def __init__(self):
-        super().__init__(application_id="com.biglinux.langforge")
+        super().__init__(application_id="org.communitybig.langforge")
 
     def do_activate(self):
         """Called when application is activated."""
