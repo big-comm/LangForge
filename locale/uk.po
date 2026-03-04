@@ -155,6 +155,16 @@ msgstr "Деталі перекладу"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "Статус перекладу мови"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 477
+#: NEEDS WORK
+msgid "View Live"
+msgstr "Вигляд в реальному часі"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 484
+#: NEEDS WORK
+msgid "View live translation details"
+msgstr "Переглянути деталі живого перекладу"
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 #. Cancel button (visible only during translation)
@@ -363,6 +373,31 @@ msgstr "{} мов, перекладених до скасування"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
 msgid "Cancelled"
 msgstr "Cancelled"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+#: NEEDS WORK
+msgid "Live Translation"
+msgstr "Живий переклад"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
+#: NEEDS WORK
+msgid "Clear"
+msgstr "Очистити"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 40
+#: NEEDS WORK
+msgid "Auto-scroll"
+msgstr "Авто-прокрутка"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+#: NEEDS WORK
+msgid "Waiting..."
+msgstr "Waiting..."
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 77
+#: NEEDS WORK
+msgid "Live translation diff view"
+msgstr "Живий перегляд різниць у перекладі"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"

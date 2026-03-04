@@ -155,6 +155,16 @@ msgstr "Λεπτομέρειες μετάφρασης"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "Κατάσταση μετάφρασης γλώσσας"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 477
+#: NEEDS WORK
+msgid "View Live"
+msgstr "Προβολή σε πραγματικό χρόνο"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 484
+#: NEEDS WORK
+msgid "View live translation details"
+msgstr "Δείτε λεπτομέρειες ζωντανής μετάφρασης"
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 #. Cancel button (visible only during translation)
@@ -363,6 +373,31 @@ msgstr "{} γλώσσες μεταφρασμένες πριν από την ακ
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+#: NEEDS WORK
+msgid "Live Translation"
+msgstr "Ζωντανή Μετάφραση"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
+#: NEEDS WORK
+msgid "Clear"
+msgstr "Καθαρισμός"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 40
+#: NEEDS WORK
+msgid "Auto-scroll"
+msgstr "Αυτόματη κύλιση"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+#: NEEDS WORK
+msgid "Waiting..."
+msgstr "Αναμονή..."
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 77
+#: NEEDS WORK
+msgid "Live translation diff view"
+msgstr "Ζωντανή προβολή διαφοράς μετάφρασης"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
