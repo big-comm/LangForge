@@ -489,7 +489,7 @@ msgstr "★ Franska"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 375
 #: NEEDS WORK
 msgid "★ Portuguese (Brazil)"
-msgstr "★ Português (Brasil)"
+msgstr "★ Portugiesisch (Brasilien)"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 376
 #: NEEDS WORK
