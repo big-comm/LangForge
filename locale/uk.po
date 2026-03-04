@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the LangForge package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -17,12 +17,8 @@ msgstr ""
 "X-Generator: attranslate\n"
 # File: usr/share/langforge/ui/main_window.py, line: 25
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
-msgid ""
-"Could not connect to the translation service. Check your internet "
-"connection."
-msgstr ""
-"Could not connect to the translation service. Check your internet "
-"connection."
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "Could not connect to the translation service. Check your internet connection."
 # File: usr/share/langforge/ui/main_window.py, line: 29
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:29
 msgid "Invalid API key. Check your key in Settings."
@@ -38,9 +34,7 @@ msgstr "Перевищено ліміт запитів API. Зачекайте �
 # File: usr/share/langforge/ui/main_window.py, line: 35
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:35
 msgid "The translation service took too long to respond. Try again later."
-msgstr ""
-"El servicio de traducción tardó demasiado en responder. Inténtalo de nuevo "
-"más tarde."
+msgstr "El servicio de traducción tardó demasiado en responder. Inténtalo de nuevo más tarde."
 # File: usr/share/langforge/ui/main_window.py, line: 37
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
@@ -83,15 +77,15 @@ msgstr "Усі"
 msgid "None"
 msgstr "Жоден"
 # File: usr/share/langforge/ui/main_window.py, line: 186
-#. ── API Settings button ──
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
+#. ── API Settings button ──
 msgid "API Settings..."
 msgstr "Налаштування API..."
 # File: usr/share/langforge/ui/main_window.py, line: 209
 # File: usr/share/langforge/ui/main_window.py, line: 580
-#. Centered translate button as title widget
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1172
+#. Centered translate button as title widget
 msgid "Start Translation"
 msgstr "Почати переклад"
 # File: usr/share/langforge/ui/main_window.py, line: 309
@@ -117,8 +111,7 @@ msgstr "Quit"
 # File: usr/share/langforge/ui/main_window.py, line: 360
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:360
 msgid "Project selection area. Drag a folder here or click to select."
-msgstr ""
-"Область вибору проєкту. Перетягніть папку сюди або натисніть, щоб вибрати."
+msgstr "Область вибору проєкту. Перетягніть папку сюди або натисніть, щоб вибрати."
 # File: usr/share/langforge/ui/main_window.py, line: 281
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:372
 msgid "No project selected"
@@ -163,8 +156,8 @@ msgstr "Деталі перекладу"
 msgid "Language translation status"
 msgstr "Статус перекладу мови"
 # File: usr/share/langforge/ui/main_window.py, line: 472
-#. Cancel button (visible only during translation)
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
+#. Cancel button (visible only during translation)
 msgid "Cancel Translation"
 msgstr "Annuleren vertaling"
 # File: usr/share/langforge/ui/main_window.py, line: 486
@@ -200,8 +193,8 @@ msgstr "Перекласти знову"
 msgid "New Project"
 msgstr "Новий проект"
 # File: usr/share/langforge/ui/main_window.py, line: 560
-#. Build description with optional cost info
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:561
+#. Build description with optional cost info
 #, python-brace-format
 msgid "{langs} languages translated in {time}"
 msgstr "{langs} мови перекладено за {time}"
@@ -223,6 +216,11 @@ msgstr "завершено"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
 msgid "error"
 msgstr "ошибка"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 639
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
+msgid "reference"
+msgstr "Довідка"
 # File: usr/share/langforge/ui/main_window.py, line: 146
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:684
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:690
@@ -236,9 +234,9 @@ msgstr "Платно"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 144
 # File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#. API Type row
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
+#. API Type row
 msgid "API Type"
 msgstr "Тип API"
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
@@ -246,9 +244,9 @@ msgstr "Тип API"
 # File: usr/share/langforge/ui/main_window.py, line: 150
 # File: usr/share/langforge/ui/settings_dialog.py, line: 81
 # File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#. Provider row
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
+#. Provider row
 msgid "Provider"
 msgstr "Провайдер"
 # File: usr/share/langforge/ui/main_window.py, line: 747
@@ -344,21 +342,27 @@ msgstr "Складання..."
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1035
 msgid "Checking context-aware translations..."
 msgstr "Перевірка перекладів з урахуванням контексту..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1066
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1058
+#, python-brace-format
+msgid "Resuming… {current}/{total} languages already done"
+msgstr "Відновлення… {current}/{total} мов уже виконано"
 # File: usr/share/langforge/ui/main_window.py, line: 1057
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1103
 #, python-brace-format
 msgid "{name} ({current}/{total}) · ~{eta} remaining"
 msgstr "{name} ({current}/{total}) · ~{eta} залишилось"
-# File: usr/share/langforge/ui/main_window.py, line: 1075
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
-msgid "Cancelled"
-msgstr "Cancelled"
 # File: usr/share/langforge/ui/main_window.py, line: 1077
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1125
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1154
 #, python-brace-format
 msgid "{} languages translated before cancellation"
 msgstr "{} мов, перекладених до скасування"
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
+msgid "Cancelled"
+msgstr "Cancelled"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
@@ -456,6 +460,46 @@ msgstr "Gemini 2.5 Flash/Pro — Fast and capable"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "25 доларів США безкоштовних кредитів — вікно контексту 2M"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 359
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
+msgid "Fix Context"
+msgstr "Виправити контекст"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 362
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
+msgid ""
+"Reference language used to detect context-sensitive translations. Romance languages work best "
+"because they reveal English ambiguities through gender and conjugation."
+msgstr ""
+"Еталонна мова використовується для виявлення контекстно-залежних перекладів. Романські мови "
+"працюють найкраще, тому що вони виявляють неоднозначності англійської мови через рід та "
+"відмінювання."
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 369
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
+msgid "Reference language"
+msgstr "Еталонна мова"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 371
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
+msgid "★ = recommended"
+msgstr "★ = рекомендовано"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 374
+#: NEEDS WORK
+msgid "★ French"
+msgstr "★ Français"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+#: NEEDS WORK
+msgid "★ Portuguese (Brazil)"
+msgstr "★ Português (Brasil)"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+#: NEEDS WORK
+msgid "★ Spanish"
+msgstr "★ Español"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 140
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
@@ -466,6 +510,20 @@ msgstr "Як отримати ключі API"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
 msgid "Test Connection"
 msgstr "Перевірити з'єднання"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 617
+# File: usr/share/langforge/ui/settings_dialog.py, line: 618
+# File: usr/share/langforge/ui/settings_dialog.py, line: 619
+# File: usr/share/langforge/ui/settings_dialog.py, line: 620
+# File: usr/share/langforge/ui/settings_dialog.py, line: 621
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
+#, python-brace-format
+msgid "{provider} API Key"
+msgstr "{provider} Ключ API"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 559
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
 msgid "Testing..."
@@ -494,8 +552,7 @@ msgstr "Доступні безкоштовні API"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 280
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
 msgid "Click the links to create your account and get your key"
-msgstr ""
-"Перейдіть за посиланнями, щоб створити обліковий запис та отримати ключ"
+msgstr "Перейдіть за посиланнями, щоб створити обліковий запис та отримати ключ"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 289
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
 msgid "Recommended"
@@ -628,54 +685,20 @@ msgid ""
 "Not compatible:\n"
 "DeepL, LibreTranslate (no context support)"
 msgstr "Повторно перевірити наявні переклади за допомогою контекстно-ор"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
-msgid "reference"
-msgstr "Довідка"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1058
-#, python-brace-format
-msgid "Resuming… {current}/{total} languages already done"
-msgstr "Відновлення… {current}/{total} мов уже виконано"
+# 
+# File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
 msgid "Project does not use gettext"
 msgstr "Проєкт не використовує gettext"
+# 
+# File: usr/share/langforge/core/controller.py, line: 74
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:74
 #, python-brace-format
 msgid "Not a file: {}"
 msgstr "Не є файлом: {}"
+# 
+# File: usr/share/langforge/core/controller.py, line: 77
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:77
 #, python-brace-format
 msgid "Unsupported file type: {ext}. Supported: .po, .pot, .json, .txt, .md"
-msgstr ""
-"Непідтримуваний тип файлу: {ext}. Підтримувані: .po, .pot, .json, .txt, .md"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
-msgid "Fix Context"
-msgstr "Виправити контекст"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
-msgid ""
-"Reference language used to detect context-sensitive translations. Romance "
-"languages work best because they reveal English ambiguities through gender "
-"and conjugation."
-msgstr ""
-"Еталонна мова використовується для виявлення контекстно-залежних перекладів."
-" Романські мови працюють найкраще, тому що вони виявляють неоднозначності "
-"англійської мови через рід та відмінювання."
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
-msgid "Reference language"
-msgstr "Еталонна мова"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
-msgid "★ = recommended"
-msgstr "★ = рекомендовано"
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
-#, python-brace-format
-msgid "{provider} API Key"
-msgstr "{provider} Ключ API"
-# File: usr/share/langforge/ui/main_window.py, line: 1095
-#~ msgid "Cancelling..."
-#~ msgstr "Cancelling..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 427
-#~ msgid "Provider changed — verify your API key is correct"
-#~ msgstr "Provider changed — verify your API key is correct"
+msgstr "Непідтримуваний тип файлу: {ext}. Підтримувані: .po, .pot, .json, .txt, .md"
