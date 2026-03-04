@@ -100,7 +100,7 @@ msgstr "API Settings..."
 
 #
 # File: usr/share/langforge/ui/main_window.py, line: 299
-# File: usr/share/langforge/ui/main_window.py, line: 1228
+# File: usr/share/langforge/ui/main_window.py, line: 1224
 msgid "Start Translation"
 msgstr "Start Translation"
 
@@ -161,8 +161,8 @@ msgstr "Change"
 
 #
 # File: usr/share/langforge/ui/main_window.py, line: 441
-# File: usr/share/langforge/ui/main_window.py, line: 1029
-# File: usr/share/langforge/ui/main_window.py, line: 1076
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+# File: usr/share/langforge/ui/main_window.py, line: 1072
 msgid "Translating..."
 msgstr "Translating..."
 
@@ -273,84 +273,89 @@ msgid "reference"
 msgstr "reference"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 713
+# File: usr/share/langforge/ui/main_window.py, line: 700
 msgid "Free"
 msgstr "Free"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 713
+# File: usr/share/langforge/ui/main_window.py, line: 700
 msgid "Paid"
 msgstr "Paid"
 
 #
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 #
-# File: usr/share/langforge/ui/main_window.py, line: 724
-# File: usr/share/langforge/ui/settings_dialog.py, line: 170
+# File: usr/share/langforge/ui/main_window.py, line: 709
+# File: usr/share/langforge/ui/settings_dialog.py, line: 166
 msgid "API Type"
 msgstr "API Type"
 
 #
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 #
-# File: usr/share/langforge/ui/main_window.py, line: 731
-# File: usr/share/langforge/ui/settings_dialog.py, line: 321
+# File: usr/share/langforge/ui/main_window.py, line: 716
+# File: usr/share/langforge/ui/settings_dialog.py, line: 317
 msgid "Provider"
 msgstr "Provider"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 781
+# File: usr/share/langforge/ui/main_window.py, line: 772
 #, python-brace-format
 msgid "{count} of {total} languages selected"
 msgstr "{count} of {total} languages selected"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 859
+# File: usr/share/langforge/ui/main_window.py, line: 850
 msgid "Translatable files (.po, .json, .txt, .md, .srt)"
 msgstr "Translatable files (.po, .json, .txt, .md, .srt)"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 876
-# File: usr/share/langforge/ui/main_window.py, line: 887
-# File: usr/share/langforge/ui/main_window.py, line: 927
-# File: usr/share/langforge/ui/main_window.py, line: 955
-# File: usr/share/langforge/ui/main_window.py, line: 1019
-# File: usr/share/langforge/ui/main_window.py, line: 1193
-# File: usr/share/langforge/ui/main_window.py, line: 1195
+# File: usr/share/langforge/ui/main_window.py, line: 867
+# File: usr/share/langforge/ui/main_window.py, line: 878
+# File: usr/share/langforge/ui/main_window.py, line: 918
+# File: usr/share/langforge/ui/main_window.py, line: 946
+# File: usr/share/langforge/ui/main_window.py, line: 1015
+# File: usr/share/langforge/ui/main_window.py, line: 1189
+# File: usr/share/langforge/ui/main_window.py, line: 1191
 msgid "Error"
 msgstr "Error"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 913
+# File: usr/share/langforge/ui/main_window.py, line: 904
 #, python-brace-format
 msgid "{strings} strings · {langs} languages"
 msgstr "{strings} strings · {langs} languages"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 922
+# File: usr/share/langforge/ui/main_window.py, line: 913
 #, python-brace-format
 msgid "Project loaded: {}"
 msgstr "Project loaded: {}"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 941
+# File: usr/share/langforge/ui/main_window.py, line: 932
 #, python-brace-format
 msgid "{items} items · {langs} languages"
 msgstr "{items} items · {langs} languages"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 950
+# File: usr/share/langforge/ui/main_window.py, line: 941
 #, python-brace-format
 msgid "File loaded: {}"
 msgstr "File loaded: {}"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 965
+# File: usr/share/langforge/ui/main_window.py, line: 956
 msgid "Select at least one language"
 msgstr "Select at least one language"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 979
+# File: usr/share/langforge/ui/main_window.py, line: 970
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "No paid API configured. Add an API key in Settings."
+
+#
+# File: usr/share/langforge/ui/main_window.py, line: 975
 #, python-brace-format
 msgid ""
 "Translate {items} items to {langs} languages using {provider}.\n"
@@ -360,7 +365,7 @@ msgstr ""
 "This may take several minutes."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 988
+# File: usr/share/langforge/ui/main_window.py, line: 984
 #, python-brace-format
 msgid ""
 "Translate {strings} strings to {langs} languages using {provider}.\n"
@@ -370,56 +375,56 @@ msgstr ""
 "This may take several minutes."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 997
+# File: usr/share/langforge/ui/main_window.py, line: 993
 msgid "Start Translation?"
 msgstr "Start Translation?"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 999
+# File: usr/share/langforge/ui/main_window.py, line: 995
 msgid "Cancel"
 msgstr "Cancel"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1000
+# File: usr/share/langforge/ui/main_window.py, line: 996
 msgid "Start"
 msgstr "Start"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1075
+# File: usr/share/langforge/ui/main_window.py, line: 1071
 msgid "Extracting strings..."
 msgstr "Extracting strings..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1077
+# File: usr/share/langforge/ui/main_window.py, line: 1073
 msgid "Compiling..."
 msgstr "Compiling..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1078
+# File: usr/share/langforge/ui/main_window.py, line: 1074
 msgid "Checking context-aware translations..."
 msgstr "Checking context-aware translations..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1102
+# File: usr/share/langforge/ui/main_window.py, line: 1098
 #, python-brace-format
 msgid "Resuming… {current}/{total} languages already done"
 msgstr "Resuming… {current}/{total} languages already done"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1155
+# File: usr/share/langforge/ui/main_window.py, line: 1151
 #, python-brace-format
 msgid "{name} ({current}/{total}) · ~{eta} remaining"
 msgstr "{name} ({current}/{total}) · ~{eta} remaining"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1181
-# File: usr/share/langforge/ui/main_window.py, line: 1210
+# File: usr/share/langforge/ui/main_window.py, line: 1177
+# File: usr/share/langforge/ui/main_window.py, line: 1206
 #, python-brace-format
 msgid "{} languages translated before cancellation"
 msgstr "{} languages translated before cancellation"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1202
+# File: usr/share/langforge/ui/main_window.py, line: 1198
 msgid "Cancelled"
 msgstr "Cancelled"
 
@@ -449,130 +454,130 @@ msgid "Live translation diff view"
 msgstr "Live translation diff view"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 165
+# File: usr/share/langforge/ui/settings_dialog.py, line: 161
 msgid "Translation API"
 msgstr "Translation API"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 173
+# File: usr/share/langforge/ui/settings_dialog.py, line: 169
 msgid "Select type"
 msgstr "Select type"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 174
+# File: usr/share/langforge/ui/settings_dialog.py, line: 170
 msgid "Free API"
 msgstr "Free API"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 174
+# File: usr/share/langforge/ui/settings_dialog.py, line: 170
 msgid "Paid API"
 msgstr "Paid API"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 183
+# File: usr/share/langforge/ui/settings_dialog.py, line: 179
 msgid "Free Tier APIs"
 msgstr "Free Tier APIs"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 184
+# File: usr/share/langforge/ui/settings_dialog.py, line: 180
 msgid "Select your preferred translation provider"
 msgstr "Select your preferred translation provider"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 191
+# File: usr/share/langforge/ui/settings_dialog.py, line: 187
 msgid "500k chars/month — Best translation quality"
 msgstr "500k chars/month — Best translation quality"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 197
+# File: usr/share/langforge/ui/settings_dialog.py, line: 193
 msgid "14.4k req/day — Fastest, excellent quality"
 msgstr "14.4k req/day — Fastest, excellent quality"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 203
+# File: usr/share/langforge/ui/settings_dialog.py, line: 199
 msgid "1,000 req/day — Google AI"
 msgstr "1,000 req/day — Google AI"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 209
+# File: usr/share/langforge/ui/settings_dialog.py, line: 205
 msgid "18 free models available"
 msgstr "18 free models available"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 215
+# File: usr/share/langforge/ui/settings_dialog.py, line: 211
 msgid "Free tier — Quality models"
 msgstr "Free tier — Quality models"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 221
+# File: usr/share/langforge/ui/settings_dialog.py, line: 217
 msgid "Open source — No API key needed"
 msgstr "Open source — No API key needed"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 249
+# File: usr/share/langforge/ui/settings_dialog.py, line: 245
 msgid "More providers"
 msgstr "More providers"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 250
+# File: usr/share/langforge/ui/settings_dialog.py, line: 246
 msgid "4 additional free options"
 msgstr "4 additional free options"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 270
-# File: usr/share/langforge/ui/settings_dialog.py, line: 345
-# File: usr/share/langforge/ui/settings_dialog.py, line: 624
+# File: usr/share/langforge/ui/settings_dialog.py, line: 266
+# File: usr/share/langforge/ui/settings_dialog.py, line: 341
+# File: usr/share/langforge/ui/settings_dialog.py, line: 618
 msgid "API Key"
 msgstr "API Key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 276
+# File: usr/share/langforge/ui/settings_dialog.py, line: 272
 msgid "Usage"
 msgstr "Usage"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 277
+# File: usr/share/langforge/ui/settings_dialog.py, line: 273
 msgid "Click 'Test Connection' to check"
 msgstr "Click 'Test Connection' to check"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 284
-# File: usr/share/langforge/ui/settings_dialog.py, line: 350
+# File: usr/share/langforge/ui/settings_dialog.py, line: 280
+# File: usr/share/langforge/ui/settings_dialog.py, line: 346
 msgid "Model"
 msgstr "Model"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 290
+# File: usr/share/langforge/ui/settings_dialog.py, line: 286
 msgid "LibreTranslate URL"
 msgstr "LibreTranslate URL"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 299
+# File: usr/share/langforge/ui/settings_dialog.py, line: 295
 msgid "Paid API Settings"
 msgstr "Paid API Settings"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 306
+# File: usr/share/langforge/ui/settings_dialog.py, line: 302
 msgid "GPT-4o, GPT-4.1 — Industry standard"
 msgstr "GPT-4o, GPT-4.1 — Industry standard"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 311
+# File: usr/share/langforge/ui/settings_dialog.py, line: 307
 msgid "Gemini 2.5 Flash/Pro — Fast and capable"
 msgstr "Gemini 2.5 Flash/Pro — Fast and capable"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 316
+# File: usr/share/langforge/ui/settings_dialog.py, line: 312
 msgid "$25 free credits — 2M context window"
 msgstr "$25 free credits — 2M context window"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 359
+# File: usr/share/langforge/ui/settings_dialog.py, line: 355
 msgid "Fix Context"
 msgstr "Fix Context"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 362
+# File: usr/share/langforge/ui/settings_dialog.py, line: 358
 msgid ""
 "Reference language used to detect context-sensitive translations. Romance "
 "languages work best because they reveal English ambiguities through gender "
@@ -583,195 +588,195 @@ msgstr ""
 "and conjugation."
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 369
+# File: usr/share/langforge/ui/settings_dialog.py, line: 365
 msgid "Reference language"
 msgstr "Reference language"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 371
+# File: usr/share/langforge/ui/settings_dialog.py, line: 367
 msgid "★ = recommended"
 msgstr "★ = recommended"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 374
+# File: usr/share/langforge/ui/settings_dialog.py, line: 370
 msgid "★ French"
 msgstr "★ French"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+# File: usr/share/langforge/ui/settings_dialog.py, line: 371
 msgid "★ Portuguese (Brazil)"
 msgstr "★ Portuguese (Brazil)"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+# File: usr/share/langforge/ui/settings_dialog.py, line: 372
 msgid "★ Spanish"
 msgstr "★ Spanish"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 396
-# File: usr/share/langforge/ui/settings_dialog.py, line: 399
+# File: usr/share/langforge/ui/settings_dialog.py, line: 392
+# File: usr/share/langforge/ui/settings_dialog.py, line: 395
 msgid "How to get API Keys"
 msgstr "How to get API Keys"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 404
-# File: usr/share/langforge/ui/settings_dialog.py, line: 716
+# File: usr/share/langforge/ui/settings_dialog.py, line: 400
+# File: usr/share/langforge/ui/settings_dialog.py, line: 710
 msgid "Test Connection"
 msgstr "Test Connection"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 617
-# File: usr/share/langforge/ui/settings_dialog.py, line: 618
-# File: usr/share/langforge/ui/settings_dialog.py, line: 619
-# File: usr/share/langforge/ui/settings_dialog.py, line: 620
-# File: usr/share/langforge/ui/settings_dialog.py, line: 621
+# File: usr/share/langforge/ui/settings_dialog.py, line: 611
+# File: usr/share/langforge/ui/settings_dialog.py, line: 612
+# File: usr/share/langforge/ui/settings_dialog.py, line: 613
+# File: usr/share/langforge/ui/settings_dialog.py, line: 614
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
 #, python-brace-format
 msgid "{provider} API Key"
 msgstr "{provider} API Key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 632
+# File: usr/share/langforge/ui/settings_dialog.py, line: 626
 msgid "Testing..."
 msgstr "Testing..."
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 633
+# File: usr/share/langforge/ui/settings_dialog.py, line: 627
 msgid "Testing connection..."
 msgstr "Testing connection..."
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 671
+# File: usr/share/langforge/ui/settings_dialog.py, line: 665
 msgid "Connection successful"
 msgstr "Connection successful"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 688
+# File: usr/share/langforge/ui/settings_dialog.py, line: 682
 msgid "Connection failed"
 msgstr "Connection failed"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 721
+# File: usr/share/langforge/ui/settings_dialog.py, line: 715
 msgid "✓ Settings saved!"
 msgstr "✓ Settings saved!"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 729
-# File: usr/share/langforge/ui/settings_dialog.py, line: 749
+# File: usr/share/langforge/ui/settings_dialog.py, line: 723
+# File: usr/share/langforge/ui/settings_dialog.py, line: 743
 msgid "Available Free APIs"
 msgstr "Available Free APIs"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 754
+# File: usr/share/langforge/ui/settings_dialog.py, line: 748
 msgid "Click the links to create your account and get your key"
 msgstr "Click the links to create your account and get your key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 764
+# File: usr/share/langforge/ui/settings_dialog.py, line: 758
 msgid "Recommended"
 msgstr "Recommended"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 765
+# File: usr/share/langforge/ui/settings_dialog.py, line: 759
 msgid "500k characters/month"
 msgstr "500k characters/month"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 766
+# File: usr/share/langforge/ui/settings_dialog.py, line: 760
 msgid "Best translation quality"
 msgstr "Best translation quality"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 768
+# File: usr/share/langforge/ui/settings_dialog.py, line: 762
 msgid "Create account → Free Plan → API Keys"
 msgstr "Create account → Free Plan → API Keys"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 773
+# File: usr/share/langforge/ui/settings_dialog.py, line: 767
 msgid "Fastest"
 msgstr "Fastest"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 774
+# File: usr/share/langforge/ui/settings_dialog.py, line: 768
 msgid "14,400 requests/day"
 msgstr "14,400 requests/day"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 775
+# File: usr/share/langforge/ui/settings_dialog.py, line: 769
 msgid "LLaMA 3 - Excellent value"
 msgstr "LLaMA 3 - Excellent value"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 777
+# File: usr/share/langforge/ui/settings_dialog.py, line: 771
 msgid "Create account → API Keys → Create"
 msgstr "Create account → API Keys → Create"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 783
+# File: usr/share/langforge/ui/settings_dialog.py, line: 777
 msgid "1,000 requests/day"
 msgstr "1,000 requests/day"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 784
+# File: usr/share/langforge/ui/settings_dialog.py, line: 778
 msgid "Google AI - Good quality"
 msgstr "Google AI - Good quality"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 786
+# File: usr/share/langforge/ui/settings_dialog.py, line: 780
 msgid "Google Login → Get API Key"
 msgstr "Google Login → Get API Key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 792
+# File: usr/share/langforge/ui/settings_dialog.py, line: 786
 msgid "18 free models"
 msgstr "18 free models"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 793
+# File: usr/share/langforge/ui/settings_dialog.py, line: 787
 msgid "Multiple models available"
 msgstr "Multiple models available"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 795
+# File: usr/share/langforge/ui/settings_dialog.py, line: 789
 msgid "Create account → Keys → Create Key"
 msgstr "Create account → Keys → Create Key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 801
+# File: usr/share/langforge/ui/settings_dialog.py, line: 795
 msgid "Free tier available"
 msgstr "Free tier available"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 802
+# File: usr/share/langforge/ui/settings_dialog.py, line: 796
 msgid "Quality Mistral models"
 msgstr "Quality Mistral models"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 804
+# File: usr/share/langforge/ui/settings_dialog.py, line: 798
 msgid "Create account → API Keys → Generate"
 msgstr "Create account → API Keys → Generate"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 809
+# File: usr/share/langforge/ui/settings_dialog.py, line: 803
 msgid "No API Key"
 msgstr "No API Key"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 810
+# File: usr/share/langforge/ui/settings_dialog.py, line: 804
 msgid "Unlimited (self-hosted)"
 msgstr "Unlimited (self-hosted)"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 811
+# File: usr/share/langforge/ui/settings_dialog.py, line: 805
 msgid "Open source - Basic quality"
 msgstr "Open source - Basic quality"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 813
+# File: usr/share/langforge/ui/settings_dialog.py, line: 807
 msgid "Use default URL or your own server"
 msgstr "Use default URL or your own server"
 
 #
-# File: usr/share/langforge/ui/settings_dialog.py, line: 874
+# File: usr/share/langforge/ui/settings_dialog.py, line: 868
 msgid "Open"
 msgstr "Open"
 
