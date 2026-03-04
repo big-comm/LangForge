@@ -371,9 +371,9 @@ class SettingsDialog(Adw.PreferencesWindow):
             _("★ = recommended")
         )
         self._ref_lang_options = [
-            ("fr", "★ Français"),
-            ("pt-BR", "★ Português (Brasil)"),
-            ("es", "★ Español"),
+            ("fr", _("★ French")),
+            ("pt-BR", _("★ Portuguese (Brazil)")),
+            ("es", _("★ Spanish")),
         ]
         ref_model = Gtk.StringList.new(
             [label for _, label in self._ref_lang_options]

@@ -133,21 +133,24 @@ class Settings:
         }
 
     def save(self):
-        """Salva configurações no arquivo JSON. API keys go to system keyring."""
+        """Salva configurações no arquivo JSON.
+
+        Keys are always kept in the JSON file to prevent data loss.
+        A copy is also stored in the system keyring when available.
+        """
         self.config_dir.mkdir(parents=True, exist_ok=True)
         config_to_save = json.loads(json.dumps(self.config))
 
-        # Move legacy api_key to keyring
+        # Store a copy of keys in the system keyring (best-effort)
         for section in ("free_api", "paid_api"):
             api_key = config_to_save.get(section, {}).get("api_key", "")
-            if api_key and _store_secret(f"{section}_api_key", api_key):
-                config_to_save[section]["api_key"] = ""
+            if api_key:
+                _store_secret(f"{section}_api_key", api_key)
 
-            # Move per-provider keys to keyring
             keys = config_to_save.get(section, {}).get("keys", {})
             for provider, key in keys.items():
-                if key and _store_secret(f"{section}_{provider}_key", key):
-                    keys[provider] = ""
+                if key:
+                    _store_secret(f"{section}_{provider}_key", key)
 
         with open(self.config_file, "w", encoding="utf-8") as f:
             json.dump(config_to_save, f, indent=2, ensure_ascii=False)

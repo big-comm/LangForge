@@ -646,13 +646,10 @@ class MainWindow(Adw.ApplicationWindow):
     # ── API Dropdowns ───────────────────────────────────────────
 
     def _build_api_dropdowns(self, api_group):
-        """Build API type and provider dropdowns showing only configured options."""
-        # Determine which API types have configured providers
-        configured_types = []  # list of (label, type_key)
+        """Build API type and provider dropdowns reflecting saved config."""
         self._configured_free_providers = []  # list of (label, provider_key)
         self._configured_paid_providers = []  # list of (label, provider_key)
 
-        # Free providers: check which have API keys or are LibreTranslate
         free_provider_labels = {
             "deepl-free": "DeepL Free",
             "groq": "Groq",
@@ -662,13 +659,22 @@ class MainWindow(Adw.ApplicationWindow):
             "libretranslate": "LibreTranslate",
         }
 
+        # Free providers: those with keys + LibreTranslate (no key needed)
         for key, label in free_provider_labels.items():
             if key == "libretranslate":
                 self._configured_free_providers.append((label, key))
             elif self.settings.get_provider_key("free_api", key):
                 self._configured_free_providers.append((label, key))
 
-        # Paid providers: check if API key is set (per-provider)
+        # Always include the saved free provider so the config is visible
+        saved_free = self.settings.get("free_api.provider", "")
+        if saved_free and saved_free in free_provider_labels:
+            if not any(k == saved_free for _, k in self._configured_free_providers):
+                self._configured_free_providers.insert(
+                    0, (free_provider_labels[saved_free], saved_free)
+                )
+
+        # Paid providers: those with keys
         paid_provider_labels = {
             "openai": "OpenAI",
             "gemini": "Gemini",
@@ -679,20 +685,22 @@ class MainWindow(Adw.ApplicationWindow):
             if self.settings.get_provider_key("paid_api", key):
                 self._configured_paid_providers.append((label, key))
 
-        # Build API type dropdown with only configured types
-        if self._configured_free_providers:
-            configured_types.append((_("Free"), "free"))
-        if self._configured_paid_providers:
-            configured_types.append((_("Paid"), "paid"))
+        # Always include the saved paid provider so the config is visible
+        saved_paid = self.settings.get("paid_api.provider", "")
+        if saved_paid and saved_paid in paid_provider_labels:
+            if not any(k == saved_paid for _, k in self._configured_paid_providers):
+                self._configured_paid_providers.insert(
+                    0, (paid_provider_labels[saved_paid], saved_paid)
+                )
 
-        # Fallback: if nothing configured, show free with LibreTranslate
-        if not configured_types:
-            configured_types.append((_("Free"), "free"))
-            if not self._configured_free_providers:
-                self._configured_free_providers.append((
-                    "LibreTranslate",
-                    "libretranslate",
-                ))
+        # Always show both API types so the saved selection is always visible
+        configured_types = [(_("Free"), "free"), (_("Paid"), "paid")]
+
+        # Ensure at least one provider per type
+        if not self._configured_free_providers:
+            self._configured_free_providers.append(("LibreTranslate", "libretranslate"))
+        if not self._configured_paid_providers:
+            self._configured_paid_providers.append(("OpenAI", "openai"))
 
         self._configured_types = configured_types
 

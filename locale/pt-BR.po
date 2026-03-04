@@ -683,3 +683,15 @@ msgstr ""
 "\n"
 "Não compatível:\n"
 "DeepL, LibreTranslate (sem suporte a contexto)"
+
+#. Reference language option in settings
+msgid "★ French"
+msgstr "★ Francês"
+
+#. Reference language option in settings
+msgid "★ Portuguese (Brazil)"
+msgstr "★ Português (Brasil)"
+
+#. Reference language option in settings
+msgid "★ Spanish"
+msgstr "★ Espanhol"
