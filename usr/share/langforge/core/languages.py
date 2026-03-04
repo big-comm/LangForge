@@ -40,7 +40,45 @@ LANGUAGE_CODE_MAP = {
     "zh": "zh-CN",  # Chinese simplificado
 }
 
+# ISO 639-2/B 3-letter codes for file naming (subtitles, md, txt)
+FILE_LANG_CODES = {
+    "bg": "bul",
+    "cs": "cze",
+    "da": "dan",
+    "de": "ger",
+    "el": "gre",
+    "en": "eng",
+    "es": "spa",
+    "et": "est",
+    "fi": "fin",
+    "fr": "fre",
+    "he": "heb",
+    "hr": "hrv",
+    "hu": "hun",
+    "is": "ice",
+    "it": "ita",
+    "ja": "jpn",
+    "ko": "kor",
+    "nl": "dut",
+    "no": "nor",
+    "pl": "pol",
+    "pt-BR": "por",
+    "pt": "por",
+    "ro": "rum",
+    "ru": "rus",
+    "sk": "slo",
+    "sv": "swe",
+    "tr": "tur",
+    "uk": "ukr",
+    "zh": "chi",
+}
+
 
 def get_api_lang_code(lang: str) -> str:
     """Converte código de idioma para formato da API."""
     return LANGUAGE_CODE_MAP.get(lang, lang)
+
+
+def get_file_lang_code(lang: str) -> str:
+    """Return 3-letter ISO 639-2/B code for file naming."""
+    return FILE_LANG_CODES.get(lang, lang)

@@ -376,3 +376,31 @@ msgstr ""
 #. Reference language option in settings
 msgid "★ Spanish"
 msgstr ""
+
+#. Button to open live translation viewer
+msgid "View Live"
+msgstr ""
+
+#. Accessibility label for live viewer button
+msgid "View live translation details"
+msgstr ""
+
+#. Title of the live translation viewer window
+msgid "Live Translation"
+msgstr ""
+
+#. Button in live viewer header
+msgid "Clear"
+msgstr ""
+
+#. Toggle button in live viewer header
+msgid "Auto-scroll"
+msgstr ""
+
+#. Status label in live viewer
+msgid "Waiting..."
+msgstr ""
+
+#. Accessibility label for diff text view
+msgid "Live translation diff view"
+msgstr ""

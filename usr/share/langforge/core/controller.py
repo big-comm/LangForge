@@ -153,6 +153,7 @@ class TranslationController:
         on_lang_progress: Callable[[str, str, int, int], None],
         on_complete: Callable[[dict[str, bool], float, bool], None],
         on_error: Callable[[Exception], None],
+        on_detail: Optional[Callable[[str, list[tuple[str, str, str]]], None]] = None,
     ) -> None:
         """Run file translation in a background thread."""
         self.is_translating = True
@@ -160,7 +161,15 @@ class TranslationController:
 
         thread = threading.Thread(
             target=self._run_file,
-            args=(file_path, languages, on_phase, on_lang_progress, on_complete, on_error),
+            args=(
+                file_path,
+                languages,
+                on_phase,
+                on_lang_progress,
+                on_complete,
+                on_error,
+                on_detail,
+            ),
             daemon=True,
         )
         thread.start()
@@ -252,6 +261,7 @@ class TranslationController:
         on_lang_progress: Callable[[str, str, int, int], None],
         on_complete: Callable[[dict[str, bool], float, bool], None],
         on_error: Callable[[Exception], None],
+        on_detail: Optional[Callable] = None,
     ) -> None:
         try:
             on_phase("translating")
@@ -262,6 +272,7 @@ class TranslationController:
                 target_langs=languages,
                 progress_callback=on_lang_progress,
                 cancel_event=self._cancel_event,
+                detail_callback=on_detail,
             )
 
             elapsed = time.monotonic() - start_time

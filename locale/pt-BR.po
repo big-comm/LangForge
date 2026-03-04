@@ -695,3 +695,31 @@ msgstr "★ Português (Brasil)"
 #. Reference language option in settings
 msgid "★ Spanish"
 msgstr "★ Espanhol"
+
+#. Button to open live translation viewer
+msgid "View Live"
+msgstr "Ver ao Vivo"
+
+#. Accessibility label for live viewer button
+msgid "View live translation details"
+msgstr "Ver detalhes da tradução ao vivo"
+
+#. Title of the live translation viewer window
+msgid "Live Translation"
+msgstr "Tradução ao Vivo"
+
+#. Button in live viewer header
+msgid "Clear"
+msgstr "Limpar"
+
+#. Toggle button in live viewer header
+msgid "Auto-scroll"
+msgstr "Auto-rolagem"
+
+#. Status label in live viewer
+msgid "Waiting..."
+msgstr "Aguardando..."
+
+#. Accessibility label for diff text view
+msgid "Live translation diff view"
+msgstr "Visualização diff da tradução ao vivo"

@@ -13,6 +13,7 @@ from core.controller import TranslationController
 from core.file_translator import SUPPORTED_EXTENSIONS
 from core.languages import SUPPORTED_LANGUAGES
 from ui.settings_dialog import SettingsDialog
+from ui.translation_viewer import TranslationViewer
 from utils.i18n import _
 from utils.tooltip_helper import TooltipHelper
 
@@ -468,14 +469,29 @@ class MainWindow(Adw.ApplicationWindow):
         self._populate_lang_grid()
         page.append(self.lang_grid)
 
-        # Cancel button (visible only during translation)
+        # Button row: View Live + Cancel
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        btn_box.set_halign(Gtk.Align.CENTER)
+        btn_box.set_margin_top(12)
+
+        self.live_view_button = Gtk.Button(label=_("View Live"))
+        self.live_view_button.add_css_class("pill")
+        self.live_view_button.set_icon_name("utilities-terminal-symbolic")
+        self.live_view_button.set_sensitive(False)
+        self.live_view_button.connect("clicked", self._on_open_live_viewer)
+        self.live_view_button.update_property(
+            [Gtk.AccessibleProperty.LABEL],
+            [_("View live translation details")],
+        )
+        btn_box.append(self.live_view_button)
+
         self.cancel_button = Gtk.Button(label=_("Cancel Translation"))
         self.cancel_button.add_css_class("destructive-action")
         self.cancel_button.add_css_class("pill")
-        self.cancel_button.set_halign(Gtk.Align.CENTER)
-        self.cancel_button.set_margin_top(8)
         self.cancel_button.connect("clicked", self._on_cancel_translation)
-        page.append(self.cancel_button)
+        btn_box.append(self.cancel_button)
+
+        page.append(btn_box)
 
         self.stack.add_named(page, "progress")
 
@@ -767,18 +783,30 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _on_lang_toggled(self, check):
         self._update_lang_selection_title()
+        if getattr(self, "_batch_lang_update", False):
+            return
         # Persist selection
         selected = [c for c, chk in self._lang_checks.items() if chk.get_active()]
         self.settings.set("selected_languages", selected)
         self.settings.save()
 
     def _on_select_all_langs(self, button):
+        self._batch_lang_update = True
         for check in self._lang_checks.values():
             check.set_active(True)
+        self._batch_lang_update = False
+        selected = [c for c, chk in self._lang_checks.items() if chk.get_active()]
+        self.settings.set("selected_languages", selected)
+        self.settings.save()
 
     def _on_deselect_all_langs(self, button):
+        self._batch_lang_update = True
         for check in self._lang_checks.values():
             check.set_active(False)
+        self._batch_lang_update = False
+        selected = [c for c, chk in self._lang_checks.items() if chk.get_active()]
+        self.settings.set("selected_languages", selected)
+        self.settings.save()
 
     def get_selected_languages(self) -> list[str]:
         """Return list of language codes the user has selected."""
@@ -1000,6 +1028,10 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(False)
         self.translate_button.set_label(_("Translating..."))
         self.cancel_button.set_sensitive(True)
+        self.live_view_button.set_sensitive(True)
+
+        # Create/reset the viewer (not shown yet — user clicks "View Live")
+        self._viewer = None
 
         self.stack.set_visible_child_name("progress")
         self.progress_ring.set_progress(0)
@@ -1021,6 +1053,9 @@ class MainWindow(Adw.ApplicationWindow):
             self.controller.start_file(
                 self.selected_file,
                 languages=selected_langs,
+                on_detail=lambda lang, pairs: GLib.idle_add(
+                    self._on_detail, lang, pairs
+                ),
                 **callbacks,
             )
         else:
@@ -1042,7 +1077,8 @@ class MainWindow(Adw.ApplicationWindow):
             "compiling": _("Compiling..."),
             "checking context": _("Checking context-aware translations..."),
         }
-        self.progress_subtitle.set_label(labels.get(phase, phase))
+        label = labels.get(phase, phase)
+        self.progress_subtitle.set_label(label)
 
     def _on_lang_progress(self, lang: str, status: str, current: int, total: int):
         """Update UI per-language progress (M3: ETA display)."""
@@ -1082,9 +1118,17 @@ class MainWindow(Adw.ApplicationWindow):
             self._update_lang_status(lang, "translating")
             detail = f"{name}: {status.removeprefix('translating:').strip()}"
             self.progress_subtitle.set_label(detail)
-            # Keep progress ring at the language-level fraction
+            # Parse sub-progress from "translating: 435/582 subtitles"
             if total > 0:
-                self.progress_ring.set_progress((current - 1 + 0.5) / total)
+                sub_fraction = 0.5
+                import re as _re
+
+                m = _re.search(r"(\d+)/(\d+)", status)
+                if m:
+                    sub_done, sub_total = int(m.group(1)), int(m.group(2))
+                    if sub_total > 0:
+                        sub_fraction = sub_done / sub_total
+                self.progress_ring.set_progress((current - 1 + sub_fraction) / total)
             return
 
         if "error" in status.lower():
@@ -1124,6 +1168,10 @@ class MainWindow(Adw.ApplicationWindow):
     ):
         """Handle translation pipeline completion."""
         success = sum(1 for v in results.values() if v)
+        failed = sum(1 for v in results.values() if not v)
+        mins, secs = divmod(int(elapsed), 60)
+        elapsed_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
+
         if was_cancelled:
             # Cancel UI already shown by _on_cancel_translation; just update
             # with the final cost which may be more accurate.
@@ -1179,6 +1227,25 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(True)
         self.translate_button.set_label(_("Start Translation"))
         self.cancel_button.set_sensitive(False)
+        self.live_view_button.set_sensitive(False)
+
+    def _on_open_live_viewer(self, _btn):
+        """Open or bring to front the live translation viewer window."""
+        if self._viewer is None:
+            self._viewer = TranslationViewer(self)
+        self._viewer.present()
+
+    def _on_detail(self, lang: str, pairs: list[tuple[str, str, str]]):
+        """Receive translation detail pairs from worker thread (via idle_add)."""
+        if self._viewer is None:
+            return
+        # Detect language switch
+        viewer_lang = getattr(self, "_viewer_current_lang", None)
+        if viewer_lang != lang:
+            self._viewer_current_lang = lang
+            name = SUPPORTED_LANGUAGES.get(lang, lang)
+            self._viewer.set_language(lang, name)
+        self._viewer.add_batch(pairs)
 
     def _show_toast(self, msg: str):
         toast = Adw.Toast.new(msg)

@@ -132,8 +132,8 @@ class GeminiAPI(TranslationAPI):
     """
 
     batch_delay = 0.1  # Paid tier has 2000 RPM; retry handles bursts
-    # Gemini 2.0 Flash pricing (USD per 1M tokens)
-    _token_pricing = (0.10, 0.40)
+    # Gemini Flash pricing (USD per 1M tokens) — non-thinking output
+    _token_pricing = (0.15, 0.60)
 
     def __init__(self, api_key: str, model: str = "gemini-2.0-flash-exp"):
         try:
@@ -147,6 +147,12 @@ class GeminiAPI(TranslationAPI):
         )
         self.model_name = model
         self._reset_usage()
+
+        # Disable thinking for 2.5+ models — translation doesn't need it
+        # and thinking tokens cost 6x more ($3.50 vs $0.60 per 1M)
+        self._no_think = {}
+        if "2.5" in model or "2.6" in model:
+            self._no_think = {"thinking_config": {"thinking_budget": 0}}
 
     def _track_gemini_response(self, response) -> None:
         """Extract and track token usage from a Gemini response."""
@@ -170,7 +176,7 @@ class GeminiAPI(TranslationAPI):
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 512},
+            config={"temperature": 0.3, "max_output_tokens": 512, **self._no_think},
         )
         self._track_gemini_response(response)
         return response.text.strip()
@@ -211,7 +217,7 @@ class GeminiAPI(TranslationAPI):
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 2048},
+            config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
         )
         self._track_gemini_response(response)
         parts = clean_batch_parts(response.text)
