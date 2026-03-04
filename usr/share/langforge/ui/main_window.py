@@ -666,6 +666,9 @@ class MainWindow(Adw.ApplicationWindow):
         self._configured_free_providers = []  # list of (label, provider_key)
         self._configured_paid_providers = []  # list of (label, provider_key)
 
+        # Providers that do not require an API key
+        _NO_KEY_REQUIRED = {"libretranslate"}
+
         free_provider_labels = {
             "deepl-free": "DeepL Free",
             "groq": "Groq",
@@ -675,22 +678,14 @@ class MainWindow(Adw.ApplicationWindow):
             "libretranslate": "LibreTranslate",
         }
 
-        # Free providers: those with keys + LibreTranslate (no key needed)
+        # Free: show providers with configured key + those that need no key
         for key, label in free_provider_labels.items():
-            if key == "libretranslate":
+            if key in _NO_KEY_REQUIRED:
                 self._configured_free_providers.append((label, key))
             elif self.settings.get_provider_key("free_api", key):
                 self._configured_free_providers.append((label, key))
 
-        # Always include the saved free provider so the config is visible
-        saved_free = self.settings.get("free_api.provider", "")
-        if saved_free and saved_free in free_provider_labels:
-            if not any(k == saved_free for _, k in self._configured_free_providers):
-                self._configured_free_providers.insert(
-                    0, (free_provider_labels[saved_free], saved_free)
-                )
-
-        # Paid providers: those with keys
+        # Paid: show ONLY providers with configured key
         paid_provider_labels = {
             "openai": "OpenAI",
             "gemini": "Gemini",
@@ -701,22 +696,12 @@ class MainWindow(Adw.ApplicationWindow):
             if self.settings.get_provider_key("paid_api", key):
                 self._configured_paid_providers.append((label, key))
 
-        # Always include the saved paid provider so the config is visible
-        saved_paid = self.settings.get("paid_api.provider", "")
-        if saved_paid and saved_paid in paid_provider_labels:
-            if not any(k == saved_paid for _, k in self._configured_paid_providers):
-                self._configured_paid_providers.insert(
-                    0, (paid_provider_labels[saved_paid], saved_paid)
-                )
-
-        # Always show both API types so the saved selection is always visible
+        # Always show both API types
         configured_types = [(_("Free"), "free"), (_("Paid"), "paid")]
 
-        # Ensure at least one provider per type
+        # Ensure at least one free provider (LibreTranslate needs no key)
         if not self._configured_free_providers:
             self._configured_free_providers.append(("LibreTranslate", "libretranslate"))
-        if not self._configured_paid_providers:
-            self._configured_paid_providers.append(("OpenAI", "openai"))
 
         self._configured_types = configured_types
 
@@ -757,19 +742,25 @@ class MainWindow(Adw.ApplicationWindow):
         else:
             providers = self._configured_paid_providers
 
-        labels = [p[0] for p in providers]
-        self.api_provider_row.set_model(Gtk.StringList.new(labels))
+        if providers:
+            labels = [p[0] for p in providers]
+            self.api_provider_row.set_model(Gtk.StringList.new(labels))
+            self.api_provider_row.set_sensitive(True)
 
-        # Select the saved provider
-        if type_key == "free":
-            saved = self.settings.get("free_api.provider", "")
+            # Select the saved provider
+            if type_key == "free":
+                saved = self.settings.get("free_api.provider", "")
+            else:
+                saved = self.settings.get("paid_api.provider", "")
+
+            for i, (_lbl, key) in enumerate(providers):
+                if key == saved:
+                    self.api_provider_row.set_selected(i)
+                    break
         else:
-            saved = self.settings.get("paid_api.provider", "")
-
-        for i, (_lbl, key) in enumerate(providers):
-            if key == saved:
-                self.api_provider_row.set_selected(i)
-                break
+            # No configured providers — show empty dropdown
+            self.api_provider_row.set_model(Gtk.StringList.new([]))
+            self.api_provider_row.set_sensitive(False)
 
     # ── Language selection ─────────────────────────────────────
 
@@ -973,6 +964,11 @@ class MainWindow(Adw.ApplicationWindow):
             provider = self.settings.get_free_provider()
         else:
             provider = self.settings.get_paid_provider()
+
+        # Validate that the selected API type has a configured provider
+        if api_type == "paid" and not self._configured_paid_providers:
+            self._show_toast(_("No paid API configured. Add an API key in Settings."))
+            return
 
         if self._mode == "file":
             body = _(

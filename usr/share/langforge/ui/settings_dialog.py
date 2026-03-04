@@ -125,8 +125,6 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Save key per-provider (not shared)
         free_key = self.free_api_key.get_text()
         self.settings.set_provider_key("free_api", free_provider, free_key)
-        # Also keep legacy field in sync for backward compat
-        self.settings.set("free_api.api_key", free_key)
         self.settings.set(
             "free_api.libretranslate_url", self.libretranslate_url.get_text()
         )
@@ -143,8 +141,6 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Save key per-provider (not shared)
         paid_key = self.api_key.get_text()
         self.settings.set_provider_key("paid_api", paid_provider, paid_key)
-        # Also keep legacy field in sync for backward compat
-        self.settings.set("paid_api.api_key", paid_key)
         # Save selected paid model
         for model_id, check in self._paid_model_checks.items():
             if check.get_active():
@@ -478,8 +474,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         old_provider = self.settings.get("free_api.provider", "")
         if old_provider and old_provider != provider_id:
             current_key = self.free_api_key.get_text()
-            if current_key:
-                self.settings.set_provider_key("free_api", old_provider, current_key)
+            self.settings.set_provider_key("free_api", old_provider, current_key)
         # Load key for the new provider
         new_key = self.settings.get_provider_key("free_api", provider_id)
         self.free_api_key.set_text(new_key)
@@ -503,8 +498,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         old_provider = self._get_selected_paid_provider_except(provider_id)
         if old_provider:
             current_key = self.api_key.get_text()
-            if current_key:
-                self.settings.set_provider_key("paid_api", old_provider, current_key)
+            self.settings.set_provider_key("paid_api", old_provider, current_key)
         # Load key for the new provider
         new_key = self.settings.get_provider_key("paid_api", provider_id)
         self.api_key.set_text(new_key)
