@@ -718,6 +718,57 @@ msgid ""
 "DeepL, LibreTranslate (no context support)"
 msgstr "Yfirfara fyrirliggjandi þýðingar með samhengisvitandi"
 # 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Veldu API flokk fyrir þýðingar.\n"
+"\n"
+"Ókeypis — API með ókeypis stig eða engum kostnaði:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Greitt — API sem krafist er greiðsluáætlunar:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Þýðingaraðili til að nota.\n"
+"\n"
+"Aðeins eru sýndir aðilar með stillt API lykil hér. Bættu við lykla í API stillingum.\n"
+"\n"
+"Aðilar sem krafist er ekki lykils (t.d. LibreTranslate) eru alltaf tiltækir."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Opnaðu lifandi útsýni yfir þýðingar í vinnslu.\n"
+"\n"
+"Sýnir upprunalega textann og þýðingu hans\n"
+"í rauntíma þegar hver tungumál er unnið."
+# 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
 msgid "Project does not use gettext"

@@ -732,6 +732,59 @@ msgid ""
 "DeepL, LibreTranslate (no context support)"
 msgstr "Revérifier les traductions existantes à l'aide d'une IA contextuelle."
 # 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Sélectionnez la catégorie d'API pour les traductions.\n"
+"\n"
+"Gratuit — APIs avec un niveau gratuit ou sans coût :\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Payant — APIs nécessitant un plan de facturation :\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Fournisseur de traduction à utiliser.\n"
+"\n"
+"Seuls les fournisseurs avec une clé API configurée\n"
+"sont affichés ici. Ajoutez des clés dans les paramètres de l'API.\n"
+"\n"
+"Les fournisseurs qui ne nécessitent pas de clé\n"
+"(par exemple, LibreTranslate) sont toujours disponibles."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Ouvrir une vue en direct des traductions en cours.\n"
+"\n"
+"Affiche le texte original et sa traduction\n"
+"en temps réel à mesure que chaque langue est traitée."
+# 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: NEEDS WORK
 msgid "Project does not use gettext"

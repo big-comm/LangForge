@@ -737,6 +737,59 @@ msgid ""
 "DeepL, LibreTranslate (no context support)"
 msgstr "Znovu zkontrolovat stávající překlady pomocí AI s kontextovým povědomím"
 # 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Vyberte kategorii API pro překlady.\n"
+"\n"
+"Zdarma — API s bezplatnou úrovní nebo bez nákladů:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Placené — API, která vyžadují platební plán:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Poskytovatel překladu k použití.\n"
+"\n"
+"Zde jsou zobrazeni pouze poskytovatelé s nakonfigurovaným API klíčem. Přidejte klíče v nastavení "
+"API.\n"
+"\n"
+"Poskytovatelé, kteří nevyžadují klíč\n"
+"(např. LibreTranslate), jsou vždy k dispozici."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Otevřete živý náhled překladů v procesu.\n"
+"\n"
+"Zobrazuje původní text a jeho překlad\n"
+"v reálném čase, jakmile je každý jazyk zpracován."
+# 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
 msgid "Project does not use gettext"

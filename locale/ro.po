@@ -732,6 +732,59 @@ msgstr ""
 "\n"
 "Detectează intrările"
 # 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Selectați categoria API pentru traduceri.\n"
+"\n"
+"Gratuit — API-uri cu nivel gratuit sau fără cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Plătit — API-uri care necesită un plan de facturare:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Furnizor de traducere de utilizat.\n"
+"\n"
+"Numai furnizorii cu o cheie API configurată\n"
+"sunt afișați aici. Adăugați chei în Setările API.\n"
+"\n"
+"Furnizorii care nu necesită o cheie\n"
+"(de exemplu, LibreTranslate) sunt întotdeauna disponibili."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Deschide o vizualizare live a traducerilor în curs de desfășurare.\n"
+"\n"
+"Afișează textul original și traducerea acestuia\n"
+"în timp real, pe măsură ce fiecare limbă este procesată."
+# 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
 msgid "Project does not use gettext"
