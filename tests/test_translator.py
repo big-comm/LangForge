@@ -11,7 +11,7 @@ from core.translator import (
     _validate_placeholders,
     _fix_placeholders,
 )
-from api.base import build_translation_prompt, TranslationAPI
+from api.base import build_translation_prompt, TranslationAPI, clean_batch_parts, prepare_batch_texts, restore_batch_texts
 
 
 class TestProtectPlaceholders:
@@ -185,3 +185,46 @@ class TestSetContext:
         api.set_context("myapp")
         assert api._app_name == "myapp"
         assert api._context_entries == []
+
+
+class TestBatchNewlineNormalization:
+    def test_prepare_replaces_newlines(self):
+        texts = ["Line1\nLine2", "Single"]
+        safe = prepare_batch_texts(texts)
+        assert "\n" not in safe[0]
+        assert "<NL>" in safe[0]
+        assert safe[1] == "Single"
+
+    def test_restore_reverts_placeholder(self):
+        parts = ["Linha1 <NL> Linha2", "Simples"]
+        restored = restore_batch_texts(parts)
+        assert restored[0] == "Linha1\nLinha2"
+        assert restored[1] == "Simples"
+
+    def test_restore_strips_stray_separator(self):
+        parts = ["- Fala A|||NEXT|||– Fala B"]
+        restored = restore_batch_texts(parts)
+        assert "|||NEXT|||" not in restored[0]
+        assert restored[0] == "- Fala A– Fala B"
+
+    def test_roundtrip(self):
+        originals = ["First\nSecond\nThird", "No newlines", "A\nB"]
+        safe = prepare_batch_texts(originals)
+        restored = restore_batch_texts(safe)
+        assert restored == originals
+
+    def test_empty_list(self):
+        assert prepare_batch_texts([]) == []
+        assert restore_batch_texts([]) == []
+
+    def test_clean_batch_parts_basic(self):
+        raw = "One|||NEXT|||Two|||NEXT|||Three"
+        assert clean_batch_parts(raw) == ["One", "Two", "Three"]
+
+    def test_clean_batch_parts_strips_leading_separator(self):
+        raw = "|||NEXT|||One|||NEXT|||Two"
+        assert clean_batch_parts(raw) == ["One", "Two"]
+
+    def test_clean_batch_parts_strips_trailing_empty(self):
+        raw = "One|||NEXT|||Two|||NEXT|||"
+        assert clean_batch_parts(raw) == ["One", "Two"]

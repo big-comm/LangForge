@@ -9,6 +9,8 @@ from api.base import (
     build_batch_prompt,
     build_translation_prompt,
     clean_batch_parts,
+    prepare_batch_texts,
+    restore_batch_texts,
     retry_on_rate_limit,
 )
 from core.languages import get_api_lang_code
@@ -92,7 +94,7 @@ class GroqAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -109,7 +111,7 @@ class GroqAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Groq batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -393,14 +395,14 @@ class GeminiFreeAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         prompt = f"{system_prompt}\n\n{user_msg}"
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
             config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
         )
-        parts = clean_batch_parts(response.text)
+        parts = restore_batch_texts(clean_batch_parts(response.text))
         if len(parts) != len(texts):
             log.warning(
                 "GeminiFree batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -512,7 +514,7 @@ class OpenRouterAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={
@@ -533,7 +535,7 @@ class OpenRouterAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "OpenRouter batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -633,7 +635,7 @@ class MistralFreeAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -650,7 +652,7 @@ class MistralFreeAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Mistral batch mismatch: expected %d, got %d. Translating remaining individually.",
