@@ -139,7 +139,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._mode = "project"  # "project" or "file"
 
         self.set_title("LangForge")
-        self.set_default_size(900, 600)
+        self.set_default_size(1020, 720)
 
         self._load_css()
         self._build_ui()
@@ -1083,6 +1083,9 @@ class MainWindow(Adw.ApplicationWindow):
                 languages=selected_langs,
                 compile_mo=self.compile_switch.get_active(),
                 force_retranslate=self.retranslate_switch.get_active(),
+                on_detail=lambda lang, pairs: GLib.idle_add(
+                    self._on_detail, lang, pairs
+                ),
                 **callbacks,
             )
 
