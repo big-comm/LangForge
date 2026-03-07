@@ -44,8 +44,7 @@ _FREE_MODELS: dict[str, list[str]] = {
     ],
     "gemini-free": [
         "gemini-2.5-flash-lite",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
+        "gemini-2.5-flash",
     ],
     "mistral-free": [
         "mistral-small-latest",
@@ -62,13 +61,11 @@ _PAID_MODELS: dict[str, list[str]] = {
         "gpt-4.1-mini",
         "gpt-4.1",
         "gpt-4.1-nano",
-        "o4-mini",
     ],
     "gemini": [
-        "gemini-2.0-flash",
         "gemini-2.5-flash",
         "gemini-2.5-pro",
-        "gemini-1.5-pro",
+        "gemini-2.0-flash",
     ],
     "grok": [
         "grok-4-fast",
@@ -79,17 +76,31 @@ _PAID_MODELS: dict[str, list[str]] = {
 }
 
 
+# Models recommended for translation (best quality/cost ratio)
+_RECOMMENDED = {
+    # Free
+    "llama-3.3-70b-versatile",       # Fastest free, 14.4k RPD
+    "gemini-2.5-flash-lite",         # Best free quality
+    # Paid
+    "gpt-4.1-mini",                  # Best paid value
+    "gemini-2.5-flash",              # Great quality/price
+}
+
+
 def _model_display_name(model_id: str) -> str:
     """Extract a clean display name from a full model ID.
 
     'meta-llama/llama-3.1-8b-instruct:free' → 'llama-3.1-8b-instruct'
     'gpt-4o-mini' → 'gpt-4o-mini'
+    Recommended models get a star prefix.
     """
     name = model_id
     if "/" in name:
         name = name.split("/", 1)[1]
     if name.endswith(":free"):
         name = name[:-5]
+    if model_id in _RECOMMENDED or name in _RECOMMENDED:
+        name = f"\u2605 {name}"
     return name
 
 

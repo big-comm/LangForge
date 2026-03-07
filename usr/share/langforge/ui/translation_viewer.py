@@ -3,61 +3,59 @@
 import gi
 
 gi.require_version("Gtk", "4.0")
-gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, Gdk, GLib, Pango
+from gi.repository import Gtk, GLib, Pango
 
 from utils.i18n import _
 
 
-class TranslationViewer(Adw.Window):
-    """Real-time diff-style viewer for translations in progress.
+class TranslationViewer(Gtk.Box):
+    """Embeddable diff-style viewer for translations in progress.
 
     Shows original text (red/removed) and translated text (green/added)
-    in a scrollable, GitHub-like diff format.
+    in a scrollable, GitHub-like diff format.  Designed to be packed
+    inside a Gtk.Paned on the progress page.
     """
 
-    def __init__(self, parent: Gtk.Window, **kwargs):
-        super().__init__(
-            title=_("Live Translation"),
-            default_width=700,
-            default_height=500,
-            transient_for=parent,
-            **kwargs,
-        )
+    def __init__(self, **kwargs):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, **kwargs)
 
-        # Main layout
-        header = Adw.HeaderBar()
-        header.add_css_class("flat")
+        self._scroll_pending = False
+        self._max_lines = 3000  # Trim buffer when exceeded
 
-        self._clear_btn = Gtk.Button(icon_name="edit-clear-all-symbolic")
-        self._clear_btn.set_tooltip_text(_("Clear"))
-        self._clear_btn.connect("clicked", self._on_clear)
-        header.pack_start(self._clear_btn)
+        # Inline toolbar: status + controls
+        toolbar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        toolbar.set_margin_start(8)
+        toolbar.set_margin_end(8)
+        toolbar.set_margin_top(4)
+        toolbar.set_margin_bottom(4)
+
+        self._status = Gtk.Label(label=_("Waiting..."))
+        self._status.add_css_class("dim-label")
+        self._status.set_xalign(0)
+        self._status.set_hexpand(True)
+        toolbar.append(self._status)
+
+        self._counter_label = Gtk.Label(label="0")
+        self._counter_label.add_css_class("dim-label")
+        self._entry_count = 0
+        toolbar.append(self._counter_label)
 
         self._auto_scroll = True
         scroll_toggle = Gtk.ToggleButton(icon_name="go-bottom-symbolic")
         scroll_toggle.set_active(True)
         scroll_toggle.set_tooltip_text(_("Auto-scroll"))
         scroll_toggle.connect("toggled", self._on_scroll_toggled)
-        header.pack_end(scroll_toggle)
+        toolbar.append(scroll_toggle)
 
-        # Counter label in header
-        self._counter_label = Gtk.Label(label="0")
-        self._counter_label.add_css_class("dim-label")
-        header.pack_end(self._counter_label)
-        self._entry_count = 0
+        clear_btn = Gtk.Button(icon_name="edit-clear-all-symbolic")
+        clear_btn.set_tooltip_text(_("Clear"))
+        clear_btn.connect("clicked", self._on_clear)
+        toolbar.append(clear_btn)
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        box.append(header)
+        self.append(toolbar)
 
-        # Status bar showing current language
-        self._status = Gtk.Label(label=_("Waiting..."))
-        self._status.add_css_class("dim-label")
-        self._status.set_xalign(0)
-        self._status.set_margin_start(12)
-        self._status.set_margin_top(4)
-        self._status.set_margin_bottom(4)
-        box.append(self._status)
+        # Separator between toolbar and text
+        self.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
         # Text view with diff-style tags
         self._buffer = Gtk.TextBuffer()
@@ -83,19 +81,7 @@ class TranslationViewer(Adw.Window):
         self._scroll.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC
         )
-        box.append(self._scroll)
-
-        self.set_content(box)
-
-        # Keyboard: Escape to close
-        esc = Gtk.ShortcutController()
-        esc.add_shortcut(
-            Gtk.Shortcut(
-                trigger=Gtk.ShortcutTrigger.parse_string("Escape"),
-                action=Gtk.CallbackAction.new(lambda *_: self.close()),
-            )
-        )
-        self.add_controller(esc)
+        self.append(self._scroll)
 
     def _setup_tags(self):
         """Create text tags for diff-style coloring."""
@@ -176,29 +162,49 @@ class TranslationViewer(Adw.Window):
         self._do_scroll()
 
     def add_batch(self, pairs: list[tuple[str, str, str]]):
-        """Append multiple (original, translated, index) pairs efficiently."""
-        end = self._buffer.get_end_iter()
+        """Append multiple (original, translated, index) pairs efficiently.
+
+        Builds text in a single string and inserts once to minimise
+        buffer change notifications, then applies tags by range.
+        """
+        parts: list[str] = []
+        tag_ranges: list[tuple[str, int, int]] = []
+        offset = self._buffer.get_char_count()
+
         for original, translated, index in pairs:
             if index:
-                self._buffer.insert_with_tags_by_name(
-                    end, f"@@ {index} @@\n", "index"
-                )
-                end = self._buffer.get_end_iter()
+                text = f"@@ {index} @@\n"
+                tag_ranges.append(("index", offset, offset + len(text)))
+                parts.append(text)
+                offset += len(text)
             for line in original.splitlines():
-                self._buffer.insert_with_tags_by_name(
-                    end, f"- {line}\n", "removed"
-                )
-                end = self._buffer.get_end_iter()
+                text = f"- {line}\n"
+                tag_ranges.append(("removed", offset, offset + len(text)))
+                parts.append(text)
+                offset += len(text)
             for line in translated.splitlines():
-                self._buffer.insert_with_tags_by_name(
-                    end, f"+ {line}\n", "added"
-                )
-                end = self._buffer.get_end_iter()
-            self._buffer.insert_with_tags_by_name(end, "·\n", "separator")
-            end = self._buffer.get_end_iter()
+                text = f"+ {line}\n"
+                tag_ranges.append(("added", offset, offset + len(text)))
+                parts.append(text)
+                offset += len(text)
+            text = "·\n"
+            tag_ranges.append(("separator", offset, offset + len(text)))
+            parts.append(text)
+            offset += len(text)
+
+        # Single buffer insert
+        end = self._buffer.get_end_iter()
+        self._buffer.insert(end, "".join(parts))
+
+        # Apply tags by range
+        for tag_name, start_off, end_off in tag_ranges:
+            s = self._buffer.get_iter_at_offset(start_off)
+            e = self._buffer.get_iter_at_offset(end_off)
+            self._buffer.apply_tag_by_name(tag_name, s, e)
 
         self._entry_count += len(pairs)
         self._counter_label.set_label(str(self._entry_count))
+        self._trim_buffer()
         self._do_scroll()
 
     def mark_done(self, summary: str):
@@ -210,14 +216,26 @@ class TranslationViewer(Adw.Window):
         self._status.set_label(summary)
         self._do_scroll()
 
+    def _trim_buffer(self):
+        """Remove oldest lines when buffer exceeds max to prevent UI slowdown."""
+        line_count = self._buffer.get_line_count()
+        if line_count > self._max_lines:
+            trim_to = line_count // 3
+            start = self._buffer.get_start_iter()
+            trim_iter = self._buffer.get_iter_at_line(trim_to)
+            self._buffer.delete(start, trim_iter)
+
     def _do_scroll(self):
-        """Scroll to bottom if auto-scroll is enabled."""
-        if self._auto_scroll:
+        """Scroll to bottom if auto-scroll is enabled (throttled)."""
+        if self._auto_scroll and not self._scroll_pending:
+            self._scroll_pending = True
             GLib.idle_add(self._scroll_to_end)
 
     def _scroll_to_end(self):
         adj = self._scroll.get_vadjustment()
         adj.set_value(adj.get_upper())
+        self._scroll_pending = False
+        return GLib.SOURCE_REMOVE
 
     def _on_clear(self, _btn):
         self._buffer.set_text("")
@@ -228,3 +246,10 @@ class TranslationViewer(Adw.Window):
         self._auto_scroll = btn.get_active()
         if self._auto_scroll:
             self._scroll_to_end()
+
+    def clear(self):
+        """Reset the viewer for a new translation run."""
+        self._buffer.set_text("")
+        self._entry_count = 0
+        self._counter_label.set_label("0")
+        self._status.set_label(_("Waiting..."))

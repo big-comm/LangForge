@@ -442,23 +442,32 @@ class MainWindow(Adw.ApplicationWindow):
         self.stack.add_named(page, "project")
 
     def _build_progress_page(self):
-        """Build the translation progress page."""
-        page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        page.set_valign(Gtk.Align.CENTER)
-        page.set_halign(Gtk.Align.CENTER)
-        page.set_spacing(20)
+        """Build the translation progress page with embedded live viewer."""
+        # Vertical paned: progress info on top, live viewer on bottom
+        paned = Gtk.Paned(orientation=Gtk.Orientation.VERTICAL)
+        paned.set_shrink_start_child(False)
+        paned.set_shrink_end_child(False)
+        paned.set_resize_start_child(False)
+        paned.set_resize_end_child(True)
+
+        # ── Top: progress info ──
+        top = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        top.set_valign(Gtk.Align.CENTER)
+        top.set_halign(Gtk.Align.CENTER)
+        top.set_spacing(12)
+        top.set_margin_top(16)
+        top.set_margin_bottom(8)
 
         self.progress_ring = ProgressRing()
-        page.append(self.progress_ring)
+        top.append(self.progress_ring)
 
         self.progress_title = Gtk.Label(label=_("Translating..."))
         self.progress_title.add_css_class("title-3")
-        # Orca live region: Orca will re-read when label changes
         self.progress_title.update_property(
             [Gtk.AccessibleProperty.LABEL],
             [_("Translation status")],
         )
-        page.append(self.progress_title)
+        top.append(self.progress_title)
 
         self.progress_subtitle = Gtk.Label(label=_("Preparing..."))
         self.progress_subtitle.add_css_class("dim-label")
@@ -466,7 +475,7 @@ class MainWindow(Adw.ApplicationWindow):
             [Gtk.AccessibleProperty.LABEL],
             [_("Translation details")],
         )
-        page.append(self.progress_subtitle)
+        top.append(self.progress_subtitle)
 
         # Language grid
         self.lang_grid = Gtk.FlowBox()
@@ -474,40 +483,33 @@ class MainWindow(Adw.ApplicationWindow):
         self.lang_grid.set_min_children_per_line(6)
         self.lang_grid.set_selection_mode(Gtk.SelectionMode.SINGLE)
         self.lang_grid.set_homogeneous(True)
-        self.lang_grid.set_margin_top(16)
+        self.lang_grid.set_margin_top(8)
         self.lang_grid.update_property(
             [Gtk.AccessibleProperty.LABEL],
             [_("Language translation status")],
         )
         self._populate_lang_grid()
-        page.append(self.lang_grid)
+        top.append(self.lang_grid)
 
-        # Button row: View Live + Cancel
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        btn_box.set_halign(Gtk.Align.CENTER)
-        btn_box.set_margin_top(12)
-
-        self.live_view_button = Gtk.Button(label=_("View Live"))
-        self.live_view_button.add_css_class("pill")
-        self.live_view_button.set_icon_name("utilities-terminal-symbolic")
-        self.live_view_button.set_sensitive(False)
-        self.live_view_button.connect("clicked", self._on_open_live_viewer)
-        self.live_view_button.update_property(
-            [Gtk.AccessibleProperty.LABEL],
-            [_("View live translation details")],
-        )
-        self.tooltip_helper.add_tooltip(self.live_view_button, "live_view")
-        btn_box.append(self.live_view_button)
-
+        # Cancel button
         self.cancel_button = Gtk.Button(label=_("Cancel Translation"))
         self.cancel_button.add_css_class("destructive-action")
         self.cancel_button.add_css_class("pill")
+        self.cancel_button.set_halign(Gtk.Align.CENTER)
+        self.cancel_button.set_margin_top(8)
         self.cancel_button.connect("clicked", self._on_cancel_translation)
-        btn_box.append(self.cancel_button)
+        top.append(self.cancel_button)
 
-        page.append(btn_box)
+        paned.set_start_child(top)
 
-        self.stack.add_named(page, "progress")
+        # ── Bottom: embedded live viewer ──
+        self._viewer = TranslationViewer()
+        paned.set_end_child(self._viewer)
+
+        # Give viewer ~40% of space initially
+        paned.set_position(300)
+
+        self.stack.add_named(paned, "progress")
 
     def _build_welcome_page(self):
         """Build the first-run welcome page (M1)."""
@@ -1046,10 +1048,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(False)
         self.translate_button.set_label(_("Translating..."))
         self.cancel_button.set_sensitive(True)
-        self.live_view_button.set_sensitive(True)
 
-        # Create/reset the viewer (not shown yet — user clicks "View Live")
-        self._viewer = None
+        # Clear the embedded viewer for the new translation run
+        self._viewer.clear()
 
         self.stack.set_visible_child_name("progress")
         self.progress_ring.set_progress(0)
@@ -1245,18 +1246,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(True)
         self.translate_button.set_label(_("Start Translation"))
         self.cancel_button.set_sensitive(False)
-        self.live_view_button.set_sensitive(False)
-
-    def _on_open_live_viewer(self, _btn):
-        """Open or bring to front the live translation viewer window."""
-        if self._viewer is None:
-            self._viewer = TranslationViewer(self)
-        self._viewer.present()
 
     def _on_detail(self, lang: str, pairs: list[tuple[str, str, str]]):
         """Receive translation detail pairs from worker thread (via idle_add)."""
-        if self._viewer is None:
-            return
         # Detect language switch
         viewer_lang = getattr(self, "_viewer_current_lang", None)
         if viewer_lang != lang:

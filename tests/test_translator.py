@@ -123,8 +123,8 @@ class TestBuildTranslationPrompt:
 
     def test_includes_source_and_target(self):
         prompt = build_translation_prompt("en", "pt-BR")
-        assert "en" in prompt
-        assert "pt-BR" in prompt
+        assert "English" in prompt
+        assert "Portuguese (Brazil)" in prompt
 
     def test_context_entries_included(self):
         entries = ["Open File", "Save As", "Preferences"]

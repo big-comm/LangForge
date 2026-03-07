@@ -5,6 +5,8 @@ import time
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from core.languages import SUPPORTED_LANGUAGES
+
 log = logging.getLogger(__name__)
 
 # Retry settings for rate-limited requests
@@ -14,6 +16,11 @@ _BACKOFF_FACTOR = 2.0
 
 # Shared prompt template for all LLM-based translation APIs.
 # Placeholders: {source}, {target}, {app_name}, {context_section}
+
+
+def _resolve_lang(code: str) -> str:
+    """Resolve a language code to its full name for clearer LLM prompts."""
+    return SUPPORTED_LANGUAGES.get(code, code)
 _TRANSLATION_PROMPT = (
     "You are a professional translator specializing in software localization. "
     "You are translating UI strings for the application '{app_name}'. "
@@ -72,8 +79,8 @@ def build_translation_prompt(
         )
 
     return _TRANSLATION_PROMPT.format(
-        source=source,
-        target=target,
+        source=_resolve_lang(source),
+        target=_resolve_lang(target),
         app_name=display_name,
         context_section=context_section,
     )
@@ -113,8 +120,8 @@ def build_batch_prompt(
             f"{samples}\n"
         )
     return _BATCH_PROMPT.format(
-        source=source,
-        target=target,
+        source=_resolve_lang(source),
+        target=_resolve_lang(target),
         app_name=display_name,
         context_section=context_section,
     )
@@ -280,12 +287,13 @@ def retry_on_rate_limit(func):
                 raise
             except Exception as e:
                 msg = str(e).lower()
-                if (
-                    "rate" in msg
-                    or "429" in msg
-                    or "quota" in msg
-                    or "resource_exhausted" in msg
-                ) and attempt < _MAX_RETRIES - 1:
+                is_quota = "quota" in msg or "resource_exhausted" in msg
+                is_rate = "rate" in msg or "429" in msg
+                if (is_quota or is_rate) and attempt < _MAX_RETRIES - 1:
+                    # Quota exhaustion is persistent — fail fast after 1 retry
+                    if is_quota and attempt >= 1:
+                        log.error("Quota exhausted — aborting retries.")
+                        raise
                     # Try to extract retry delay from error message
                     delay = _parse_retry_delay(str(e))
                     wait = delay if delay else backoff
