@@ -773,6 +773,21 @@ msgstr ""
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 68
 #: NEEDS WORK
 msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+"Компилирайте .po файлове в .mo бинарен формат.\n"
+"\n"
+"Файловете .mo са оптимизираният бинарен формат,\n"
+"използван от gettext по време на изпълнение. Активирайте това, за да\n"
+"генерирате автоматично файловете след превод."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
 "Open a live view of translations in progress.\n"
 "\n"
 "Shows the original text and its translation\n"
