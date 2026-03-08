@@ -100,7 +100,7 @@ msgstr "API Settings..."
 
 #
 # File: usr/share/langforge/ui/main_window.py, line: 312
-# File: usr/share/langforge/ui/main_window.py, line: 1247
+# File: usr/share/langforge/ui/main_window.py, line: 1250
 msgid "Start Translation"
 msgstr "Start Translation"
 
@@ -162,7 +162,7 @@ msgstr "Change"
 #
 # File: usr/share/langforge/ui/main_window.py, line: 464
 # File: usr/share/langforge/ui/main_window.py, line: 1049
-# File: usr/share/langforge/ui/main_window.py, line: 1095
+# File: usr/share/langforge/ui/main_window.py, line: 1098
 msgid "Translating..."
 msgstr "Translating..."
 
@@ -305,8 +305,8 @@ msgstr "Translatable files (.po, .json, .txt, .md, .srt)"
 # File: usr/share/langforge/ui/main_window.py, line: 942
 # File: usr/share/langforge/ui/main_window.py, line: 970
 # File: usr/share/langforge/ui/main_window.py, line: 1039
-# File: usr/share/langforge/ui/main_window.py, line: 1212
-# File: usr/share/langforge/ui/main_window.py, line: 1214
+# File: usr/share/langforge/ui/main_window.py, line: 1215
+# File: usr/share/langforge/ui/main_window.py, line: 1217
 msgid "Error"
 msgstr "Error"
 
@@ -380,41 +380,41 @@ msgid "Start"
 msgstr "Start"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1094
+# File: usr/share/langforge/ui/main_window.py, line: 1097
 msgid "Extracting strings..."
 msgstr "Extracting strings..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1096
+# File: usr/share/langforge/ui/main_window.py, line: 1099
 msgid "Compiling..."
 msgstr "Compiling..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1097
+# File: usr/share/langforge/ui/main_window.py, line: 1100
 msgid "Checking context-aware translations..."
 msgstr "Checking context-aware translations..."
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1121
+# File: usr/share/langforge/ui/main_window.py, line: 1124
 #, python-brace-format
 msgid "Resuming… {current}/{total} languages already done"
 msgstr "Resuming… {current}/{total} languages already done"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1174
+# File: usr/share/langforge/ui/main_window.py, line: 1177
 #, python-brace-format
 msgid "{name} ({current}/{total}) · ~{eta} remaining"
 msgstr "{name} ({current}/{total}) · ~{eta} remaining"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1200
-# File: usr/share/langforge/ui/main_window.py, line: 1229
+# File: usr/share/langforge/ui/main_window.py, line: 1203
+# File: usr/share/langforge/ui/main_window.py, line: 1232
 #, python-brace-format
 msgid "{} languages translated before cancellation"
 msgstr "{} languages translated before cancellation"
 
 #
-# File: usr/share/langforge/ui/main_window.py, line: 1221
+# File: usr/share/langforge/ui/main_window.py, line: 1224
 msgid "Cancelled"
 msgstr "Cancelled"
 

@@ -155,16 +155,6 @@ msgstr "Çeviri ayrıntıları"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "Dil çeviri durumu"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 477
-#: NEEDS WORK
-msgid "View Live"
-msgstr "Canlı Görüntüle"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 484
-#: NEEDS WORK
-msgid "View live translation details"
-msgstr "Canlı çeviri ayrıntılarını görüntüle"
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 #. Cancel button (visible only during translation)

@@ -155,16 +155,6 @@ msgstr "Detalhes da tradução"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
 msgid "Language translation status"
 msgstr "Status da tradução do idioma"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 477
-#: NEEDS WORK
-msgid "View Live"
-msgstr "Ver ao Vivo"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 484
-#: NEEDS WORK
-msgid "View live translation details"
-msgstr "Ver detalhes da tradução ao vivo"
 # File: usr/share/langforge/ui/main_window.py, line: 472
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
 #. Cancel button (visible only during translation)
