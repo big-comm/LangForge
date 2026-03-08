@@ -309,6 +309,11 @@ msgstr "Файл завантажено: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "Виберіть принаймні одну мову"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "Немає налаштованого платного API. Додайте ключ API в Налаштуваннях."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -374,30 +379,25 @@ msgstr "{} мов, перекладених до скасування"
 msgid "Cancelled"
 msgstr "Cancelled"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "Живий переклад"
+msgid "Waiting..."
+msgstr "Waiting..."
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 40
+#: NEEDS WORK
+msgid "Auto-scroll"
+msgstr "Авто-прокрутка"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
 msgid "Clear"
 msgstr "Очистити"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 40
-#: NEEDS WORK
-msgid "Auto-scroll"
-msgstr "Автопрокрутка"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
-#: NEEDS WORK
-msgid "Waiting..."
-msgstr "Очікування..."
-# 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
 msgid "Live translation diff view"
-msgstr "Живий перегляд різниць перекладу"
+msgstr "Живий перегляд різниць у перекладі"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
@@ -720,6 +720,57 @@ msgid ""
 "Not compatible:\n"
 "DeepL, LibreTranslate (no context support)"
 msgstr "Повторно перевірити наявні переклади за допомогою контекстно-ор"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Виберіть категорію API для перекладів.\n"
+"\n"
+"Безкоштовні — API з безкоштовним рівнем або безкоштовно:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Платні — API, які вимагають платіжного плану:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Постачальник перекладу для використання.\n"
+"\n"
+"Тут відображаються лише постачальники з налаштованим API-ключем. Додайте ключі в налаштуваннях API.\n"
+"\n"
+"Постачальники, яким не потрібен ключ\n"
+"(наприклад, LibreTranslate), завжди доступні."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Открийте жив изглед на преводите в процес. \n"
+"\n"
+"Показва оригиналния текст и неговия превод в реално време, докато се обработва всеки език."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

@@ -307,6 +307,11 @@ msgstr "파일이 로드되었습니다: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "최소한 하나의 언어를 선택하세요."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "구성된 유료 API가 없습니다. 설정에서 API 키를 추가하세요."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -372,25 +377,20 @@ msgstr "{} 언어가 취소되기 전에 번역됨"
 msgid "Cancelled"
 msgstr "취소됨"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "실시간 번역"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "지우기"
+msgid "Waiting..."
+msgstr "대기 중..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "자동 스크롤"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "대기 중..."
+msgid "Clear"
+msgstr "지우기"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
@@ -737,6 +737,56 @@ msgstr ""
 "\n"
 "호환되지 않는 API:\n"
 "DeepL, LibreTranslate (문맥 지원 없음)"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"번역을 위한 API 카테고리를 선택하세요.\n"
+"\n"
+"무료 — 무료 요금제 또는 비용이 없는 API:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"유료 — 청구 계획이 필요한 API:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"사용할 번역 제공자.\n"
+"\n"
+"구성된 API 키가 있는 제공자만 여기에 표시됩니다. API 설정에서 키를 추가하세요.\n"
+"\n"
+"키가 필요하지 않은 제공자(예: LibreTranslate)는 항상 사용 가능합니다."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"진행 중인 번역의 실시간 보기를 엽니다.\n"
+"\n"
+"각 언어가 처리될 때 원본 텍스트와 번역이 실시간으로 표시됩니다."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

@@ -44,8 +44,7 @@ _FREE_MODELS: dict[str, list[str]] = {
     ],
     "gemini-free": [
         "gemini-2.5-flash-lite",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
+        "gemini-2.5-flash",
     ],
     "mistral-free": [
         "mistral-small-latest",
@@ -62,13 +61,11 @@ _PAID_MODELS: dict[str, list[str]] = {
         "gpt-4.1-mini",
         "gpt-4.1",
         "gpt-4.1-nano",
-        "o4-mini",
     ],
     "gemini": [
-        "gemini-2.0-flash",
         "gemini-2.5-flash",
         "gemini-2.5-pro",
-        "gemini-1.5-pro",
+        "gemini-2.0-flash",
     ],
     "grok": [
         "grok-4-fast",
@@ -79,17 +76,31 @@ _PAID_MODELS: dict[str, list[str]] = {
 }
 
 
+# Models recommended for translation (best quality/cost ratio)
+_RECOMMENDED = {
+    # Free
+    "llama-3.3-70b-versatile",       # Fastest free, 14.4k RPD
+    "gemini-2.5-flash-lite",         # Best free quality
+    # Paid
+    "gpt-4.1-mini",                  # Best paid value
+    "gemini-2.5-flash",              # Great quality/price
+}
+
+
 def _model_display_name(model_id: str) -> str:
     """Extract a clean display name from a full model ID.
 
     'meta-llama/llama-3.1-8b-instruct:free' → 'llama-3.1-8b-instruct'
     'gpt-4o-mini' → 'gpt-4o-mini'
+    Recommended models get a star prefix.
     """
     name = model_id
     if "/" in name:
         name = name.split("/", 1)[1]
     if name.endswith(":free"):
         name = name[:-5]
+    if model_id in _RECOMMENDED or name in _RECOMMENDED:
+        name = f"\u2605 {name}"
     return name
 
 
@@ -125,8 +136,6 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Save key per-provider (not shared)
         free_key = self.free_api_key.get_text()
         self.settings.set_provider_key("free_api", free_provider, free_key)
-        # Also keep legacy field in sync for backward compat
-        self.settings.set("free_api.api_key", free_key)
         self.settings.set(
             "free_api.libretranslate_url", self.libretranslate_url.get_text()
         )
@@ -143,8 +152,6 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Save key per-provider (not shared)
         paid_key = self.api_key.get_text()
         self.settings.set_provider_key("paid_api", paid_provider, paid_key)
-        # Also keep legacy field in sync for backward compat
-        self.settings.set("paid_api.api_key", paid_key)
         # Save selected paid model
         for model_id, check in self._paid_model_checks.items():
             if check.get_active():
@@ -478,8 +485,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         old_provider = self.settings.get("free_api.provider", "")
         if old_provider and old_provider != provider_id:
             current_key = self.free_api_key.get_text()
-            if current_key:
-                self.settings.set_provider_key("free_api", old_provider, current_key)
+            self.settings.set_provider_key("free_api", old_provider, current_key)
         # Load key for the new provider
         new_key = self.settings.get_provider_key("free_api", provider_id)
         self.free_api_key.set_text(new_key)
@@ -503,8 +509,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         old_provider = self._get_selected_paid_provider_except(provider_id)
         if old_provider:
             current_key = self.api_key.get_text()
-            if current_key:
-                self.settings.set_provider_key("paid_api", old_provider, current_key)
+            self.settings.set_provider_key("paid_api", old_provider, current_key)
         # Load key for the new provider
         new_key = self.settings.get_provider_key("paid_api", provider_id)
         self.api_key.set_text(new_key)

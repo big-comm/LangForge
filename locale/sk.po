@@ -309,6 +309,11 @@ msgstr "Súbor načítaný: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "Vyberte aspoň jeden jazyk"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "Nie je nakonfigurované žiadne platené API. Pridajte API kľúč v Nastaveniach."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -370,30 +375,25 @@ msgstr "{} jazykov preložených pred zrušením"
 msgid "Cancelled"
 msgstr "Zrušené"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "Živé preklady"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "Vymazať"
+msgid "Waiting..."
+msgstr "Čaká sa..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "Automatické posúvanie"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "Čaká sa..."
+msgid "Clear"
+msgstr "Vymazať"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
 msgid "Live translation diff view"
-msgstr "Zobrazenie rozdielov v živom preklade"
+msgstr "Zobrazenie rozdielu živého prekladu"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
@@ -737,6 +737,59 @@ msgstr ""
 "\n"
 "Nekompatibilné:\n"
 "DeepL, LibreTranslate (bez podpory kontextu)"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Vyberte kategóriu API pre preklady.\n"
+"\n"
+"Bezplatné — API s bezplatnou úrovňou alebo bez nákladov:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Platené — API, ktoré vyžadujú fakturačný plán:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Poskytovateľ prekladu na použitie.\n"
+"\n"
+"Tu sú zobrazené iba poskytovatelia s nakonfigurovaným API kľúčom. Pridajte kľúče v nastaveniach "
+"API.\n"
+"\n"
+"Poskytovatelia, ktorí nevyžadujú kľúč\n"
+"(napr. LibreTranslate), sú vždy k dispozícii."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Otvorenie živého náhľadu prebiehajúcich prekladov.\n"
+"\n"
+"Zobrazuje pôvodný text a jeho preklad\n"
+"v reálnom čase, keď sa spracováva každý jazyk."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

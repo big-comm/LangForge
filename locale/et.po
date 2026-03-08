@@ -307,6 +307,11 @@ msgstr "Fail laaditud: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "Vali vähemalt üks keel"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "Ei ole konfigureeritud tasulist API-d. Lisage API võti seadetes."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -372,25 +377,20 @@ msgstr "{} keeled enne tühistamist"
 msgid "Cancelled"
 msgstr "Tühistatud"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "Reaalajas tõlge"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "Selge"
+msgid "Waiting..."
+msgstr "Ootamas..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "Automaatne kerimine"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "Ootamas..."
+msgid "Clear"
+msgstr "Selge"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
@@ -719,6 +719,59 @@ msgid ""
 "Not compatible:\n"
 "DeepL, LibreTranslate (no context support)"
 msgstr "Kontrolli olemasolevaid tõlkeid uuesti kontekstite"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Vali tõlgete API kategooria.\n"
+"\n"
+"Tasuta — API-d, millel on tasuta tasand või ei mingeid kulusid:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Tasuline — API-d, mis nõuavad arveldamise plaani:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Tõlke teenusepakkuja kasutamiseks.\n"
+"\n"
+"Siin kuvatakse ainult teenusepakkujad, kellel on konfigureeritud API võti. Lisage võtmed API "
+"seadetes.\n"
+"\n"
+"Teenusepakkujad, kes ei vaja võtit\n"
+"(nt LibreTranslate) on alati saadaval."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Ava elav vaade käimasolevatest tõlgetest.\n"
+"\n"
+"Kuvab originaalteksti ja selle tõlke\n"
+"reaalajas, kui iga keelt töödeldakse."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

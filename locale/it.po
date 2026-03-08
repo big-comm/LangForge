@@ -309,6 +309,11 @@ msgstr "File caricato: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "Seleziona almeno una lingua"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "Nessuna API a pagamento configurata. Aggiungi una chiave API nelle Impostazioni."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -374,25 +379,20 @@ msgstr "{} lingue tradotte prima della cancellazione"
 msgid "Cancelled"
 msgstr "Annullato"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "Traduzione in tempo reale"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "Cancella"
+msgid "Waiting..."
+msgstr "In attesa..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "Scorrimento automatico"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "In attesa..."
+msgid "Clear"
+msgstr "Cancella"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
@@ -741,6 +741,59 @@ msgstr ""
 "\n"
 "Non compatibili:\n"
 "DeepL, LibreTranslate (nessun supporto contestuale)"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Seleziona la categoria API per le traduzioni.\n"
+"\n"
+"Gratuito — API con piano gratuito o senza costi:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"A pagamento — API che richiedono un piano di fatturazione:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Fornitore di traduzione da utilizzare.\n"
+"\n"
+"Solo i fornitori con una chiave API configurata\n"
+"sono mostrati qui. Aggiungi chiavi nelle Impostazioni API.\n"
+"\n"
+"I fornitori che non richiedono una chiave\n"
+"(ad es. LibreTranslate) sono sempre disponibili."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Apri una visualizzazione dal vivo delle traduzioni in corso.\n"
+"\n"
+"Mostra il testo originale e la sua traduzione\n"
+"in tempo reale mentre ogni lingua viene elaborata."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

@@ -119,6 +119,7 @@ class TranslationController:
         on_error: Callable[[Exception], None],
         compile_mo: bool = True,
         force_retranslate: bool = False,
+        on_detail: Optional[Callable[[str, list[tuple[str, str, str]]], None]] = None,
     ) -> None:
         """Run the full project pipeline in a background thread.
 
@@ -139,6 +140,7 @@ class TranslationController:
                 on_error,
                 compile_mo,
                 force_retranslate,
+                on_detail,
             ),
             daemon=True,
         )
@@ -194,6 +196,7 @@ class TranslationController:
         on_error: Callable[[Exception], None],
         compile_mo: bool,
         force_retranslate: bool,
+        on_detail: Optional[Callable] = None,
     ) -> None:
         try:
             on_phase("extracting")
@@ -223,6 +226,7 @@ class TranslationController:
                     progress_callback=on_lang_progress,
                     cancel_event=self._cancel_event,
                     languages=languages,
+                    detail_callback=on_detail,
                 )
             else:
                 results = translator.translate_project(
@@ -231,6 +235,7 @@ class TranslationController:
                     on_lang_progress,
                     cancel_event=self._cancel_event,
                     languages=languages,
+                    detail_callback=on_detail,
                 )
 
             elapsed = time.monotonic() - start_time

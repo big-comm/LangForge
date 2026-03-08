@@ -49,6 +49,26 @@ def get_tooltips() -> dict[str, str]:
             "Not compatible:\n"
             "DeepL, LibreTranslate (no context support)"
         ),
+        "api_type": _(
+            "Select the API category for translations.\n\n"
+            "Free — APIs with free tier or no cost:\n"
+            "Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+            "Mistral, LibreTranslate\n\n"
+            "Paid — APIs that require a billing plan:\n"
+            "OpenAI, Gemini Pro, Grok"
+        ),
+        "api_provider": _(
+            "Translation provider to use.\n\n"
+            "Only providers with a configured API key\n"
+            "are shown here. Add keys in API Settings.\n\n"
+            "Providers that don't require a key\n"
+            "(e.g. LibreTranslate) are always available."
+        ),
+        "live_view": _(
+            "Open a live view of translations in progress.\n\n"
+            "Shows the original text and its translation\n"
+            "in real time as each language is processed."
+        ),
     }
 
 

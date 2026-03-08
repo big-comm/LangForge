@@ -18,6 +18,19 @@ from utils.i18n import _
 from utils.tooltip_helper import TooltipHelper
 
 
+def _apply_row_tooltip(row: Gtk.Widget, text: str) -> None:
+    """Apply a tooltip to an Adw row using query-tooltip signal."""
+    if not text:
+        return
+    row.set_has_tooltip(True)
+
+    def _on_query(widget, x, y, keyboard, tooltip):
+        tooltip.set_text(text)
+        return True
+
+    row.connect("query-tooltip", _on_query)
+
+
 def _humanize_error(e: Exception) -> str:
     """Convert common exceptions to user-friendly messages (M5)."""
     msg = str(e).lower()
@@ -126,7 +139,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._mode = "project"  # "project" or "file"
 
         self.set_title("LangForge")
-        self.set_default_size(900, 600)
+        self.set_default_size(1020, 720)
 
         self._load_css()
         self._build_ui()
@@ -429,23 +442,32 @@ class MainWindow(Adw.ApplicationWindow):
         self.stack.add_named(page, "project")
 
     def _build_progress_page(self):
-        """Build the translation progress page."""
-        page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        page.set_valign(Gtk.Align.CENTER)
-        page.set_halign(Gtk.Align.CENTER)
-        page.set_spacing(20)
+        """Build the translation progress page with embedded live viewer."""
+        # Vertical paned: progress info on top, live viewer on bottom
+        paned = Gtk.Paned(orientation=Gtk.Orientation.VERTICAL)
+        paned.set_shrink_start_child(False)
+        paned.set_shrink_end_child(False)
+        paned.set_resize_start_child(False)
+        paned.set_resize_end_child(True)
+
+        # ── Top: progress info ──
+        top = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        top.set_valign(Gtk.Align.CENTER)
+        top.set_halign(Gtk.Align.CENTER)
+        top.set_spacing(12)
+        top.set_margin_top(16)
+        top.set_margin_bottom(8)
 
         self.progress_ring = ProgressRing()
-        page.append(self.progress_ring)
+        top.append(self.progress_ring)
 
         self.progress_title = Gtk.Label(label=_("Translating..."))
         self.progress_title.add_css_class("title-3")
-        # Orca live region: Orca will re-read when label changes
         self.progress_title.update_property(
             [Gtk.AccessibleProperty.LABEL],
             [_("Translation status")],
         )
-        page.append(self.progress_title)
+        top.append(self.progress_title)
 
         self.progress_subtitle = Gtk.Label(label=_("Preparing..."))
         self.progress_subtitle.add_css_class("dim-label")
@@ -453,7 +475,7 @@ class MainWindow(Adw.ApplicationWindow):
             [Gtk.AccessibleProperty.LABEL],
             [_("Translation details")],
         )
-        page.append(self.progress_subtitle)
+        top.append(self.progress_subtitle)
 
         # Language grid
         self.lang_grid = Gtk.FlowBox()
@@ -461,39 +483,33 @@ class MainWindow(Adw.ApplicationWindow):
         self.lang_grid.set_min_children_per_line(6)
         self.lang_grid.set_selection_mode(Gtk.SelectionMode.SINGLE)
         self.lang_grid.set_homogeneous(True)
-        self.lang_grid.set_margin_top(16)
+        self.lang_grid.set_margin_top(8)
         self.lang_grid.update_property(
             [Gtk.AccessibleProperty.LABEL],
             [_("Language translation status")],
         )
         self._populate_lang_grid()
-        page.append(self.lang_grid)
+        top.append(self.lang_grid)
 
-        # Button row: View Live + Cancel
-        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        btn_box.set_halign(Gtk.Align.CENTER)
-        btn_box.set_margin_top(12)
-
-        self.live_view_button = Gtk.Button(label=_("View Live"))
-        self.live_view_button.add_css_class("pill")
-        self.live_view_button.set_icon_name("utilities-terminal-symbolic")
-        self.live_view_button.set_sensitive(False)
-        self.live_view_button.connect("clicked", self._on_open_live_viewer)
-        self.live_view_button.update_property(
-            [Gtk.AccessibleProperty.LABEL],
-            [_("View live translation details")],
-        )
-        btn_box.append(self.live_view_button)
-
+        # Cancel button
         self.cancel_button = Gtk.Button(label=_("Cancel Translation"))
         self.cancel_button.add_css_class("destructive-action")
         self.cancel_button.add_css_class("pill")
+        self.cancel_button.set_halign(Gtk.Align.CENTER)
+        self.cancel_button.set_margin_top(8)
         self.cancel_button.connect("clicked", self._on_cancel_translation)
-        btn_box.append(self.cancel_button)
+        top.append(self.cancel_button)
 
-        page.append(btn_box)
+        paned.set_start_child(top)
 
-        self.stack.add_named(page, "progress")
+        # ── Bottom: embedded live viewer ──
+        self._viewer = TranslationViewer()
+        paned.set_end_child(self._viewer)
+
+        # Give viewer ~40% of space initially
+        paned.set_position(300)
+
+        self.stack.add_named(paned, "progress")
 
     def _build_welcome_page(self):
         """Build the first-run welcome page (M1)."""
@@ -666,6 +682,9 @@ class MainWindow(Adw.ApplicationWindow):
         self._configured_free_providers = []  # list of (label, provider_key)
         self._configured_paid_providers = []  # list of (label, provider_key)
 
+        # Providers that do not require an API key
+        _NO_KEY_REQUIRED = {"libretranslate"}
+
         free_provider_labels = {
             "deepl-free": "DeepL Free",
             "groq": "Groq",
@@ -675,22 +694,14 @@ class MainWindow(Adw.ApplicationWindow):
             "libretranslate": "LibreTranslate",
         }
 
-        # Free providers: those with keys + LibreTranslate (no key needed)
+        # Free: show providers with configured key + those that need no key
         for key, label in free_provider_labels.items():
-            if key == "libretranslate":
+            if key in _NO_KEY_REQUIRED:
                 self._configured_free_providers.append((label, key))
             elif self.settings.get_provider_key("free_api", key):
                 self._configured_free_providers.append((label, key))
 
-        # Always include the saved free provider so the config is visible
-        saved_free = self.settings.get("free_api.provider", "")
-        if saved_free and saved_free in free_provider_labels:
-            if not any(k == saved_free for _, k in self._configured_free_providers):
-                self._configured_free_providers.insert(
-                    0, (free_provider_labels[saved_free], saved_free)
-                )
-
-        # Paid providers: those with keys
+        # Paid: show ONLY providers with configured key
         paid_provider_labels = {
             "openai": "OpenAI",
             "gemini": "Gemini",
@@ -701,22 +712,12 @@ class MainWindow(Adw.ApplicationWindow):
             if self.settings.get_provider_key("paid_api", key):
                 self._configured_paid_providers.append((label, key))
 
-        # Always include the saved paid provider so the config is visible
-        saved_paid = self.settings.get("paid_api.provider", "")
-        if saved_paid and saved_paid in paid_provider_labels:
-            if not any(k == saved_paid for _, k in self._configured_paid_providers):
-                self._configured_paid_providers.insert(
-                    0, (paid_provider_labels[saved_paid], saved_paid)
-                )
-
-        # Always show both API types so the saved selection is always visible
+        # Always show both API types
         configured_types = [(_("Free"), "free"), (_("Paid"), "paid")]
 
-        # Ensure at least one provider per type
+        # Ensure at least one free provider (LibreTranslate needs no key)
         if not self._configured_free_providers:
             self._configured_free_providers.append(("LibreTranslate", "libretranslate"))
-        if not self._configured_paid_providers:
-            self._configured_paid_providers.append(("OpenAI", "openai"))
 
         self._configured_types = configured_types
 
@@ -725,10 +726,18 @@ class MainWindow(Adw.ApplicationWindow):
         type_labels = [t[0] for t in configured_types]
         self.api_type_row.set_model(Gtk.StringList.new(type_labels))
         self.api_type_row.connect("notify::selected", self._on_sidebar_api_type_changed)
+        _apply_row_tooltip(
+            self.api_type_row,
+            self.tooltip_helper.tooltips.get("api_type", ""),
+        )
         api_group.add(self.api_type_row)
 
         # Provider row
         self.api_provider_row = Adw.ComboRow(title=_("Provider"))
+        _apply_row_tooltip(
+            self.api_provider_row,
+            self.tooltip_helper.tooltips.get("api_provider", ""),
+        )
         api_group.add(self.api_provider_row)
 
         # Set initial selection based on saved settings
@@ -757,19 +766,25 @@ class MainWindow(Adw.ApplicationWindow):
         else:
             providers = self._configured_paid_providers
 
-        labels = [p[0] for p in providers]
-        self.api_provider_row.set_model(Gtk.StringList.new(labels))
+        if providers:
+            labels = [p[0] for p in providers]
+            self.api_provider_row.set_model(Gtk.StringList.new(labels))
+            self.api_provider_row.set_sensitive(True)
 
-        # Select the saved provider
-        if type_key == "free":
-            saved = self.settings.get("free_api.provider", "")
+            # Select the saved provider
+            if type_key == "free":
+                saved = self.settings.get("free_api.provider", "")
+            else:
+                saved = self.settings.get("paid_api.provider", "")
+
+            for i, (_lbl, key) in enumerate(providers):
+                if key == saved:
+                    self.api_provider_row.set_selected(i)
+                    break
         else:
-            saved = self.settings.get("paid_api.provider", "")
-
-        for i, (_lbl, key) in enumerate(providers):
-            if key == saved:
-                self.api_provider_row.set_selected(i)
-                break
+            # No configured providers — show empty dropdown
+            self.api_provider_row.set_model(Gtk.StringList.new([]))
+            self.api_provider_row.set_sensitive(False)
 
     # ── Language selection ─────────────────────────────────────
 
@@ -974,6 +989,11 @@ class MainWindow(Adw.ApplicationWindow):
         else:
             provider = self.settings.get_paid_provider()
 
+        # Validate that the selected API type has a configured provider
+        if api_type == "paid" and not self._configured_paid_providers:
+            self._show_toast(_("No paid API configured. Add an API key in Settings."))
+            return
+
         if self._mode == "file":
             body = _(
                 "Translate {items} items to {langs} languages using {provider}.\n"
@@ -1028,10 +1048,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(False)
         self.translate_button.set_label(_("Translating..."))
         self.cancel_button.set_sensitive(True)
-        self.live_view_button.set_sensitive(True)
 
-        # Create/reset the viewer (not shown yet — user clicks "View Live")
-        self._viewer = None
+        # Clear the embedded viewer for the new translation run
+        self._viewer.clear()
 
         self.stack.set_visible_child_name("progress")
         self.progress_ring.set_progress(0)
@@ -1064,6 +1083,9 @@ class MainWindow(Adw.ApplicationWindow):
                 languages=selected_langs,
                 compile_mo=self.compile_switch.get_active(),
                 force_retranslate=self.retranslate_switch.get_active(),
+                on_detail=lambda lang, pairs: GLib.idle_add(
+                    self._on_detail, lang, pairs
+                ),
                 **callbacks,
             )
 
@@ -1227,18 +1249,9 @@ class MainWindow(Adw.ApplicationWindow):
         self.translate_button.set_sensitive(True)
         self.translate_button.set_label(_("Start Translation"))
         self.cancel_button.set_sensitive(False)
-        self.live_view_button.set_sensitive(False)
-
-    def _on_open_live_viewer(self, _btn):
-        """Open or bring to front the live translation viewer window."""
-        if self._viewer is None:
-            self._viewer = TranslationViewer(self)
-        self._viewer.present()
 
     def _on_detail(self, lang: str, pairs: list[tuple[str, str, str]]):
         """Receive translation detail pairs from worker thread (via idle_add)."""
-        if self._viewer is None:
-            return
         # Detect language switch
         viewer_lang = getattr(self, "_viewer_current_lang", None)
         if viewer_lang != lang:

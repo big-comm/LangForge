@@ -307,6 +307,11 @@ msgstr "文件已加载：{}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "至少选择一种语言"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "未配置付费API。请在设置中添加API密钥。"
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -368,25 +373,20 @@ msgstr "{} 语言在取消之前已翻译"
 msgid "Cancelled"
 msgstr "已取消"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "实时翻译"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "清除"
+msgid "Waiting..."
+msgstr "等待中..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "自动滚动"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "等待中..."
+msgid "Clear"
+msgstr "清除"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
@@ -741,6 +741,57 @@ msgstr ""
 "使用上下文感知的AI重新检查现有翻译。\n"
 "\n"
 "检测未包含应用名称/上下文"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"选择翻译的API类别。\n"
+"\n"
+"免费 — 具有免费层或无成本的API：\n"
+"Groq，Gemini Free，DeepL Free，OpenRouter，\n"
+"Mistral，LibreTranslate\n"
+"\n"
+"付费 — 需要计费计划的API：\n"
+"OpenAI，Gemini Pro，Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"要使用的翻译提供者。\n"
+"\n"
+"这里只显示配置了 API 密钥的提供者。请在 API 设置中添加密钥。\n"
+"\n"
+"不需要密钥的提供者（例如 LibreTranslate）始终可用。"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"打开翻译进度的实时视图。\n"
+"\n"
+"实时显示原始文本及其翻译\n"
+"随着每种语言的处理。"
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

@@ -9,6 +9,8 @@ from api.base import (
     build_batch_prompt,
     build_translation_prompt,
     clean_batch_parts,
+    prepare_batch_texts,
+    restore_batch_texts,
     retry_on_rate_limit,
 )
 from core.languages import get_api_lang_code
@@ -26,6 +28,8 @@ class GroqAPI(TranslationAPI):
     Qualidade: Excelente
     Velocidade: Mais rápida do mercado
     """
+
+    batch_delay = 2.0  # Groq free: 30 RPM
 
     def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
         self.api_key = api_key
@@ -62,10 +66,23 @@ class GroqAPI(TranslationAPI):
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
-        """Translate multiple texts in a single Groq call."""
+        """Translate multiple texts using Groq with sub-batches of 8.
+
+        Llama models struggle to align |||NEXT||| separators with 15+ items,
+        so we use smaller sub-batches to reduce mismatch and rate limit hits.
+        """
+        import time as _time
+
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        return self._do_batch(texts, source_lang, target_lang)
+        sub_batch_size = 8
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            if start > 0:
+                _time.sleep(self.batch_delay)
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
 
     @retry_on_rate_limit
     def _do_batch(
@@ -77,7 +94,7 @@ class GroqAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -94,7 +111,7 @@ class GroqAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Groq batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -315,7 +332,7 @@ class GeminiFreeAPI(TranslationAPI):
     Uses new google-genai SDK (replaces deprecated google-generativeai).
     """
 
-    batch_delay = 4.0  # Gemini RPM limits are strict
+    batch_delay = 5.0  # 12 RPM — safely under 15 RPM limit
 
     def __init__(self, api_key: str, model: str = "gemini-2.5-flash-lite"):
         try:
@@ -328,6 +345,11 @@ class GeminiFreeAPI(TranslationAPI):
             http_options={"timeout": 60_000},
         )
         self.model_name = model
+
+        # Disable thinking for 2.5+ models — saves tokens on free tier
+        self._no_think = {}
+        if "2.5" in model or "2.6" in model:
+            self._no_think = {"thinking_config": {"thinking_budget": 0}}
 
     @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
@@ -342,7 +364,7 @@ class GeminiFreeAPI(TranslationAPI):
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 512},
+            config={"temperature": 0.3, "max_output_tokens": 512, **self._no_think},
         )
         return response.text.strip()
 
@@ -354,7 +376,7 @@ class GeminiFreeAPI(TranslationAPI):
 
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        sub_batch_size = 10
+        sub_batch_size = 15
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
             if start > 0:
@@ -373,14 +395,14 @@ class GeminiFreeAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         prompt = f"{system_prompt}\n\n{user_msg}"
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 2048},
+            config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
         )
-        parts = clean_batch_parts(response.text)
+        parts = restore_batch_texts(clean_batch_parts(response.text))
         if len(parts) != len(texts):
             log.warning(
                 "GeminiFree batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -395,13 +417,22 @@ class GeminiFreeAPI(TranslationAPI):
         return parts
 
     def test_connection(self) -> bool:
-        """Testa conexão com Gemini."""
+        """Test Gemini connection with actual generation."""
         try:
             response = self.client.models.generate_content(
-                model=self.model_name, contents="test"
+                model=self.model_name, contents="Say OK",
+                config={"max_output_tokens": 10, **self._no_think},
             )
             return bool(response.text)
         except Exception as e:
+            msg = str(e)
+            if "429" in msg or "RESOURCE_EXHAUSTED" in msg or "quota" in msg.lower():
+                raise ConnectionError(
+                    "Gemini: quota exceeded. "
+                    "Wait for the daily reset or check your AI Studio limits."
+                ) from e
+            if "401" in msg or "403" in msg or "API_KEY_INVALID" in msg:
+                raise ConnectionError("Gemini: invalid API key.") from e
             raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
@@ -415,6 +446,8 @@ class OpenRouterAPI(TranslationAPI):
     Qualidade: Excelente (Meta, Mistral, NVIDIA)
     API Key gratuita em: https://openrouter.ai/
     """
+
+    batch_delay = 2.0  # Conservative for varied free model limits
 
     def __init__(
         self, api_key: str, model: str = "meta-llama/llama-3.1-8b-instruct:free"
@@ -457,9 +490,19 @@ class OpenRouterAPI(TranslationAPI):
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
+        """Sub-batch of 8 for free models (varied RPM limits)."""
+        import time as _time
+
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        return self._do_batch(texts, source_lang, target_lang)
+        sub_batch_size = 8
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            if start > 0:
+                _time.sleep(self.batch_delay)
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
 
     @retry_on_rate_limit
     def _do_batch(
@@ -471,7 +514,7 @@ class OpenRouterAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={
@@ -492,7 +535,7 @@ class OpenRouterAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "OpenRouter batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -531,6 +574,8 @@ class MistralFreeAPI(TranslationAPI):
     API Key gratuita em: https://console.mistral.ai/
     """
 
+    batch_delay = 2.0  # Conservative for free tier
+
     def __init__(self, api_key: str, model: str = "mistral-small-latest"):
         self.api_key = api_key
         self.model = model
@@ -566,9 +611,19 @@ class MistralFreeAPI(TranslationAPI):
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
+        """Sub-batch of 10 for Mistral free tier."""
+        import time as _time
+
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        return self._do_batch(texts, source_lang, target_lang)
+        sub_batch_size = 10
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            if start > 0:
+                _time.sleep(self.batch_delay)
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
 
     @retry_on_rate_limit
     def _do_batch(
@@ -580,7 +635,7 @@ class MistralFreeAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -597,7 +652,7 @@ class MistralFreeAPI(TranslationAPI):
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Mistral batch mismatch: expected %d, got %d. Translating remaining individually.",

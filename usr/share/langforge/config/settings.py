@@ -26,18 +26,25 @@ except Exception:
 
 
 def _store_secret(key_name: str, value: str) -> bool:
-    """Store a secret in the system keyring."""
-    if not _secret_available or not value:
+    """Store a secret in the system keyring, or clear it if value is empty."""
+    if not _secret_available:
         return False
     try:
-        Secret.password_store_sync(
-            _SECRET_SCHEMA,
-            {"key_name": key_name},
-            Secret.COLLECTION_DEFAULT,
-            f"LangForge: {key_name}",
-            value,
-            None,
-        )
+        if value:
+            Secret.password_store_sync(
+                _SECRET_SCHEMA,
+                {"key_name": key_name},
+                Secret.COLLECTION_DEFAULT,
+                f"LangForge: {key_name}",
+                value,
+                None,
+            )
+        else:
+            Secret.password_clear_sync(
+                _SECRET_SCHEMA,
+                {"key_name": key_name},
+                None,
+            )
         return True
     except Exception as e:
         log.debug("Keyring store failed: %s", e)
@@ -94,13 +101,16 @@ class Settings:
             config = self._get_default_config()
         # Recover API keys from keyring if not in file
         for section in ("free_api", "paid_api"):
-            if not config.get(section, {}).get("api_key"):
-                secret = _lookup_secret(f"{section}_api_key")
-                if secret:
-                    config.setdefault(section, {})["api_key"] = secret
+            keys = config.get(section, {}).get("keys", {})
+
+            # Only recover legacy shared key if no per-provider keys exist
+            if not any(keys.values()):
+                if not config.get(section, {}).get("api_key"):
+                    secret = _lookup_secret(f"{section}_api_key")
+                    if secret:
+                        config.setdefault(section, {})["api_key"] = secret
 
             # Recover per-provider keys from keyring
-            keys = config.get(section, {}).get("keys", {})
             for provider in list(keys.keys()):
                 if not keys[provider]:
                     secret = _lookup_secret(f"{section}_{provider}_key")
@@ -144,13 +154,11 @@ class Settings:
         # Store a copy of keys in the system keyring (best-effort)
         for section in ("free_api", "paid_api"):
             api_key = config_to_save.get(section, {}).get("api_key", "")
-            if api_key:
-                _store_secret(f"{section}_api_key", api_key)
+            _store_secret(f"{section}_api_key", api_key)
 
             keys = config_to_save.get(section, {}).get("keys", {})
             for provider, key in keys.items():
-                if key:
-                    _store_secret(f"{section}_{provider}_key", key)
+                _store_secret(f"{section}_{provider}_key", key)
 
         with open(self.config_file, "w", encoding="utf-8") as f:
             json.dump(config_to_save, f, indent=2, ensure_ascii=False)
@@ -200,7 +208,8 @@ class Settings:
         """Get API key for a specific provider.
 
         Checks per-provider keys first, then falls back to the legacy
-        shared api_key field for backward compatibility.
+        shared api_key field only when no per-provider keys exist at all
+        (old config format).
 
         Args:
             section: 'free_api' or 'paid_api'
@@ -214,8 +223,11 @@ class Settings:
             key = _lookup_secret(f"{section}_{provider}_key")
         if key:
             return key
-        # Fallback to legacy shared key (old format, backward compat)
-        return self.config.get(section, {}).get("api_key", "")
+        # Fallback to legacy shared key only if no per-provider keys exist
+        # (indicates old config format before per-provider storage)
+        if not any(keys.values()):
+            return self.config.get(section, {}).get("api_key", "")
+        return ""
 
     def set_provider_key(self, section: str, provider: str, key: str) -> None:
         """Set API key for a specific provider."""

@@ -146,6 +146,7 @@ class TranslationEngine:
         cancel_event: Optional[threading.Event] = None,
         languages: Optional[List[str]] = None,
         force_retranslate: bool = False,
+        detail_callback: Optional[Callable[[str, List[Tuple[str, str, str]]], None]] = None,
     ) -> Dict[str, bool]:
         """
         Traduz projeto para os idiomas selecionados (ou todos).
@@ -177,6 +178,7 @@ class TranslationEngine:
                     project_path,
                     force_retranslate=force_retranslate,
                     cancel_event=cancel_event,
+                    detail_callback=(lambda pairs, _lc=lang_code: detail_callback(_lc, pairs)) if detail_callback else None,
                 )
                 results[lang_code] = True
 
@@ -203,6 +205,7 @@ class TranslationEngine:
         fix_msgids: Optional[set] = None,
         batch_progress: Optional[Callable[[int, int], None]] = None,
         cancel_event: Optional[threading.Event] = None,
+        detail_callback: Optional[Callable[[List[Tuple[str, str, str]]], None]] = None,
     ) -> int:
         """
         Traduz um idioma específico.
@@ -329,6 +332,15 @@ class TranslationEngine:
                         entry.flags.remove("fuzzy")
                 translated_count += 1
 
+            # Emit detail pairs for live viewer
+            if detail_callback:
+                pairs = []
+                for entry, translation in zip(batch_entries, translations):
+                    if translation is not None:
+                        pairs.append((entry.msgid, entry.msgstr, ""))
+                if pairs:
+                    detail_callback(pairs)
+
             if batch_progress:
                 batch_progress(
                     min(batch_start + batch_size, len(entries_to_translate)),
@@ -347,6 +359,7 @@ class TranslationEngine:
         progress_callback: Optional[Callable[[str, str, int, int], None]] = None,
         cancel_event: Optional[threading.Event] = None,
         languages: Optional[List[str]] = None,
+        detail_callback: Optional[Callable[[str, List[Tuple[str, str, str]]], None]] = None,
     ) -> Dict[str, bool]:
         """Re-translate only entries whose context-aware translation differs.
 
@@ -581,6 +594,7 @@ class TranslationEngine:
                     fix_msgids=changed_msgids,
                     batch_progress=_batch_cb,
                     cancel_event=cancel_event,
+                    detail_callback=(lambda pairs, _lc=lang: detail_callback(_lc, pairs)) if detail_callback else None,
                 )
                 results[lang] = True
                 fixed_langs.add(lang)

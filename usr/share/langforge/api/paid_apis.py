@@ -9,6 +9,8 @@ from api.base import (
     build_batch_prompt,
     build_translation_prompt,
     clean_batch_parts,
+    prepare_batch_texts,
+    restore_batch_texts,
     retry_on_rate_limit,
 )
 
@@ -68,10 +70,15 @@ class OpenAIAPI(TranslationAPI):
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
-        """Translate multiple texts in a single OpenAI call."""
+        """Translate multiple texts using OpenAI with sub-batches of 15."""
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        return self._do_batch(texts, source_lang, target_lang)
+        sub_batch_size = 15
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
 
     @retry_on_rate_limit
     def _do_batch(
@@ -83,7 +90,7 @@ class OpenAIAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
@@ -95,7 +102,7 @@ class OpenAIAPI(TranslationAPI):
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content or ""
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -212,7 +219,7 @@ class GeminiAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         prompt = f"{system_prompt}\n\n{user_msg}"
         response = self.client.models.generate_content(
             model=self.model_name,
@@ -220,7 +227,7 @@ class GeminiAPI(TranslationAPI):
             config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
         )
         self._track_gemini_response(response)
-        parts = clean_batch_parts(response.text)
+        parts = restore_batch_texts(clean_batch_parts(response.text))
         if len(parts) != len(texts):
             log.warning(
                 "Batch mismatch: expected %d, got %d. Translating remaining individually.",
@@ -236,14 +243,23 @@ class GeminiAPI(TranslationAPI):
         return parts
 
     def test_connection(self) -> bool:
-        """Testa conexão com Gemini."""
+        """Test Gemini connection with actual generation."""
         try:
             response = self.client.models.generate_content(
-                model=self.model_name, contents="test"
+                model=self.model_name, contents="Say OK",
+                config={"max_output_tokens": 10},
             )
             return bool(response.text)
         except Exception as e:
-            log.debug("Gemini test error: %s", e)
+            msg = str(e)
+            log.debug("Gemini test error: %s", msg)
+            if "429" in msg or "RESOURCE_EXHAUSTED" in msg or "quota" in msg.lower():
+                raise ConnectionError(
+                    "Gemini: quota exceeded. "
+                    "Wait for the daily reset or check your AI Studio limits."
+                ) from e
+            if "401" in msg or "403" in msg or "API_KEY_INVALID" in msg:
+                raise ConnectionError("Gemini: invalid API key.") from e
             raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
@@ -265,6 +281,12 @@ class GrokAPI(TranslationAPI):
         self.session = requests.Session()
         self.base_url = "https://api.x.ai/v1"
         self._reset_usage()
+
+        # Disable reasoning for grok-3+/grok-4+ models — translation
+        # doesn't need it and reasoning tokens are very expensive
+        self._extra_params: dict = {}
+        if any(tag in model for tag in ("grok-3", "grok-4")):
+            self._extra_params["reasoning_effort"] = "none"
 
     def _track_grok_response(self, data: dict) -> None:
         """Extract and track token usage from a Grok JSON response."""
@@ -295,6 +317,7 @@ class GrokAPI(TranslationAPI):
                 ],
                 "temperature": 0.3,
                 "max_tokens": 512,
+                **self._extra_params,
             },
             timeout=30,
         )
@@ -306,10 +329,19 @@ class GrokAPI(TranslationAPI):
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
-        """Translate multiple texts in a single Grok call."""
+        """Translate multiple texts using Grok with sub-batches of 10."""
+        import time as _time
+
         if len(texts) == 1:
             return [self.translate(texts[0], source_lang, target_lang)]
-        return self._do_batch(texts, source_lang, target_lang)
+        sub_batch_size = 10
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            if start > 0 and self.batch_delay > 0:
+                _time.sleep(self.batch_delay)
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
 
     @retry_on_rate_limit
     def _do_batch(
@@ -321,7 +353,7 @@ class GrokAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(texts)
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -333,6 +365,7 @@ class GrokAPI(TranslationAPI):
                 ],
                 "temperature": 0.3,
                 "max_tokens": 2048,
+                **self._extra_params,
             },
             timeout=60,
         )
@@ -340,7 +373,7 @@ class GrokAPI(TranslationAPI):
         data = response.json()
         self._track_grok_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        parts = clean_batch_parts(content)
+        parts = restore_batch_texts(clean_batch_parts(content))
         if len(parts) != len(texts):
             log.warning(
                 "Grok batch mismatch: expected %d, got %d. Translating remaining individually.",

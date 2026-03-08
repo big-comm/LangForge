@@ -309,6 +309,11 @@ msgstr "Αρχείο φορτώθηκε: {}"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
 msgid "Select at least one language"
 msgstr "Επιλέξτε τουλάχιστον μία γλώσσα"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "Δεν έχει ρυθμιστεί πληρωμένη API. Προσθέστε ένα API key στις Ρυθμίσεις."
 # File: usr/share/langforge/ui/main_window.py, line: 933
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
 #, python-brace-format
@@ -374,30 +379,25 @@ msgstr "{} γλώσσες μεταφρασμένες πριν από την ακ
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 21
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
 #: NEEDS WORK
-msgid "Live Translation"
-msgstr "Ζωντανή Μετάφραση"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "Καθαρισμός"
+msgid "Waiting..."
+msgstr "Αναμονή..."
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 40
 #: NEEDS WORK
 msgid "Auto-scroll"
 msgstr "Αυτόματη κύλιση"
 # 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
 #: NEEDS WORK
-msgid "Waiting..."
-msgstr "Αναμονή..."
+msgid "Clear"
+msgstr "Καθαρισμός"
 # 
 # File: usr/share/langforge/ui/translation_viewer.py, line: 77
 #: NEEDS WORK
 msgid "Live translation diff view"
-msgstr "Ζωντανή προβολή διαφορών μετάφρασης"
+msgstr "Ζωντανή προβολή διαφοράς μετάφρασης"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 59
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
 msgid "Translation API"
@@ -742,6 +742,59 @@ msgstr ""
 "\n"
 "Μη συμβατά:\n"
 "DeepL, LibreTranslate (χωρίς υποστήριξη π"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Επιλέξτε την κατηγορία API για μεταφράσεις.\n"
+"\n"
+"Δωρεάν — APIs με δωρεάν επίπεδο ή χωρίς κόστος:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Πληρωμή — APIs που απαιτούν σχέδιο χρέωσης:\n"
+"OpenAI, Gemini Pro, Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Πάροχος μετάφρασης προς χρήση.\n"
+"\n"
+"Μόνο οι πάροχοι με διαμορφωμένο API key\n"
+"εμφανίζονται εδώ. Προσθέστε κλειδιά στις Ρυθμίσεις API.\n"
+"\n"
+"Οι πάροχοι που δεν απαιτούν κλειδί\n"
+"(π.χ. LibreTranslate) είναι πάντα διαθέσιμοι."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Άνοιγμα ζωντανής προβολής μεταφράσεων σε εξέλιξη.\n"
+"\n"
+"Εμφανίζει το πρωτότυπο κείμενο και τη μετάφρασή του\n"
+"σε πραγματικό χρόνο καθώς επεξεργάζεται κάθε γλώσσα."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57

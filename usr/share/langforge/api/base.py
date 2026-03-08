@@ -5,6 +5,8 @@ import time
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from core.languages import SUPPORTED_LANGUAGES
+
 log = logging.getLogger(__name__)
 
 # Retry settings for rate-limited requests
@@ -14,6 +16,11 @@ _BACKOFF_FACTOR = 2.0
 
 # Shared prompt template for all LLM-based translation APIs.
 # Placeholders: {source}, {target}, {app_name}, {context_section}
+
+
+def _resolve_lang(code: str) -> str:
+    """Resolve a language code to its full name for clearer LLM prompts."""
+    return SUPPORTED_LANGUAGES.get(code, code)
 _TRANSLATION_PROMPT = (
     "You are a professional translator specializing in software localization. "
     "You are translating UI strings for the application '{app_name}'. "
@@ -72,8 +79,8 @@ def build_translation_prompt(
         )
 
     return _TRANSLATION_PROMPT.format(
-        source=source,
-        target=target,
+        source=_resolve_lang(source),
+        target=_resolve_lang(target),
         app_name=display_name,
         context_section=context_section,
     )
@@ -91,6 +98,7 @@ _BATCH_PROMPT = (
     "5. Return ONLY the translated texts, one per line, in the EXACT same order.\n"
     "6. Use the separator |||NEXT||| between each translation.\n"
     "7. Do NOT add numbering, bullet points, or any extra text.\n"
+    "8. Preserve the token <NL> exactly as-is — it represents a line break.\n"
     "{context_section}"
 )
 
@@ -113,8 +121,8 @@ def build_batch_prompt(
             f"{samples}\n"
         )
     return _BATCH_PROMPT.format(
-        source=source,
-        target=target,
+        source=_resolve_lang(source),
+        target=_resolve_lang(target),
         app_name=display_name,
         context_section=context_section,
     )
@@ -132,6 +140,24 @@ def clean_batch_parts(raw: str) -> list[str]:
     while parts and not parts[-1]:
         parts.pop()
     return parts
+
+
+# Newline placeholder for batch input — prevents multi-line texts from
+# confusing the |||NEXT||| separator boundary.
+_NL_PLACEHOLDER = " <NL> "
+
+
+def prepare_batch_texts(texts: list[str]) -> list[str]:
+    """Replace newlines with placeholder for safe batch joining."""
+    return [t.replace("\n", _NL_PLACEHOLDER) for t in texts]
+
+
+def restore_batch_texts(parts: list[str]) -> list[str]:
+    """Restore newlines from placeholder and strip stray separators."""
+    return [
+        p.replace(_NL_PLACEHOLDER, "\n").replace("|||NEXT|||", "").strip()
+        for p in parts
+    ]
 
 
 class TranslationAPI(ABC):
@@ -280,12 +306,13 @@ def retry_on_rate_limit(func):
                 raise
             except Exception as e:
                 msg = str(e).lower()
-                if (
-                    "rate" in msg
-                    or "429" in msg
-                    or "quota" in msg
-                    or "resource_exhausted" in msg
-                ) and attempt < _MAX_RETRIES - 1:
+                is_quota = "quota" in msg or "resource_exhausted" in msg
+                is_rate = "rate" in msg or "429" in msg
+                if (is_quota or is_rate) and attempt < _MAX_RETRIES - 1:
+                    # Quota exhaustion is persistent — fail fast after 1 retry
+                    if is_quota and attempt >= 1:
+                        log.error("Quota exhausted — aborting retries.")
+                        raise
                     # Try to extract retry delay from error message
                     delay = _parse_retry_delay(str(e))
                     wait = delay if delay else backoff
