@@ -203,7 +203,7 @@ class TranslationController:
 
             scanner = ProjectScanner(str(project_path))
             textdomain = scanner.detect_textdomain()
-            files = scanner.find_python_files()
+            files = scanner.find_source_files()
 
             extractor = GettextExtractor(str(project_path), textdomain)
             extractor.extract_strings(files)
