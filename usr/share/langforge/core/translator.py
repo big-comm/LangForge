@@ -53,12 +53,37 @@ def _protect_placeholders(text: str) -> Tuple[str, List[Tuple[str, str]]]:
 
 
 def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
-    """Restaura placeholders originais a partir dos tokens XML."""
+    """Restaura placeholders originais a partir dos tokens XML.
+
+    Handles common API corruptions: extra spaces, case changes,
+    HTML-encoded tags, and stray residuals.
+    """
     for token, original in tokens:
-        # Tenta também variações comuns de corrupção de tags
-        text = text.replace(token, original)
-        # APIs podem adicionar espaços extras: <x1 /> ou < x1/>
-        text = text.replace(token.replace("/>", " />"), original)
+        # Extract the number from <xN/>
+        num = re.search(r"x(\d+)", token)
+        if num:
+            n = num.group(1)
+            # Try multiple corruption patterns LLMs commonly produce
+            variants = [
+                token,                          # <x1/>
+                f"<x{n} />",                    # <x1 />
+                f"< x{n}/>",                    # < x1/>
+                f"< x{n} />",                   # < x1 />
+                f"<X{n}/>",                      # <X1/>
+                f"<X{n} />",                    # <X1 />
+                f"&lt;x{n}/&gt;",               # HTML-encoded
+                f"<x{n}>",                      # Missing / (not self-closing)
+                f"[x{n}]",                      # Bracket variant
+                f"x{n}",                        # Stripped tags entirely
+            ]
+            for variant in variants:
+                if variant in text:
+                    text = text.replace(variant, original)
+                    break
+        else:
+            text = text.replace(token, original)
+    # Remove any residual XML placeholder tokens the API might have mangled
+    text = re.sub(r"</?[xX]\d+\s*/?>", "", text)
     return text
 
 
@@ -76,14 +101,20 @@ def _fix_placeholders(original: str, translated: str) -> str:
     """Tenta reparar placeholders corrompidos na tradução.
 
     Handles three cases:
-    1. Placeholder missing entirely — append it.
-    2. Placeholder with corrupted syntax (e.g. {word without closing }).
-    3. Placeholder RENAMED by the LLM (e.g. {langs} → {kieli}) —
+    1. Placeholder RENAMED by the LLM (e.g. {langs} → {kieli}) —
        match by position and replace translated names with originals.
+    2. Placeholder with corrupted syntax (e.g. {word without closing }).
+    3. Placeholder missing entirely — append it.
     """
     for pattern in _FORMAT_PATTERNS:
         orig_matches = pattern.findall(original)
         trans_matches = pattern.findall(translated)
+
+        if not orig_matches:
+            # No placeholders in original — remove any the LLM invented
+            for spurious in trans_matches:
+                translated = translated.replace(spurious, "", 1)
+            continue
 
         # Quick path: counts match but names differ → positional rename
         if len(orig_matches) == len(trans_matches) and orig_matches != trans_matches:
@@ -92,21 +123,45 @@ def _fix_placeholders(original: str, translated: str) -> str:
                     translated = translated.replace(trans_ph, orig_ph, 1)
             continue
 
+        # If LLM added extra placeholders not in original, remove them
+        if len(trans_matches) > len(orig_matches):
+            extra = [p for p in trans_matches if p not in orig_matches]
+            for p in extra:
+                translated = translated.replace(p, "", 1)
+            trans_matches = pattern.findall(translated)
+
         for placeholder in orig_matches:
             if placeholder not in trans_matches:
-                # Try to find a corrupted version (e.g. {word without })
-                corrupted = re.compile(re.escape(placeholder[0]) + r"[^}\s]*(?!\})")
-                match = corrupted.search(translated)
-                if match:
-                    translated = (
-                        translated[: match.start()]
-                        + placeholder
-                        + translated[match.end() :]
-                    )
-                else:
-                    # Not found at all — append
-                    translated = translated.rstrip() + " " + placeholder
+                # Not found at all — append at the end
+                translated = translated.rstrip() + " " + placeholder
     return translated
+
+
+def _is_translation_plausible(msgid: str, msgstr: str) -> bool:
+    """Basic heuristic to detect completely wrong translations (batch shifting).
+
+    Checks:
+    - Length ratio (translation shouldn't be >4x or <0.15x the original)
+    - Placeholder mismatch (strict)
+    - If original has no placeholders but translation adds them, it's wrong
+    """
+    if not msgid or not msgstr:
+        return True
+
+    # Length ratio check (translations can vary a lot, but 4x is extreme)
+    len_ratio = len(msgstr) / max(len(msgid), 1)
+    if len_ratio > 5.0 or len_ratio < 0.1:
+        log.debug("Implausible length ratio %.1f for '%s'", len_ratio, msgid[:40])
+        return False
+
+    # If original has no format placeholders but translation does → wrong
+    orig_has_ph = any(p.search(msgid) for p in _FORMAT_PATTERNS)
+    trans_has_ph = any(p.search(msgstr) for p in _FORMAT_PATTERNS)
+    if not orig_has_ph and trans_has_ph:
+        log.debug("Translation has placeholders but original doesn't: '%s'", msgid[:40])
+        return False
+
+    return True
 
 
 def _save_context_cache(
@@ -318,6 +373,26 @@ class TranslationEngine:
                 if tokens:
                     translation = _restore_placeholders(translation, tokens)
 
+                # Reject implausible translations (batch shifting detection)
+                if not _is_translation_plausible(entry.msgid, translation):
+                    log.warning(
+                        "Implausible translation rejected for '%s': '%s'",
+                        entry.msgid[:40], translation[:40],
+                    )
+                    # Fall back to individual translation
+                    try:
+                        protected, single_tokens = _protect_placeholders(entry.msgid)
+                        single_trans = self.api.translate(
+                            text=protected, source_lang="en", target_lang=lang
+                        )
+                        if single_tokens:
+                            single_trans = _restore_placeholders(single_trans, single_tokens)
+                        translation = single_trans
+                    except Exception:
+                        translation = entry.msgid
+                        if "fuzzy" not in entry.flags:
+                            entry.flags.append("fuzzy")
+
                 # Valida se placeholders estão intactos
                 if not _validate_placeholders(entry.msgid, translation):
                     translation = _fix_placeholders(entry.msgid, translation)
@@ -346,6 +421,25 @@ class TranslationEngine:
                     min(batch_start + batch_size, len(entries_to_translate)),
                     len(entries_to_translate),
                 )
+
+        # Final validation pass — catch any remaining placeholder issues
+        fixed_in_validation = 0
+        for entry in po:
+            if not entry.msgstr or entry.obsolete:
+                continue
+            if not _validate_placeholders(entry.msgid, entry.msgstr):
+                repaired = _fix_placeholders(entry.msgid, entry.msgstr)
+                if _validate_placeholders(entry.msgid, repaired):
+                    entry.msgstr = repaired
+                    fixed_in_validation += 1
+                else:
+                    # Cannot fix — revert to original and mark fuzzy
+                    entry.msgstr = entry.msgid
+                    if "fuzzy" not in entry.flags:
+                        entry.flags.append("fuzzy")
+                    fixed_in_validation += 1
+        if fixed_in_validation:
+            log.info("Post-save validation fixed %d entries in %s", fixed_in_validation, lang)
 
         # Save .po file
         po.save(str(po_path))

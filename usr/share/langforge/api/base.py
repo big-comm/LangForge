@@ -33,7 +33,9 @@ _TRANSLATION_PROMPT = (
     "do NOT translate word-by-word or literally.\n"
     "4. Adapt idioms and expressions to sound natural in the target language.\n"
     "5. Preserve any XML tags like <x1/>, <x2/>, placeholders like "
-    "{{}}, %s, %d, and formatting codes exactly as they are.\n"
+    "{{}}, %s, %d, and formatting codes EXACTLY as they are. "
+    "Do NOT translate, rename, or modify ANY text inside curly braces {{}} or XML tags. "
+    "For example, {{total}} must stay as {{total}}, NOT be translated.\n"
     "6. Return ONLY the translated text, nothing else.\n"
     "{context_section}"
 )
@@ -94,10 +96,12 @@ _BATCH_PROMPT = (
     "1. NEVER translate the application name '{app_name}' — it is a proper noun.\n"
     "2. NEVER translate brand names, product names, or proper nouns.\n"
     "3. Use natural, contextual translation for a software UI.\n"
-    "4. Preserve XML tags (<x1/>, <x2/>), placeholders ({{}}, %s, %d) exactly.\n"
-    "5. Return ONLY the translated texts, one per line, in the EXACT same order.\n"
+    "4. Preserve XML tags (<x1/>, <x2/>), placeholders ({{}}, %s, %d) EXACTLY as-is. "
+    "Do NOT translate, rename, or modify ANY text inside curly braces {{}} or XML tags.\n"
+    "5. The input texts are numbered [1], [2], etc. Return translations in the EXACT same order "
+    "with the SAME numbering.\n"
     "6. Use the separator |||NEXT||| between each translation.\n"
-    "7. Do NOT add numbering, bullet points, or any extra text.\n"
+    "7. Do NOT add bullet points or any extra text beyond the numbers.\n"
     "8. Preserve the token <NL> exactly as-is — it represents a line break.\n"
     "{context_section}"
 )
@@ -133,12 +137,16 @@ def clean_batch_parts(raw: str) -> list[str]:
 
     LLMs sometimes return '|||NEXT|||Trans1|||NEXT|||Trans2' which produces
     an empty first element after split, shifting all translations by one.
+    Also strips numbering prefixes like '[1] ' that the LLM may echo back.
     """
     parts = [p.strip() for p in raw.split("|||NEXT|||")]
     while parts and not parts[0]:
         parts.pop(0)
     while parts and not parts[-1]:
         parts.pop()
+    # Strip LLM-echoed numbering prefixes: [1] , [2] , etc.
+    import re as _re
+    parts = [_re.sub(r"^\[\d+\]\s*", "", p) for p in parts]
     return parts
 
 
@@ -148,16 +156,22 @@ _NL_PLACEHOLDER = " <NL> "
 
 
 def prepare_batch_texts(texts: list[str]) -> list[str]:
-    """Replace newlines with placeholder for safe batch joining."""
-    return [t.replace("\n", _NL_PLACEHOLDER) for t in texts]
+    """Replace newlines with placeholder and add numbering for batch alignment."""
+    return [
+        f"[{i+1}] {t.replace(chr(10), _NL_PLACEHOLDER)}"
+        for i, t in enumerate(texts)
+    ]
 
 
 def restore_batch_texts(parts: list[str]) -> list[str]:
-    """Restore newlines from placeholder and strip stray separators."""
-    return [
-        p.replace(_NL_PLACEHOLDER, "\n").replace("|||NEXT|||", "").strip()
-        for p in parts
-    ]
+    """Restore newlines from placeholder, strip numbering prefixes and stray separators."""
+    import re as _re
+    restored = []
+    for p in parts:
+        p = _re.sub(r"^\[\d+\]\s*", "", p)  # Strip [N] prefix
+        p = p.replace(_NL_PLACEHOLDER, "\n").replace("|||NEXT|||", "").strip()
+        restored.append(p)
+    return restored
 
 
 class TranslationAPI(ABC):
