@@ -420,7 +420,7 @@ msgstr "Cancelled"
 
 #
 # File: usr/share/langforge/ui/translation_viewer.py, line: 32
-# File: usr/share/langforge/ui/translation_viewer.py, line: 255
+# File: usr/share/langforge/ui/translation_viewer.py, line: 259
 msgid "Waiting..."
 msgstr "Waiting..."
 
@@ -435,7 +435,7 @@ msgid "Clear"
 msgstr "Clear"
 
 #
-# File: usr/share/langforge/ui/translation_viewer.py, line: 75
+# File: usr/share/langforge/ui/translation_viewer.py, line: 79
 msgid "Live translation diff view"
 msgstr "Live translation diff view"
 
