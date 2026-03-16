@@ -11,6 +11,7 @@ from core.translator import (
     _validate_placeholders,
     _fix_placeholders,
     _is_translation_plausible,
+    _match_newlines,
 )
 from api.base import build_translation_prompt, TranslationAPI, clean_batch_parts, prepare_batch_texts, restore_batch_texts
 
@@ -250,8 +251,43 @@ class TestBatchNewlineNormalization:
         restored = restore_batch_texts(parts)
         assert restored == ["Alpha", "Beta"]
 
+    def test_restore_nl_without_trailing_space(self):
+        """LLM drops trailing space from <NL> at end of string."""
+        parts = ["Copyright Team <NL>  <NL>"]
+        restored = restore_batch_texts(parts)
+        assert restored[0] == "Copyright Team\n\n"
 
-class TestIsTranslationPlausible:
+    def test_restore_nl_preserves_trailing_newlines(self):
+        """Trailing newlines must not be stripped."""
+        safe = prepare_batch_texts(["Line1\n\n"])
+        restored = restore_batch_texts(safe)
+        assert restored == ["Line1\n\n"]
+
+    def test_restore_nl_no_false_positive(self):
+        """Text without <NL> should not be altered."""
+        parts = ["Simple text"]
+        restored = restore_batch_texts(parts)
+        assert restored == ["Simple text"]
+
+
+class TestMatchNewlines:
+    def test_trailing_newlines_added(self):
+        assert _match_newlines("Hello\n\n", "Olá") == "Olá\n\n"
+
+    def test_trailing_newlines_removed(self):
+        assert _match_newlines("Hello", "Olá\n\n") == "Olá"
+
+    def test_leading_newlines_added(self):
+        assert _match_newlines("\nHello", "Olá") == "\nOlá"
+
+    def test_matching_newlines_unchanged(self):
+        assert _match_newlines("Hello\n", "Olá\n") == "Olá\n"
+
+    def test_empty_msgstr(self):
+        assert _match_newlines("Hello\n", "") == ""
+
+    def test_no_newlines(self):
+        assert _match_newlines("Hello", "Olá") == "Olá"
     def test_normal_translation(self):
         assert _is_translation_plausible("Hello world", "Olá mundo") is True
 

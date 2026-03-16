@@ -30,6 +30,8 @@ class GettextExtractor:
 
     def __init__(self, project_path: str, textdomain: str):
         self.project_path = Path(project_path)
+        if not textdomain or textdomain.startswith("."):
+            textdomain = Path(project_path).name
         self.textdomain = textdomain
         self.locale_dir = self.project_path / "locale"
         self.pot_file = self.locale_dir / f"{textdomain}.pot"

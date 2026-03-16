@@ -52,6 +52,27 @@ def _protect_placeholders(text: str) -> Tuple[str, List[Tuple[str, str]]]:
     return text, tokens
 
 
+def _match_newlines(msgid: str, msgstr: str) -> str:
+    """Ensure msgstr has the same leading/trailing newlines as msgid."""
+    if not msgstr:
+        return msgstr
+    # Match leading newlines
+    lead_orig = len(msgid) - len(msgid.lstrip("\n"))
+    lead_trans = len(msgstr) - len(msgstr.lstrip("\n"))
+    if lead_orig > lead_trans:
+        msgstr = "\n" * (lead_orig - lead_trans) + msgstr
+    elif lead_trans > lead_orig:
+        msgstr = msgstr[lead_trans - lead_orig:]
+    # Match trailing newlines
+    trail_orig = len(msgid) - len(msgid.rstrip("\n"))
+    trail_trans = len(msgstr) - len(msgstr.rstrip("\n"))
+    if trail_orig > trail_trans:
+        msgstr = msgstr.rstrip("\n") + "\n" * trail_orig
+    elif trail_trans > trail_orig:
+        msgstr = msgstr.rstrip("\n") + "\n" * trail_orig
+    return msgstr
+
+
 def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
     """Restaura placeholders originais a partir dos tokens XML.
 
@@ -226,6 +247,18 @@ class TranslationEngine:
             if cancel_event and cancel_event.is_set():
                 break
             current += 1
+
+            # Report batch-level progress within each language
+            def _batch_progress(done: int, total: int, _lc: str = lang_code) -> None:
+                if progress_callback and total > 0:
+                    sub_fraction = done / total
+                    progress_callback(
+                        _lc,
+                        f"translating: {done}/{total} strings",
+                        current,
+                        total_langs,
+                    )
+
             try:
                 strings_translated = self.translate_language(
                     pot_file,
@@ -234,6 +267,7 @@ class TranslationEngine:
                     force_retranslate=force_retranslate,
                     cancel_event=cancel_event,
                     detail_callback=(lambda pairs, _lc=lang_code: detail_callback(_lc, pairs)) if detail_callback else None,
+                    batch_progress=_batch_progress,
                 )
                 results[lang_code] = True
 
@@ -401,8 +435,8 @@ class TranslationEngine:
                         if "fuzzy" not in entry.flags:
                             entry.flags.append("fuzzy")
 
-                entry.msgstr = translation
-                if _validate_placeholders(entry.msgid, translation):
+                entry.msgstr = _match_newlines(entry.msgid, translation)
+                if _validate_placeholders(entry.msgid, entry.msgstr):
                     if "fuzzy" in entry.flags:
                         entry.flags.remove("fuzzy")
                 translated_count += 1
@@ -585,7 +619,7 @@ class TranslationEngine:
                             entry.msgstr[:40],
                             new_translation[:40],
                         )
-                        entry.msgstr = new_translation
+                        entry.msgstr = _match_newlines(entry.msgid, new_translation)
                         if "fuzzy" in entry.flags:
                             entry.flags.remove("fuzzy")
 

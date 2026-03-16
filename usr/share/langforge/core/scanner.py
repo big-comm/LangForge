@@ -83,8 +83,12 @@ class ProjectScanner:
         return list(self.project_path.rglob("*.py"))
 
     def _find_pot_files(self) -> List[Path]:
-        """Find .pot template files in the project."""
-        return list(self.project_path.rglob("*.pot"))
+        """Find valid .pot template files in the project."""
+        return [
+            p
+            for p in self.project_path.rglob("*.pot")
+            if p.stem and p.stem != "." and not p.stem.startswith(".")
+        ]
 
     def _find_po_files(self) -> List[Path]:
         """Find .po translation files in the project."""

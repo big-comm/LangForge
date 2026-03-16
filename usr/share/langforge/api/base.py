@@ -169,7 +169,14 @@ def restore_batch_texts(parts: list[str]) -> list[str]:
     restored = []
     for p in parts:
         p = _re.sub(r"^\[\d+\]\s*", "", p)  # Strip [N] prefix
-        p = p.replace(_NL_PLACEHOLDER, "\n").replace("|||NEXT|||", "").strip()
+        p = p.replace("|||NEXT|||", "")
+        # Restore NL placeholders — handle with/without surrounding spaces
+        p = p.replace(" <NL> ", "\n")
+        p = p.replace(" <NL>", "\n")
+        p = p.replace("<NL> ", "\n")
+        p = p.replace("<NL>", "\n")
+        # Strip only spaces/tabs, preserve intentional newlines
+        p = p.strip(" \t")
         restored.append(p)
     return restored
 
