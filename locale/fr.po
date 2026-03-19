@@ -760,6 +760,21 @@ msgstr ""
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 68
 #: NEEDS WORK
 msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+"Compiler les fichiers .po en format binaire .mo.\n"
+"\n"
+"Les fichiers .mo sont le format binaire optimisé\n"
+"utilisé par gettext à l'exécution. Activez ceci pour\n"
+"les générer automatiquement après la traduction."
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
 "Open a live view of translations in progress.\n"
 "\n"
 "Shows the original text and its translation\n"

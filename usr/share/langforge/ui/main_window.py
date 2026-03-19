@@ -18,19 +18,6 @@ from utils.i18n import _
 from utils.tooltip_helper import TooltipHelper
 
 
-def _apply_row_tooltip(row: Gtk.Widget, text: str) -> None:
-    """Apply a tooltip to an Adw row using query-tooltip signal."""
-    if not text:
-        return
-    row.set_has_tooltip(True)
-
-    def _on_query(widget, x, y, keyboard, tooltip):
-        tooltip.set_text(text)
-        return True
-
-    row.connect("query-tooltip", _on_query)
-
-
 def _humanize_error(e: Exception) -> str:
     """Convert common exceptions to user-friendly messages (M5)."""
     msg = str(e).lower()
@@ -223,6 +210,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.compile_switch.set_active(True)
         compile_row.add_suffix(self.compile_switch)
         compile_row.set_activatable_widget(self.compile_switch)
+        self.tooltip_helper.add_tooltip(compile_row, "compile_mo")
         options_group.add(compile_row)
 
         retranslate_row = Adw.ActionRow(title=_("Fix context"))
@@ -726,18 +714,13 @@ class MainWindow(Adw.ApplicationWindow):
         type_labels = [t[0] for t in configured_types]
         self.api_type_row.set_model(Gtk.StringList.new(type_labels))
         self.api_type_row.connect("notify::selected", self._on_sidebar_api_type_changed)
-        _apply_row_tooltip(
-            self.api_type_row,
-            self.tooltip_helper.tooltips.get("api_type", ""),
-        )
+        self.tooltip_helper.add_tooltip(self.api_type_row, "api_type")
         api_group.add(self.api_type_row)
 
         # Provider row
         self.api_provider_row = Adw.ComboRow(title=_("Provider"))
-        _apply_row_tooltip(
-            self.api_provider_row,
-            self.tooltip_helper.tooltips.get("api_provider", ""),
-        )
+        self.api_provider_row.connect("notify::selected", self._on_sidebar_provider_changed)
+        self.tooltip_helper.add_tooltip(self.api_provider_row, "api_provider")
         api_group.add(self.api_provider_row)
 
         # Set initial selection based on saved settings
@@ -747,12 +730,43 @@ class MainWindow(Adw.ApplicationWindow):
             if key == saved_type:
                 type_idx = i
                 break
+        self._updating_dropdowns = True
         self.api_type_row.set_selected(type_idx)
         self._update_sidebar_providers()
+        self._updating_dropdowns = False
 
     def _on_sidebar_api_type_changed(self, combo, pspec):
         """Update provider list when API type changes in sidebar."""
+        self._updating_dropdowns = True
         self._update_sidebar_providers()
+        self._updating_dropdowns = False
+        # Persist the selection
+        idx = self.api_type_row.get_selected()
+        if idx < len(self._configured_types):
+            _lbl, type_key = self._configured_types[idx]
+            self.settings.set_api_type(type_key)
+            self.settings.save()
+
+    def _on_sidebar_provider_changed(self, combo, pspec):
+        """Persist provider selection when changed in sidebar."""
+        if getattr(self, '_updating_dropdowns', False):
+            return
+        type_idx = self.api_type_row.get_selected()
+        if type_idx >= len(self._configured_types):
+            return
+        _lbl, type_key = self._configured_types[type_idx]
+
+        if type_key == "free":
+            providers = self._configured_free_providers
+        else:
+            providers = self._configured_paid_providers
+
+        prov_idx = self.api_provider_row.get_selected()
+        if prov_idx < len(providers):
+            _plbl, prov_key = providers[prov_idx]
+            section = "free_api" if type_key == "free" else "paid_api"
+            self.settings.set(f"{section}.provider", prov_key)
+            self.settings.save()
 
     def _update_sidebar_providers(self):
         """Update provider dropdown based on selected API type."""

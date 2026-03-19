@@ -61,6 +61,10 @@ class TranslationViewer(Gtk.Box):
         self._buffer = Gtk.TextBuffer()
         self._setup_tags()
 
+        # End mark for reliable auto-scroll
+        end_iter = self._buffer.get_end_iter()
+        self._end_mark = self._buffer.create_mark("end", end_iter, False)
+
         self._textview = Gtk.TextView(buffer=self._buffer)
         self._textview.set_editable(False)
         self._textview.set_cursor_visible(False)
@@ -222,7 +226,7 @@ class TranslationViewer(Gtk.Box):
         if line_count > self._max_lines:
             trim_to = line_count // 3
             start = self._buffer.get_start_iter()
-            trim_iter = self._buffer.get_iter_at_line(trim_to)
+            _ok, trim_iter = self._buffer.get_iter_at_line(trim_to)
             self._buffer.delete(start, trim_iter)
 
     def _do_scroll(self):
@@ -232,8 +236,8 @@ class TranslationViewer(Gtk.Box):
             GLib.idle_add(self._scroll_to_end)
 
     def _scroll_to_end(self):
-        adj = self._scroll.get_vadjustment()
-        adj.set_value(adj.get_upper())
+        self._buffer.move_mark(self._end_mark, self._buffer.get_end_iter())
+        self._textview.scroll_to_mark(self._end_mark, 0.0, True, 0.0, 1.0)
         self._scroll_pending = False
         return GLib.SOURCE_REMOVE
 

@@ -64,6 +64,12 @@ def get_tooltips() -> dict[str, str]:
             "Providers that don't require a key\n"
             "(e.g. LibreTranslate) are always available."
         ),
+        "compile_mo": _(
+            "Compile .po files into .mo binary format.\n\n"
+            "The .mo files are the optimized binary format\n"
+            "used by gettext at runtime. Enable this to\n"
+            "automatically generate them after translation."
+        ),
         "live_view": _(
             "Open a live view of translations in progress.\n\n"
             "Shows the original text and its translation\n"

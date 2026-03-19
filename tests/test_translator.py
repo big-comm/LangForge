@@ -10,6 +10,8 @@ from core.translator import (
     _restore_placeholders,
     _validate_placeholders,
     _fix_placeholders,
+    _is_translation_plausible,
+    _match_newlines,
 )
 from api.base import build_translation_prompt, TranslationAPI, clean_batch_parts, prepare_batch_texts, restore_batch_texts
 
@@ -193,7 +195,8 @@ class TestBatchNewlineNormalization:
         safe = prepare_batch_texts(texts)
         assert "\n" not in safe[0]
         assert "<NL>" in safe[0]
-        assert safe[1] == "Single"
+        # prepare now adds [N] numbering prefix for batch alignment
+        assert safe[1] == "[2] Single"
 
     def test_restore_reverts_placeholder(self):
         parts = ["Linha1 <NL> Linha2", "Simples"]
@@ -228,3 +231,188 @@ class TestBatchNewlineNormalization:
     def test_clean_batch_parts_strips_trailing_empty(self):
         raw = "One|||NEXT|||Two|||NEXT|||"
         assert clean_batch_parts(raw) == ["One", "Two"]
+
+    def test_clean_batch_parts_strips_numbering(self):
+        raw = "[1] First|||NEXT|||[2] Second|||NEXT|||[3] Third"
+        assert clean_batch_parts(raw) == ["First", "Second", "Third"]
+
+    def test_clean_batch_parts_mixed_numbering(self):
+        """LLM echoes numbering on some parts but not all."""
+        raw = "[1] First|||NEXT|||Second|||NEXT|||[3] Third"
+        assert clean_batch_parts(raw) == ["First", "Second", "Third"]
+
+    def test_prepare_batch_adds_numbering(self):
+        texts = ["Alpha", "Beta", "Gamma"]
+        safe = prepare_batch_texts(texts)
+        assert safe == ["[1] Alpha", "[2] Beta", "[3] Gamma"]
+
+    def test_restore_batch_strips_numbering(self):
+        parts = ["[1] Alpha", "[2] Beta"]
+        restored = restore_batch_texts(parts)
+        assert restored == ["Alpha", "Beta"]
+
+    def test_restore_nl_without_trailing_space(self):
+        """LLM drops trailing space from <NL> at end of string."""
+        parts = ["Copyright Team <NL>  <NL>"]
+        restored = restore_batch_texts(parts)
+        assert restored[0] == "Copyright Team\n\n"
+
+    def test_restore_nl_preserves_trailing_newlines(self):
+        """Trailing newlines must not be stripped."""
+        safe = prepare_batch_texts(["Line1\n\n"])
+        restored = restore_batch_texts(safe)
+        assert restored == ["Line1\n\n"]
+
+    def test_restore_nl_no_false_positive(self):
+        """Text without <NL> should not be altered."""
+        parts = ["Simple text"]
+        restored = restore_batch_texts(parts)
+        assert restored == ["Simple text"]
+
+
+class TestMatchNewlines:
+    def test_trailing_newlines_added(self):
+        assert _match_newlines("Hello\n\n", "Olá") == "Olá\n\n"
+
+    def test_trailing_newlines_removed(self):
+        assert _match_newlines("Hello", "Olá\n\n") == "Olá"
+
+    def test_leading_newlines_added(self):
+        assert _match_newlines("\nHello", "Olá") == "\nOlá"
+
+    def test_matching_newlines_unchanged(self):
+        assert _match_newlines("Hello\n", "Olá\n") == "Olá\n"
+
+    def test_empty_msgstr(self):
+        assert _match_newlines("Hello\n", "") == ""
+
+    def test_no_newlines(self):
+        assert _match_newlines("Hello", "Olá") == "Olá"
+    def test_normal_translation(self):
+        assert _is_translation_plausible("Hello world", "Olá mundo") is True
+
+    def test_empty_strings(self):
+        assert _is_translation_plausible("", "") is True
+        assert _is_translation_plausible("Hello", "") is True
+
+    def test_extremely_long_translation(self):
+        """5x+ length ratio should be flagged."""
+        short = "OK"
+        very_long = "A" * 100
+        assert _is_translation_plausible(short, very_long) is False
+
+    def test_extremely_short_translation(self):
+        """<0.1x length ratio should be flagged."""
+        long_text = "This is a very long sentence with many words in it here"
+        assert _is_translation_plausible(long_text, "A") is False
+
+    def test_borderline_length_ok(self):
+        """4x ratio should still pass (threshold is 5x)."""
+        text = "Hello"
+        assert _is_translation_plausible(text, "A" * 20) is True
+
+    def test_spurious_placeholders(self):
+        """If original has no placeholders but translation does → reject."""
+        assert _is_translation_plausible("Hello", "Olá %s") is False
+        assert _is_translation_plausible("Settings", "Configurações {name}") is False
+
+    def test_both_have_placeholders(self):
+        """Both having placeholders should pass (mismatch caught elsewhere)."""
+        assert _is_translation_plausible("Hello %s", "Olá %s") is True
+
+    def test_no_placeholders_either(self):
+        assert _is_translation_plausible("Hello", "Olá") is True
+
+
+class TestRestorePlaceholdersCorruption:
+    """Tests for improved _restore_placeholders handling of LLM corruptions."""
+
+    def test_extra_space_in_token(self):
+        text = "Olá <x1 /> mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_leading_space_in_token(self):
+        text = "Olá < x1/> mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_uppercase_token(self):
+        text = "Olá <X1/> mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_html_encoded_token(self):
+        text = "Olá &lt;x1/&gt; mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_missing_slash_token(self):
+        text = "Olá <x1> mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_bracket_variant(self):
+        text = "Olá [x1] mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_stripped_tags(self):
+        text = "Olá x1 mundo"
+        tokens = [("<x1/>", "%s")]
+        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+
+    def test_residual_xml_cleanup(self):
+        """Unknown residual XML tokens should be removed."""
+        text = "Olá <x99/> mundo"
+        tokens = []  # No tokens to restore, but residual should be cleaned
+        assert _restore_placeholders(text, tokens) == "Olá  mundo"
+
+    def test_multiple_corruptions(self):
+        text = "A <X1/> B <x2 /> C"
+        tokens = [("<x1/>", "%s"), ("<x2/>", "%d")]
+        result = _restore_placeholders(text, tokens)
+        assert result == "A %s B %d C"
+
+
+class TestFixPlaceholdersAdvanced:
+    """Tests for improved _fix_placeholders with spurious/extra removal."""
+
+    def test_removes_spurious_placeholders(self):
+        """If original has no placeholders, remove any LLM added."""
+        original = "Hello world"
+        translated = "Olá %s mundo"
+        result = _fix_placeholders(original, translated)
+        assert "%s" not in result
+
+    def test_removes_extra_curly_placeholders(self):
+        original = "Hello world"
+        translated = "Hola {mundo} world"
+        result = _fix_placeholders(original, translated)
+        assert "{mundo}" not in result
+
+    def test_fixes_renamed_placeholder(self):
+        original = "Found {count} items"
+        translated = "Encontrado {contagem} itens"
+        result = _fix_placeholders(original, translated)
+        assert "{count}" in result
+        assert "{contagem}" not in result
+
+    def test_removes_extra_when_more_than_original(self):
+        original = "Hello %s"
+        translated = "Olá %s %d"
+        result = _fix_placeholders(original, translated)
+        assert "%d" not in result
+        assert "%s" in result
+
+    def test_preserves_correct_translation(self):
+        original = "{name} has {count} items"
+        translated = "{name} tem {count} itens"
+        result = _fix_placeholders(original, translated)
+        assert result == "{name} tem {count} itens"
+
+    def test_appends_missing(self):
+        original = "Hello %s and %d"
+        translated = "Olá %s e"
+        result = _fix_placeholders(original, translated)
+        assert "%d" in result
