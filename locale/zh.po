@@ -15,219 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
-# File: usr/share/langforge/ui/main_window.py, line: 25
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
-msgid "Could not connect to the translation service. Check your internet connection."
-msgstr "无法连接到翻译服务。请检查您的互联网连接。"
-# File: usr/share/langforge/ui/main_window.py, line: 29
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:29
-msgid "Invalid API key. Check your key in Settings."
-msgstr "API 密钥无效。请在 Settings 中检查您的密钥。"
-# File: usr/share/langforge/ui/main_window.py, line: 31
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:31
-msgid "Access denied. Your API key may lack the required permissions."
-msgstr "访问被拒绝。您的 API 密钥可能缺少所需的权限。"
-# File: usr/share/langforge/ui/main_window.py, line: 33
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:33
-msgid "API rate limit reached. Wait a moment and try again."
-msgstr "API 速率限制已达到。请稍候片刻再试。"
-# File: usr/share/langforge/ui/main_window.py, line: 35
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:35
-msgid "The translation service took too long to respond. Try again later."
-msgstr "翻译服务响应时间过长。请稍后再试。"
-# File: usr/share/langforge/ui/main_window.py, line: 37
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
-msgid "gettext tools not found. Install gettext on your system."
-msgstr "未找到 gettext 工具。请在您的系统上安装 gettext。"
-# File: usr/share/langforge/ui/main_window.py, line: 39
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:39
-msgid "msgfmt not found. Install gettext on your system."
-msgstr "未找到 msgfmt。请在您的系统上安装 gettext。"
-# File: usr/share/langforge/ui/main_window.py, line: 58
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
-msgid "Translation progress"
-msgstr "翻译进度"
-# File: usr/share/langforge/ui/main_window.py, line: 110
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:110
-#, python-brace-format
-msgid "Translation progress: {}%"
-msgstr "翻译进度：{}%"
-# File: usr/share/langforge/ui/main_window.py, line: 164
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:206
-msgid "Compile .mo files"
-msgstr "编译 .mo 文件"
-# File: usr/share/langforge/ui/main_window.py, line: 214
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:214
-msgid "Fix context"
-msgstr "修复上下文"
-# File: usr/share/langforge/ui/main_window.py, line: 215
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:215
-msgid "Detect and fix translations missing context"
-msgstr "检测并修复缺少上下文的翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 228
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:228
-msgid "Languages"
-msgstr "语言"
-# File: usr/share/langforge/ui/main_window.py, line: 234
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:234
-msgid "All"
-msgstr "所有"
-# File: usr/share/langforge/ui/main_window.py, line: 240
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:240
-msgid "None"
-msgstr "无"
-# File: usr/share/langforge/ui/main_window.py, line: 186
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
-#. ── API Settings button ──
-msgid "API Settings..."
-msgstr "API 设置..."
-# File: usr/share/langforge/ui/main_window.py, line: 209
-# File: usr/share/langforge/ui/main_window.py, line: 580
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1172
-#. Centered translate button as title widget
-msgid "Start Translation"
-msgstr "开始翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 309
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:309
-msgid "Main menu"
-msgstr "主菜单"
-# File: usr/share/langforge/ui/main_window.py, line: 312
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:312
-msgid "Open Project"
-msgstr "打开项目"
-# File: usr/share/langforge/ui/main_window.py, line: 313
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:313
-msgid "Settings"
-msgstr "设置"
-# File: usr/share/langforge/ui/main_window.py, line: 219
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:314
-msgid "About"
-msgstr "关于"
-# File: usr/share/langforge/ui/main_window.py, line: 315
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:315
-msgid "Quit"
-msgstr "退出"
-# File: usr/share/langforge/ui/main_window.py, line: 360
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:360
-msgid "Project selection area. Drag a folder here or click to select."
-msgstr "项目选择区域。将文件夹拖到此处或单击以选择。"
-# File: usr/share/langforge/ui/main_window.py, line: 281
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:372
-msgid "No project selected"
-msgstr "未选择项目"
-# File: usr/share/langforge/ui/main_window.py, line: 377
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:377
-msgid "Drag a folder or file here, or click to select"
-msgstr "将文件夹或文件拖到此处，或点击选择"
-# File: usr/share/langforge/ui/main_window.py, line: 291
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:385
-msgid "Select Project"
-msgstr "选择项目"
-# File: usr/share/langforge/ui/main_window.py, line: 392
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:392
-msgid "Select File"
-msgstr "选择文件"
-# File: usr/share/langforge/ui/main_window.py, line: 423
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:423
-msgid "Change"
-msgstr "更改"
-# File: usr/share/langforge/ui/main_window.py, line: 338
-# File: usr/share/langforge/ui/main_window.py, line: 459
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:440
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:993
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1033
-msgid "Translating..."
-msgstr "正在翻译..."
-# File: usr/share/langforge/ui/main_window.py, line: 445
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:445
-msgid "Translation status"
-msgstr "翻译状态"
-# File: usr/share/langforge/ui/main_window.py, line: 342
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
-msgid "Preparing..."
-msgstr "正在准备..."
-# File: usr/share/langforge/ui/main_window.py, line: 453
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:453
-msgid "Translation details"
-msgstr "翻译详情"
-# File: usr/share/langforge/ui/main_window.py, line: 466
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
-msgid "Language translation status"
-msgstr "语言翻译状态"
-# File: usr/share/langforge/ui/main_window.py, line: 472
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
-#. Cancel button (visible only during translation)
-msgid "Cancel Translation"
-msgstr "取消翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 486
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:486
-msgid "Welcome to LangForge"
-msgstr "欢迎使用 LangForge"
-# File: usr/share/langforge/ui/main_window.py, line: 489
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:489
-msgid ""
-"Automate gettext translations for your project.\n"
-"To get started, configure an API provider in Settings."
-msgstr "自动执行项目的 gettext 翻译。要开始使用，请在“设置”中配置 API 提供商。"
-# File: usr/share/langforge/ui/main_window.py, line: 496
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:496
-msgid "Open Settings"
-msgstr "打开设置"
-# File: usr/share/langforge/ui/main_window.py, line: 502
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
-msgid "Skip"
-msgstr "跳过"
-# File: usr/share/langforge/ui/main_window.py, line: 533
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
-msgid "Translation Complete!"
-msgstr "翻译完成！"
-# File: usr/share/langforge/ui/main_window.py, line: 539
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
-msgid "Translate Again"
-msgstr "再次翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 547
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:547
-msgid "New Project"
-msgstr "新项目"
-# File: usr/share/langforge/ui/main_window.py, line: 560
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:561
-#. Build description with optional cost info
-#, python-brace-format
-msgid "{langs} languages translated in {time}"
-msgstr "{langs} 语言在 {time} 中翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 587
-# File: usr/share/langforge/ui/main_window.py, line: 620
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:601
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:635
-msgid "pending"
-msgstr "待处理"
-# File: usr/share/langforge/ui/main_window.py, line: 621
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:636
-msgid "translating"
-msgstr "翻译中"
-# File: usr/share/langforge/ui/main_window.py, line: 622
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
-msgid "completed"
-msgstr "已完成"
-# File: usr/share/langforge/ui/main_window.py, line: 623
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
-msgid "error"
-msgstr "错误"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 639
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
-msgid "reference"
-msgstr "参考"
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:684
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:690
-msgid "Free"
-msgstr "免费"
-# File: usr/share/langforge/ui/main_window.py, line: 146
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
-msgid "Paid"
-msgstr "付费"
+# File: usr/share/langforge/main.py, line: 67
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
+msgid "Automatic translator for gettext projects"
+msgstr "gettext 项目自动翻译器"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 59
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
+msgid "Translation API"
+msgstr "翻译 API"
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 144
@@ -237,155 +32,6 @@ msgstr "付费"
 #. API Type row
 msgid "API Type"
 msgstr "API 类型"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
-#. Provider row
-msgid "Provider"
-msgstr "提供商"
-# File: usr/share/langforge/ui/main_window.py, line: 747
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
-#, python-brace-format
-msgid "{count} of {total} languages selected"
-msgstr "已选择 {count} 个 {total} 语言"
-# File: usr/share/langforge/ui/main_window.py, line: 813
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
-msgid "Translatable files (.po, .json, .txt, .md, .srt)"
-msgstr "可翻译文件（.po，.json，.txt，.md，.srt）"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 414
-# File: usr/share/langforge/ui/main_window.py, line: 451
-# File: usr/share/langforge/ui/main_window.py, line: 562
-# File: usr/share/langforge/ui/main_window.py, line: 568
-# File: usr/share/langforge/ui/main_window.py, line: 571
-# File: usr/share/langforge/ui/settings_dialog.py, line: 243
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
-msgid "Error"
-msgstr "错误"
-# File: usr/share/langforge/ui/main_window.py, line: 867
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
-#, python-brace-format
-msgid "{strings} strings · {langs} languages"
-msgstr "{strings} 字符串 · {langs} 语言"
-# File: usr/share/langforge/ui/main_window.py, line: 447
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:886
-#, python-brace-format
-msgid "Project loaded: {}"
-msgstr "项目已加载：{}"
-# File: usr/share/langforge/ui/main_window.py, line: 895
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:905
-#, python-brace-format
-msgid "{items} items · {langs} languages"
-msgstr "{items} 项 · {langs} 种语言"
-# File: usr/share/langforge/ui/main_window.py, line: 904
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:914
-#, python-brace-format
-msgid "File loaded: {}"
-msgstr "文件已加载：{}"
-# File: usr/share/langforge/ui/main_window.py, line: 919
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
-msgid "Select at least one language"
-msgstr "至少选择一种语言"
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 970
-#: NEEDS WORK
-msgid "No paid API configured. Add an API key in Settings."
-msgstr "未配置付费API。请在设置中添加API密钥。"
-# File: usr/share/langforge/ui/main_window.py, line: 933
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
-#, python-brace-format
-msgid ""
-"Translate {items} items to {langs} languages using {provider}.\n"
-"This may take several minutes."
-msgstr "使用 {provider} 将 {items} 项翻译成 {langs} 种语言。这可能需要几分钟。"
-# File: usr/share/langforge/ui/main_window.py, line: 942
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:952
-#, python-brace-format
-msgid ""
-"Translate {strings} strings to {langs} languages using {provider}.\n"
-"This may take several minutes."
-msgstr "使用 {provider} 将 {strings} 字符串翻译成 {langs} 种语言。这可能需要几分钟。"
-# File: usr/share/langforge/ui/main_window.py, line: 951
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:961
-msgid "Start Translation?"
-msgstr "开始翻译？"
-# File: usr/share/langforge/ui/main_window.py, line: 953
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:963
-msgid "Cancel"
-msgstr "取消"
-# File: usr/share/langforge/ui/main_window.py, line: 954
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:964
-msgid "Start"
-msgstr "开始"
-# File: usr/share/langforge/ui/main_window.py, line: 474
-# File: usr/share/langforge/ui/main_window.py, line: 477
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1032
-msgid "Extracting strings..."
-msgstr "正在提取字符串..."
-# File: usr/share/langforge/ui/main_window.py, line: 538
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1034
-msgid "Compiling..."
-msgstr "编译..."
-# File: usr/share/langforge/ui/main_window.py, line: 1025
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1035
-msgid "Checking context-aware translations..."
-msgstr "检查上下文感知翻译..."
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 1066
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1058
-#, python-brace-format
-msgid "Resuming… {current}/{total} languages already done"
-msgstr "正在恢复... {current}/{total} 种语言已完成"
-# File: usr/share/langforge/ui/main_window.py, line: 1057
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1103
-#, python-brace-format
-msgid "{name} ({current}/{total}) · ~{eta} remaining"
-msgstr "{name} ({current}/{total}) · ~{eta} 剩余"
-# File: usr/share/langforge/ui/main_window.py, line: 1077
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1154
-#, python-brace-format
-msgid "{} languages translated before cancellation"
-msgstr "{} 语言在取消之前已翻译"
-# File: usr/share/langforge/ui/main_window.py, line: 1075
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
-msgid "Cancelled"
-msgstr "已取消"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 54
-#: NEEDS WORK
-msgid "Waiting..."
-msgstr "等待中..."
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 40
-#: NEEDS WORK
-msgid "Auto-scroll"
-msgstr "自动滚动"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 33
-#: NEEDS WORK
-msgid "Clear"
-msgstr "清除"
-# 
-# File: usr/share/langforge/ui/translation_viewer.py, line: 77
-#: NEEDS WORK
-msgid "Live translation diff view"
-msgstr "实时翻译差异视图"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 59
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
-msgid "Translation API"
-msgstr "翻译 API"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
 msgid "Select type"
@@ -479,6 +125,16 @@ msgstr "双子座 2.5 Flash/Pro — 快速且强大"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "25 美元免费额度 — 2M 上下文窗口"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
+#. Provider row
+msgid "Provider"
+msgstr "提供商"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 359
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
@@ -684,10 +340,350 @@ msgstr "使用默认 URL 或您自己的服务器"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
 msgid "Open"
 msgstr "打开"
-# File: usr/share/langforge/main.py, line: 67
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
-msgid "Automatic translator for gettext projects"
-msgstr "gettext 项目自动翻译器"
+# File: usr/share/langforge/ui/main_window.py, line: 25
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
+msgid "Could not connect to the translation service. Check your internet connection."
+msgstr "无法连接到翻译服务。请检查您的互联网连接。"
+# File: usr/share/langforge/ui/main_window.py, line: 29
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:29
+msgid "Invalid API key. Check your key in Settings."
+msgstr "API 密钥无效。请在 Settings 中检查您的密钥。"
+# File: usr/share/langforge/ui/main_window.py, line: 31
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:31
+msgid "Access denied. Your API key may lack the required permissions."
+msgstr "访问被拒绝。您的 API 密钥可能缺少所需的权限。"
+# File: usr/share/langforge/ui/main_window.py, line: 33
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:33
+msgid "API rate limit reached. Wait a moment and try again."
+msgstr "API 速率限制已达到。请稍候片刻再试。"
+# File: usr/share/langforge/ui/main_window.py, line: 35
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:35
+msgid "The translation service took too long to respond. Try again later."
+msgstr "翻译服务响应时间过长。请稍后再试。"
+# File: usr/share/langforge/ui/main_window.py, line: 37
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
+msgid "gettext tools not found. Install gettext on your system."
+msgstr "未找到 gettext 工具。请在您的系统上安装 gettext。"
+# File: usr/share/langforge/ui/main_window.py, line: 58
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
+msgid "Translation progress"
+msgstr "翻译进度"
+# File: usr/share/langforge/ui/main_window.py, line: 110
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:110
+#, python-brace-format
+msgid "Translation progress: {}%"
+msgstr "翻译进度：{}%"
+# File: usr/share/langforge/ui/main_window.py, line: 164
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:206
+msgid "Compile .mo files"
+msgstr "编译 .mo 文件"
+# File: usr/share/langforge/ui/main_window.py, line: 214
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:214
+msgid "Fix context"
+msgstr "修复上下文"
+# File: usr/share/langforge/ui/main_window.py, line: 215
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:215
+msgid "Detect and fix translations missing context"
+msgstr "检测并修复缺少上下文的翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 228
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:228
+msgid "Languages"
+msgstr "语言"
+# File: usr/share/langforge/ui/main_window.py, line: 234
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:234
+msgid "All"
+msgstr "所有"
+# File: usr/share/langforge/ui/main_window.py, line: 240
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:240
+msgid "None"
+msgstr "无"
+# File: usr/share/langforge/ui/main_window.py, line: 186
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:275
+#. ── API Settings button ──
+msgid "API Settings..."
+msgstr "API 设置..."
+# File: usr/share/langforge/ui/main_window.py, line: 209
+# File: usr/share/langforge/ui/main_window.py, line: 580
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:298
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1172
+#. Centered translate button as title widget
+msgid "Start Translation"
+msgstr "开始翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 309
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:309
+msgid "Main menu"
+msgstr "主菜单"
+# File: usr/share/langforge/ui/main_window.py, line: 312
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:312
+msgid "Open Project"
+msgstr "打开项目"
+# File: usr/share/langforge/ui/main_window.py, line: 313
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:313
+msgid "Settings"
+msgstr "设置"
+# File: usr/share/langforge/ui/main_window.py, line: 219
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:314
+msgid "About"
+msgstr "关于"
+# File: usr/share/langforge/ui/main_window.py, line: 315
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:315
+msgid "Quit"
+msgstr "退出"
+# File: usr/share/langforge/ui/main_window.py, line: 360
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:360
+msgid "Project selection area. Drag a folder here or click to select."
+msgstr "项目选择区域。将文件夹拖到此处或单击以选择。"
+# File: usr/share/langforge/ui/main_window.py, line: 281
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:372
+msgid "No project selected"
+msgstr "未选择项目"
+# File: usr/share/langforge/ui/main_window.py, line: 377
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:377
+msgid "Drag a folder or file here, or click to select"
+msgstr "将文件夹或文件拖到此处，或点击选择"
+# File: usr/share/langforge/ui/main_window.py, line: 291
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:385
+msgid "Select Project"
+msgstr "选择项目"
+# File: usr/share/langforge/ui/main_window.py, line: 392
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:392
+msgid "Select File"
+msgstr "选择文件"
+# File: usr/share/langforge/ui/main_window.py, line: 423
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:423
+msgid "Change"
+msgstr "更改"
+# File: usr/share/langforge/ui/main_window.py, line: 338
+# File: usr/share/langforge/ui/main_window.py, line: 459
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:440
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:993
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1033
+msgid "Translating..."
+msgstr "正在翻译..."
+# File: usr/share/langforge/ui/main_window.py, line: 445
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:445
+msgid "Translation status"
+msgstr "翻译状态"
+# File: usr/share/langforge/ui/main_window.py, line: 342
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:449
+msgid "Preparing..."
+msgstr "正在准备..."
+# File: usr/share/langforge/ui/main_window.py, line: 453
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:453
+msgid "Translation details"
+msgstr "翻译详情"
+# File: usr/share/langforge/ui/main_window.py, line: 466
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:466
+msgid "Language translation status"
+msgstr "语言翻译状态"
+# File: usr/share/langforge/ui/main_window.py, line: 472
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:472
+#. Cancel button (visible only during translation)
+msgid "Cancel Translation"
+msgstr "取消翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 486
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:486
+msgid "Welcome to LangForge"
+msgstr "欢迎使用 LangForge"
+# File: usr/share/langforge/ui/main_window.py, line: 489
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:489
+msgid ""
+"Automate gettext translations for your project.\n"
+"To get started, configure an API provider in Settings."
+msgstr "自动执行项目的 gettext 翻译。要开始使用，请在“设置”中配置 API 提供商。"
+# File: usr/share/langforge/ui/main_window.py, line: 496
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:496
+msgid "Open Settings"
+msgstr "打开设置"
+# File: usr/share/langforge/ui/main_window.py, line: 502
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
+msgid "Skip"
+msgstr "跳过"
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
+msgid "Translation Complete!"
+msgstr "翻译完成！"
+# File: usr/share/langforge/ui/main_window.py, line: 539
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
+msgid "Translate Again"
+msgstr "再次翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 547
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:547
+msgid "New Project"
+msgstr "新项目"
+# File: usr/share/langforge/ui/main_window.py, line: 560
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:561
+#. Build description with optional cost info
+#, python-brace-format
+msgid "{langs} languages translated in {time}"
+msgstr "{langs} 语言在 {time} 中翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 587
+# File: usr/share/langforge/ui/main_window.py, line: 620
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:601
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:635
+msgid "pending"
+msgstr "待处理"
+# File: usr/share/langforge/ui/main_window.py, line: 621
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:636
+msgid "translating"
+msgstr "翻译中"
+# File: usr/share/langforge/ui/main_window.py, line: 622
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
+msgid "completed"
+msgstr "已完成"
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
+msgid "error"
+msgstr "错误"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 639
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
+msgid "reference"
+msgstr "参考"
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:684
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:690
+msgid "Free"
+msgstr "免费"
+# File: usr/share/langforge/ui/main_window.py, line: 146
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
+msgid "Paid"
+msgstr "付费"
+# File: usr/share/langforge/ui/main_window.py, line: 747
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
+#, python-brace-format
+msgid "{count} of {total} languages selected"
+msgstr "已选择 {count} 个 {total} 语言"
+# File: usr/share/langforge/ui/main_window.py, line: 813
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
+msgid "Translatable files (.po, .json, .txt, .md, .srt)"
+msgstr "可翻译文件（.po，.json，.txt，.md，.srt）"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 414
+# File: usr/share/langforge/ui/main_window.py, line: 451
+# File: usr/share/langforge/ui/main_window.py, line: 562
+# File: usr/share/langforge/ui/main_window.py, line: 568
+# File: usr/share/langforge/ui/main_window.py, line: 571
+# File: usr/share/langforge/ui/settings_dialog.py, line: 243
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
+msgid "Error"
+msgstr "错误"
+# File: usr/share/langforge/ui/main_window.py, line: 867
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
+#, python-brace-format
+msgid "{strings} strings · {langs} languages"
+msgstr "{strings} 字符串 · {langs} 语言"
+# File: usr/share/langforge/ui/main_window.py, line: 447
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:886
+#, python-brace-format
+msgid "Project loaded: {}"
+msgstr "项目已加载：{}"
+# File: usr/share/langforge/ui/main_window.py, line: 895
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:905
+#, python-brace-format
+msgid "{items} items · {langs} languages"
+msgstr "{items} 项 · {langs} 种语言"
+# File: usr/share/langforge/ui/main_window.py, line: 904
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:914
+#, python-brace-format
+msgid "File loaded: {}"
+msgstr "文件已加载：{}"
+# File: usr/share/langforge/ui/main_window.py, line: 919
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:929
+msgid "Select at least one language"
+msgstr "至少选择一种语言"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 970
+#: NEEDS WORK
+msgid "No paid API configured. Add an API key in Settings."
+msgstr "未配置付费API。请在设置中添加API密钥。"
+# File: usr/share/langforge/ui/main_window.py, line: 933
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:943
+#, python-brace-format
+msgid ""
+"Translate {items} items to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr "使用 {provider} 将 {items} 项翻译成 {langs} 种语言。这可能需要几分钟。"
+# File: usr/share/langforge/ui/main_window.py, line: 942
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:952
+#, python-brace-format
+msgid ""
+"Translate {strings} strings to {langs} languages using {provider}.\n"
+"This may take several minutes."
+msgstr "使用 {provider} 将 {strings} 字符串翻译成 {langs} 种语言。这可能需要几分钟。"
+# File: usr/share/langforge/ui/main_window.py, line: 951
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:961
+msgid "Start Translation?"
+msgstr "开始翻译？"
+# File: usr/share/langforge/ui/main_window.py, line: 953
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:963
+msgid "Cancel"
+msgstr "取消"
+# File: usr/share/langforge/ui/main_window.py, line: 954
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:964
+msgid "Start"
+msgstr "开始"
+# File: usr/share/langforge/ui/main_window.py, line: 474
+# File: usr/share/langforge/ui/main_window.py, line: 477
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1032
+msgid "Extracting strings..."
+msgstr "正在提取字符串..."
+# File: usr/share/langforge/ui/main_window.py, line: 538
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1034
+msgid "Compiling..."
+msgstr "编译..."
+# File: usr/share/langforge/ui/main_window.py, line: 1025
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1035
+msgid "Checking context-aware translations..."
+msgstr "检查上下文感知翻译..."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 1066
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1058
+#, python-brace-format
+msgid "Resuming… {current}/{total} languages already done"
+msgstr "正在恢复... {current}/{total} 种语言已完成"
+# File: usr/share/langforge/ui/main_window.py, line: 1057
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1103
+#, python-brace-format
+msgid "{name} ({current}/{total}) · ~{eta} remaining"
+msgstr "{name} ({current}/{total}) · ~{eta} 剩余"
+# File: usr/share/langforge/ui/main_window.py, line: 1077
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1154
+#, python-brace-format
+msgid "{} languages translated before cancellation"
+msgstr "{} 语言在取消之前已翻译"
+# File: usr/share/langforge/ui/main_window.py, line: 1075
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1146
+msgid "Cancelled"
+msgstr "已取消"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 54
+#: NEEDS WORK
+msgid "Waiting..."
+msgstr "等待中..."
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 40
+#: NEEDS WORK
+msgid "Auto-scroll"
+msgstr "自动滚动"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 33
+#: NEEDS WORK
+msgid "Clear"
+msgstr "清除"
+# 
+# File: usr/share/langforge/ui/translation_viewer.py, line: 77
+#: NEEDS WORK
+msgid "Live translation diff view"
+msgstr "实时翻译差异视图"
 # File: usr/share/langforge/utils/tooltip_helper.py, line: 28
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
 msgid ""
