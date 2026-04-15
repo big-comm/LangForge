@@ -11,7 +11,16 @@ class MoCompiler:
     def __init__(self, project_path: Path, textdomain: str):
         self.project_path = Path(project_path)
         self.textdomain = textdomain
-        self.locale_dir = self.project_path / "locale"
+        self.locale_dir = self._find_locale_dir()
+
+    def _find_locale_dir(self) -> Path:
+        """Find locale dir containing .po files, fallback to <root>/locale."""
+        for pot in self.project_path.rglob(f"{self.textdomain}.pot"):
+            if not pot.name.startswith("."):
+                return pot.parent
+        for po in self.project_path.rglob("*.po"):
+            return po.parent
+        return self.project_path / "locale"
 
     def compile_all(
         self, progress_callback: Optional[Callable[[str, str, int, int], None]] = None

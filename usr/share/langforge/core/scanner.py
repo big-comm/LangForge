@@ -16,6 +16,7 @@ _SOURCE_EXTENSIONS = {
     ".cpp",
     ".hpp",
     ".cc",  # C/C++
+    ".rs",  # Rust
     ".vala",
     ".ui",
     ".blp",  # Vala, GTK UI files
@@ -60,11 +61,22 @@ _TEXTDOMAIN_PATTERNS = [
 ]
 
 
+# Directories to skip during source file scanning
+_SKIP_DIRS = {
+    "target", "build", "dist", "node_modules", ".git",
+    "__pycache__", ".tox", ".venv", "venv", ".eggs",
+}
+
+
 class ProjectScanner:
     """Project scanner with multi-language gettext detection."""
 
     def __init__(self, project_path: str):
         self.project_path = Path(project_path)
+
+    def _is_excluded(self, path: Path) -> bool:
+        """Check if path is inside a build/cache directory."""
+        return bool(_SKIP_DIRS & set(path.parts))
 
     def find_source_files(self) -> List[Path]:
         """Find all source files that could use gettext."""
@@ -73,7 +85,9 @@ class ProjectScanner:
 
         files = []
         for ext in _SOURCE_EXTENSIONS:
-            files.extend(self.project_path.rglob(f"*{ext}"))
+            for f in self.project_path.rglob(f"*{ext}"):
+                if not self._is_excluded(f.relative_to(self.project_path)):
+                    files.append(f)
         return files
 
     def find_python_files(self) -> List[Path]:
