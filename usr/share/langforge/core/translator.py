@@ -316,8 +316,8 @@ class TranslationEngine:
         context_strings = [e.msgid for e in pot if e.msgid][:20]
         self.api.set_context(self.textdomain, context_strings)
 
-        # Caminho do arquivo .po
-        locale_dir = project_path / "locale"
+        # Caminho do arquivo .po — derive from pot_file location
+        locale_dir = pot_file.parent
         po_path = locale_dir / f"{lang}.po"
 
         # Cria ou carrega arquivo .po
@@ -504,7 +504,7 @@ class TranslationEngine:
         context_strings = [e.msgid for e in pot if e.msgid][:20]
         self.api.set_context(self.textdomain, context_strings)
 
-        locale_dir = project_path / "locale"
+        locale_dir = pot_file.parent
         ref_po_path = locale_dir / f"{reference_lang}.po"
         cache_path = locale_dir / ".langforge_context_cache.json"
         log.info(

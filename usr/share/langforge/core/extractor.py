@@ -17,6 +17,7 @@ _XGETTEXT_LANG_MAP = {
     ".cpp": "C++",
     ".hpp": "C++",
     ".cc": "C++",
+    ".rs": "Rust",
     ".vala": "Vala",
     ".ui": "Glade",
     ".blp": None,  # Blueprint needs blueprint-compiler, not xgettext
@@ -33,8 +34,19 @@ class GettextExtractor:
         if not textdomain or textdomain.startswith("."):
             textdomain = Path(project_path).name
         self.textdomain = textdomain
-        self.locale_dir = self.project_path / "locale"
+        self.locale_dir = self._find_locale_dir()
         self.pot_file = self.locale_dir / f"{textdomain}.pot"
+
+    def _find_locale_dir(self) -> Path:
+        """Find locale dir containing .pot/.po files, fallback to <root>/locale."""
+        # check for existing .pot matching textdomain
+        for pot in self.project_path.rglob(f"{self.textdomain}.pot"):
+            if not pot.name.startswith("."):
+                return pot.parent
+        # check for any .po files
+        for po in self.project_path.rglob("*.po"):
+            return po.parent
+        return self.project_path / "locale"
 
     def extract_strings(self, source_files: List[Path]) -> bool:
         """Run xgettext to generate the .pot file.
@@ -83,6 +95,7 @@ class GettextExtractor:
                     "--keyword=_",
                     "--keyword=N_",
                     "--keyword=C_:1c,2",
+                    "--keyword=gettext",
                     "--keyword=ngettext:1,2",
                     "--from-code=UTF-8",
                     "--add-comments",

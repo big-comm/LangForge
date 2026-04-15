@@ -34,10 +34,10 @@ def _humanize_error(e: Exception) -> str:
         return _("API rate limit reached. Wait a moment and try again.")
     if "timeout" in msg:
         return _("The translation service took too long to respond. Try again later.")
-    if "gettext" in msg or "xgettext" in msg:
+    if ("not found" in msg or "não encontrado" in msg) and (
+        "xgettext" in msg or "msgfmt" in msg or "msgcat" in msg
+    ):
         return _("gettext tools not found. Install gettext on your system.")
-    if "msgfmt" in msg:
-        return _("msgfmt not found. Install gettext on your system.")
     # Fallback: show original but truncated
     text = str(e)
     if len(text) > 120:
