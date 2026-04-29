@@ -403,3 +403,117 @@ class GrokAPI(TranslationAPI):
 
     def get_name(self) -> str:
         return f"Grok ({self.model})"
+
+
+class DeepSeekAPI(TranslationAPI):
+    """
+    DeepSeek API — OpenAI-compatible endpoint.
+    Very low cost (~10–20× cheaper than GPT/Gemini), decent quality for
+    high-volume translation. Strongest on EN↔ZH; competent on PT/ES/EU langs.
+    """
+
+    # deepseek-chat pricing (USD per 1M tokens, cache-miss rate)
+    _token_pricing = (0.27, 1.10)
+
+    def __init__(self, api_key: str, model: str = "deepseek-chat"):
+        try:
+            from openai import OpenAI
+        except ImportError:
+            raise ImportError("Install openai: pip install openai")
+
+        self.client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com/v1")
+        self.model = model
+        self._reset_usage()
+
+    def _track_deepseek_response(self, response) -> None:
+        """Extract and track token usage from a DeepSeek response."""
+        usage = getattr(response, "usage", None)
+        if usage:
+            self._track_usage(
+                usage.prompt_tokens or 0,
+                usage.completion_tokens or 0,
+            )
+
+    @retry_on_rate_limit
+    def translate(self, text: str, source_lang: str, target_lang: str) -> str:
+        """Traduz texto usando DeepSeek."""
+        system_prompt = build_translation_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text},
+            ],
+            temperature=0.3,
+            max_tokens=512,
+        )
+        self._track_deepseek_response(response)
+        content = response.choices[0].message.content
+        return content.strip() if content else ""
+
+    def translate_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        """Translate multiple texts using DeepSeek with sub-batches of 15."""
+        if len(texts) == 1:
+            return [self.translate(texts[0], source_lang, target_lang)]
+        sub_batch_size = 15
+        results: list[str] = []
+        for start in range(0, len(texts), sub_batch_size):
+            chunk = texts[start : start + sub_batch_size]
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
+        return results
+
+    @retry_on_rate_limit
+    def _do_batch(
+        self, texts: list[str], source_lang: str, target_lang: str
+    ) -> list[str]:
+        system_prompt = build_batch_prompt(
+            source_lang,
+            target_lang,
+            getattr(self, "_app_name", ""),
+            getattr(self, "_context_entries", None),
+        )
+        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_msg},
+            ],
+            temperature=0.3,
+            max_tokens=2048,
+        )
+        self._track_deepseek_response(response)
+        content = response.choices[0].message.content or ""
+        parts = restore_batch_texts(clean_batch_parts(content))
+        if len(parts) != len(texts):
+            log.warning(
+                "DeepSeek batch mismatch: expected %d, got %d. Translating remaining individually.",
+                len(texts),
+                len(parts),
+            )
+            if len(parts) < len(texts):
+                for t in texts[len(parts):]:
+                    parts.append(self.translate(t, source_lang, target_lang))
+            else:
+                parts = parts[: len(texts)]
+        return parts
+
+    def test_connection(self) -> bool:
+        """Testa conexão com DeepSeek."""
+        try:
+            models = self.client.models.list()
+            next(iter(models))
+            return True
+        except Exception as e:
+            log.debug("DeepSeek test error: %s", e)
+            raise ConnectionError(f"DeepSeek: {e}") from e
+
+    def get_name(self) -> str:
+        return f"DeepSeek ({self.model})"

@@ -22,7 +22,8 @@ class TestAPIFactory:
         assert "openai" in providers
         assert "gemini" in providers
         assert "grok" in providers
-        assert len(providers) == 3
+        assert "deepseek" in providers
+        assert len(providers) == 4
 
     def test_is_valid_provider_free(self):
         assert APIFactory.is_valid_provider("groq")
