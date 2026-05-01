@@ -32,7 +32,7 @@ class OpenAIAPI(TranslationAPI):
         except ImportError:
             raise ImportError("Install openai: pip install openai")
 
-        self.client = OpenAI(api_key=api_key)
+        self.client = OpenAI(api_key=api_key, timeout=60.0, max_retries=0)
         self.model = model
         self._reset_usage()
 
@@ -421,7 +421,12 @@ class DeepSeekAPI(TranslationAPI):
         except ImportError:
             raise ImportError("Install openai: pip install openai")
 
-        self.client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com/v1")
+        self.client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.deepseek.com/v1",
+            timeout=60.0,
+            max_retries=0,
+        )
         self.model = model
         self._reset_usage()
 

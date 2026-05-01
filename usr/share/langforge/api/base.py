@@ -329,7 +329,10 @@ def retry_on_rate_limit(func):
                 msg = str(e).lower()
                 is_quota = "quota" in msg or "resource_exhausted" in msg
                 is_rate = "rate" in msg or "429" in msg
-                if (is_quota or is_rate) and attempt < _MAX_RETRIES - 1:
+                is_timeout = (
+                    "timeout" in msg or "timed out" in msg or "read timeout" in msg
+                )
+                if (is_quota or is_rate or is_timeout) and attempt < _MAX_RETRIES - 1:
                     # Quota exhaustion is persistent — fail fast after 1 retry
                     if is_quota and attempt >= 1:
                         log.error("Quota exhausted — aborting retries.")
@@ -337,8 +340,10 @@ def retry_on_rate_limit(func):
                     # Try to extract retry delay from error message
                     delay = _parse_retry_delay(str(e))
                     wait = delay if delay else backoff
+                    reason = "Timeout" if is_timeout else "Rate limit"
                     log.warning(
-                        "Rate limit detected. Retrying in %.1fs (attempt %d/%d)",
+                        "%s detected. Retrying in %.1fs (attempt %d/%d)",
+                        reason,
                         wait,
                         attempt + 1,
                         _MAX_RETRIES,
