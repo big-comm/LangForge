@@ -694,6 +694,7 @@ class MainWindow(Adw.ApplicationWindow):
             "openai": "OpenAI",
             "gemini": "Gemini",
             "grok": "Grok (xAI)",
+            "deepseek": "DeepSeek",
         }
 
         for key, label in paid_provider_labels.items():
@@ -737,6 +738,8 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _on_sidebar_api_type_changed(self, combo, pspec):
         """Update provider list when API type changes in sidebar."""
+        if getattr(self, '_updating_dropdowns', False):
+            return
         self._updating_dropdowns = True
         self._update_sidebar_providers()
         self._updating_dropdowns = False
