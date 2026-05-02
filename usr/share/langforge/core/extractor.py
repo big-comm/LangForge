@@ -1,9 +1,12 @@
 """Module for extracting translatable strings using xgettext."""
 
+import logging
 import subprocess
 from pathlib import Path
 from typing import List
 import polib
+
+log = logging.getLogger(__name__)
 
 # Mapping from file extension to xgettext --language value
 _XGETTEXT_LANG_MAP = {
@@ -23,6 +26,34 @@ _XGETTEXT_LANG_MAP = {
     ".blp": None,  # Blueprint needs blueprint-compiler, not xgettext
     ".sh": "Shell",
     ".bash": "Shell",
+}
+
+# Keywords common to most languages (function-style calls)
+_BASE_KEYWORDS = [
+    "_",
+    "N_",
+    "C_:1c,2",
+    "gettext",
+    "ngettext:1,2",
+    "dgettext:2",
+    "dcgettext:2",
+    "pgettext:1c,2",
+]
+
+# Extra keywords for specific xgettext languages.
+# Rust macros require the trailing `!` so xgettext recognises calls like
+# `tr!("text")`; without it, macros are skipped entirely.
+_LANG_EXTRA_KEYWORDS: dict[str, list[str]] = {
+    "Rust": [
+        "tr!",
+        "trf!",
+        "tr_n!:1,2",
+        "gettext!",
+        "ngettext!:1,2",
+        "i18n!",
+        "i18n_f!",
+        "i18n_n!:1,2",
+    ],
 }
 
 
@@ -78,6 +109,14 @@ class GettextExtractor:
                 continue
             lang_groups.setdefault(lang, []).append(str(f))
 
+        log.info(
+            "Extracting from %d files across %d languages: %s",
+            sum(len(v) for v in lang_groups.values()),
+            len(lang_groups),
+            {k: len(v) for k, v in lang_groups.items()},
+        )
+        log.info("Locale dir: %s, .pot: %s", self.locale_dir, self.pot_file)
+
         if not lang_groups:
             # No extractable files but .pot may exist from external tool
             if self.pot_file.exists():
@@ -89,40 +128,66 @@ class GettextExtractor:
         try:
             for lang, files in lang_groups.items():
                 tmp_pot = self.locale_dir / f".tmp_{lang.lower()}.pot"
+                keywords = _BASE_KEYWORDS + _LANG_EXTRA_KEYWORDS.get(lang, [])
                 cmd = [
                     "xgettext",
                     f"--language={lang}",
-                    "--keyword=_",
-                    "--keyword=N_",
-                    "--keyword=C_:1c,2",
-                    "--keyword=gettext",
-                    "--keyword=ngettext:1,2",
+                ]
+                cmd += [f"--keyword={k}" for k in keywords]
+                cmd += [
                     "--from-code=UTF-8",
                     "--add-comments",
+                    "--force-po",
                     f"--output={tmp_pot}",
                     f"--package-name={self.textdomain}",
                     "--msgid-bugs-address=",
                 ] + files
 
-                subprocess.run(cmd, check=True, capture_output=True, text=True)
+                result = subprocess.run(
+                    cmd, check=True, capture_output=True, text=True
+                )
+                if result.stderr:
+                    log.debug("xgettext (%s) stderr: %s", lang, result.stderr)
                 if tmp_pot.exists():
                     temp_pots.append(tmp_pot)
 
             if not temp_pots:
                 if self.pot_file.exists():
                     return True
-                raise RuntimeError("xgettext produced no output")
+                raise RuntimeError(
+                    "xgettext could not write the .pot file. "
+                    "Check write permissions on "
+                    f"{self.locale_dir}"
+                )
 
             if len(temp_pots) == 1:
-                # Single language — just rename
                 temp_pots[0].rename(self.pot_file)
             else:
-                # Merge multiple .pot files with msgcat
                 cmd = ["msgcat", "--use-first", f"--output={self.pot_file}"]
                 cmd.extend(str(p) for p in temp_pots)
                 subprocess.run(cmd, check=True, capture_output=True, text=True)
 
-            return self.pot_file.exists()
+            if not self.pot_file.exists():
+                return False
+
+            # Verify the .pot has at least one translatable string.
+            # With --force-po, xgettext writes a header-only .pot when no
+            # gettext markers are found — surface that as a clear error
+            # instead of silently producing an empty translation.
+            try:
+                pot = polib.pofile(str(self.pot_file))
+                if not any(entry.msgid for entry in pot):
+                    raise RuntimeError(
+                        "No translatable strings found. Make sure your "
+                        "source files use gettext markers like _(\"text\") "
+                        "or gettext(\"text\")."
+                    )
+            except RuntimeError:
+                raise
+            except Exception as e:
+                raise RuntimeError(f"Failed to read generated .pot: {e}")
+
+            return True
 
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"xgettext error: {e.stderr}")

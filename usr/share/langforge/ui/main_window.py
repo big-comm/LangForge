@@ -38,6 +38,12 @@ def _humanize_error(e: Exception) -> str:
         "xgettext" in msg or "msgfmt" in msg or "msgcat" in msg
     ):
         return _("gettext tools not found. Install gettext on your system.")
+    if "no translatable strings" in msg:
+        return _(
+            "No translatable strings were found in the project. "
+            "Make sure your code wraps user-facing text with gettext "
+            "markers like _(\"text\") or gettext(\"text\")."
+        )
     # Fallback: show original but truncated
     text = str(e)
     if len(text) > 120:
