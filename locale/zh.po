@@ -370,6 +370,13 @@ msgstr "翻译服务响应时间过长。请稍后再试。"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "未找到 gettext 工具。请在您的系统上安装 gettext。"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 43
+#: NEEDS WORK
+msgid ""
+"No translatable strings were found in the project. Make sure your code wraps user-facing text with "
+"gettext markers like _(\"text\") or gettext(\"text\")."
+msgstr "项目中未找到可翻译的字符串。请确保您的代码使用gettext标记将面向用户的文本包裹起来，例如 _(\"text\") 或 gettext(\"text\")。"
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"

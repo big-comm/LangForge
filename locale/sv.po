@@ -345,6 +345,15 @@ msgstr "Översättningstjänsten tog för lång tid att svara. Försök igen sen
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "gettext-verktyg hittades inte. Installera gettext på ditt system."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 43
+#: NEEDS WORK
+msgid ""
+"No translatable strings were found in the project. Make sure your code wraps user-facing text with "
+"gettext markers like _(\"text\") or gettext(\"text\")."
+msgstr ""
+"Inga översättningsbara strängar hittades i projektet. Se till att din kod omger användarvänlig text "
+"med gettext-markörer som _(\"text\") eller gettext(\"text\")."
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"

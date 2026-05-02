@@ -345,6 +345,15 @@ msgstr "Çeviri hizmeti yanıt vermek için çok uzun sürdü. Lütfen daha sonr
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "gettext araçları bulunamadı. gettext'i sisteminize yükleyin."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 43
+#: NEEDS WORK
+msgid ""
+"No translatable strings were found in the project. Make sure your code wraps user-facing text with "
+"gettext markers like _(\"text\") or gettext(\"text\")."
+msgstr ""
+"Projede çevrilebilir dize bulunamadı. Kodunuzun kullanıcıya yönelik metni _(\"metin\") veya "
+"gettext(\"metin\") gibi gettext işaretleyicileriyle sarmaladığından emin olun."
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"
