@@ -345,6 +345,16 @@ msgstr "A fordító szolgáltatás válaszadása túl sokáig tartott. Próbálj
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "gettext eszközök nem találhatók. Telepítse a gettextet a rendszerére."
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 43
+#: NEEDS WORK
+msgid ""
+"No translatable strings were found in the project. Make sure your code wraps user-facing text with "
+"gettext markers like _(\"text\") or gettext(\"text\")."
+msgstr ""
+"A projektben nem található fordítható szöveg. Győződjön meg arról, hogy a kódja a felhasználó "
+"számára látható szöveget gettext jelölőkkel veszi körül, mint például _(\"szöveg\") vagy "
+"gettext(\"szöveg\")."
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"

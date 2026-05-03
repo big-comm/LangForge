@@ -126,16 +126,6 @@ msgstr "双子座 2.5 Flash/Pro — 快速且强大"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "25 美元免费额度 — 2M 上下文窗口"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
-#. Provider row
-msgid "Provider"
-msgstr "提供商"
 # 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 336
 #: NEEDS WORK
@@ -380,6 +370,13 @@ msgstr "翻译服务响应时间过长。请稍后再试。"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:37
 msgid "gettext tools not found. Install gettext on your system."
 msgstr "未找到 gettext 工具。请在您的系统上安装 gettext。"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 43
+#: NEEDS WORK
+msgid ""
+"No translatable strings were found in the project. Make sure your code wraps user-facing text with "
+"gettext markers like _(\"text\") or gettext(\"text\")."
+msgstr "在项目中未找到可翻译的字符串。请确保您的代码使用gettext标记将面向用户的文本包裹起来，例如_(\"文本\")或gettext(\"文本\")。"
 # File: usr/share/langforge/ui/main_window.py, line: 58
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:58
 msgid "Translation progress"
