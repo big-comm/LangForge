@@ -56,11 +56,14 @@ _FREE_MODELS: dict[str, list[str]] = {
 # Available models per paid provider
 _PAID_MODELS: dict[str, list[str]] = {
     "openai": [
-        "gpt-4o-mini",
-        "gpt-4o",
+        "gpt-5-mini",
+        "gpt-5",
+        "gpt-5-nano",
         "gpt-4.1-mini",
         "gpt-4.1",
         "gpt-4.1-nano",
+        "gpt-4o-mini",
+        "gpt-4o",
     ],
     "gemini": [
         "gemini-2.5-flash",
@@ -73,6 +76,10 @@ _PAID_MODELS: dict[str, list[str]] = {
         "grok-3-mini-fast",
         "grok-2",
     ],
+    "deepseek": [
+        "deepseek-chat",
+        "deepseek-reasoner",
+    ],
 }
 
 
@@ -82,8 +89,9 @@ _RECOMMENDED = {
     "llama-3.3-70b-versatile",       # Fastest free, 14.4k RPD
     "gemini-2.5-flash-lite",         # Best free quality
     # Paid
-    "gpt-4.1-mini",                  # Best paid value
+    "gpt-5-mini",                    # Best paid value (replaces 4.1-mini)
     "gemini-2.5-flash",              # Great quality/price
+    "deepseek-chat",                 # Cheapest paid — good enough quality
 }
 
 
@@ -310,7 +318,7 @@ class SettingsDialog(Adw.PreferencesWindow):
             {
                 "id": "openai",
                 "name": "OpenAI",
-                "subtitle": _("GPT-4o, GPT-4.1 — Industry standard"),
+                "subtitle": _("GPT-5, GPT-4.1 — Industry standard"),
             },
             {
                 "id": "gemini",
@@ -321,6 +329,11 @@ class SettingsDialog(Adw.PreferencesWindow):
                 "id": "grok",
                 "name": "Grok (xAI)",
                 "subtitle": _("$25 free credits — 2M context window"),
+            },
+            {
+                "id": "deepseek",
+                "name": "DeepSeek",
+                "subtitle": _("Very low cost — Good for high-volume translation"),
             },
         ]
 
@@ -534,7 +547,12 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Update the paid provider expander subtitle."""
         for pid, check in self._paid_provider_checks.items():
             if check.get_active():
-                names = {"openai": "OpenAI", "gemini": "Gemini", "grok": "Grok"}
+                names = {
+                    "openai": "OpenAI",
+                    "gemini": "Gemini",
+                    "grok": "Grok",
+                    "deepseek": "DeepSeek",
+                }
                 self._paid_provider_expander.set_subtitle(names.get(pid, pid))
                 return
 

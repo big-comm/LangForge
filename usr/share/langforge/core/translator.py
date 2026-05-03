@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Callable, Optional
 from datetime import datetime
 
-from core.languages import SUPPORTED_LANGUAGES
+from core.languages import SUPPORTED_LANGUAGES, resolve_po_path
 from api.base import TranslationAPI
 
 log = logging.getLogger(__name__)
@@ -316,9 +316,11 @@ class TranslationEngine:
         context_strings = [e.msgid for e in pot if e.msgid][:20]
         self.api.set_context(self.textdomain, context_strings)
 
-        # Caminho do arquivo .po — derive from pot_file location
+        # Caminho do arquivo .po — derive from pot_file location.
+        # Use POSIX/gettext form (pt_BR.po, not pt-BR.po) for new files;
+        # fall back to legacy hyphenated path if it already exists.
         locale_dir = pot_file.parent
-        po_path = locale_dir / f"{lang}.po"
+        po_path = resolve_po_path(locale_dir, lang)
 
         # Cria ou carrega arquivo .po
         if po_path.exists():
@@ -505,7 +507,7 @@ class TranslationEngine:
         self.api.set_context(self.textdomain, context_strings)
 
         locale_dir = pot_file.parent
-        ref_po_path = locale_dir / f"{reference_lang}.po"
+        ref_po_path = resolve_po_path(locale_dir, reference_lang)
         cache_path = locale_dir / ".langforge_context_cache.json"
         log.info(
             "fix_context: ref_po_path=%s exists=%s", ref_po_path, ref_po_path.exists()

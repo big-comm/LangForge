@@ -79,6 +79,32 @@ def get_api_lang_code(lang: str) -> str:
     return LANGUAGE_CODE_MAP.get(lang, lang)
 
 
+def to_gettext_locale(lang: str) -> str:
+    """Convert a BCP-47 lang code to POSIX/gettext locale form.
+
+    gettext .po/.mo files and locale directories use underscore between
+    language and region (pt_BR), not hyphen (pt-BR which is BCP-47 / web).
+    """
+    return lang.replace("-", "_")
+
+
+def resolve_po_path(locale_dir, lang: str):
+    """Return the .po path for a language, preferring POSIX form.
+
+    If a legacy hyphenated .po already exists and the underscored one
+    doesn't, return the legacy path so existing translations are not
+    orphaned. Otherwise return the underscored form (the standard).
+    """
+    from pathlib import Path
+
+    locale_dir = Path(locale_dir)
+    posix_path = locale_dir / f"{to_gettext_locale(lang)}.po"
+    legacy_path = locale_dir / f"{lang}.po"
+    if "-" in lang and legacy_path.exists() and not posix_path.exists():
+        return legacy_path
+    return posix_path
+
+
 def get_file_lang_code(lang: str) -> str:
     """Return 3-letter ISO 639-2/B code for file naming."""
     return FILE_LANG_CODES.get(lang, lang)

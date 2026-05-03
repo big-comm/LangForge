@@ -113,10 +113,11 @@ msgstr "URL-адреса LibreTranslate"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "Paid API Settings"
 msgstr "Налаштування платних API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 293
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:306
-msgid "GPT-4o, GPT-4.1 — Industry standard"
-msgstr "GPT-4o, GPT-4.1 — Галузевий стандарт"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 321
+#: NEEDS WORK
+msgid "GPT-5, GPT-4.1 — Industry standard"
+msgstr "GPT-5, GPT-4.1 — Галузевий стандарт"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Gemini 2.5 Flash/Pro — Fast and capable"
@@ -125,6 +126,11 @@ msgstr "Gemini 2.5 Flash/Pro — Fast and capable"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "25 доларів США безкоштовних кредитів — вікно контексту 2M"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 336
+#: NEEDS WORK
+msgid "Very low cost — Good for high-volume translation"
+msgstr "Дуже низька вартість — Добре для перекладу великих обсягів"
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 150

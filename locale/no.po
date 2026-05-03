@@ -113,10 +113,11 @@ msgstr "LibreTranslate URL"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
 msgid "Paid API Settings"
 msgstr "Betalte API-innstillinger"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 293
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:306
-msgid "GPT-4o, GPT-4.1 — Industry standard"
-msgstr "GPT-4o, GPT-4.1 — Industristandard"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 321
+#: NEEDS WORK
+msgid "GPT-5, GPT-4.1 — Industry standard"
+msgstr "GPT-5, GPT-4.1 — Bransjestandard"
 # File: usr/share/langforge/ui/settings_dialog.py, line: 298
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
 msgid "Gemini 2.5 Flash/Pro — Fast and capable"
@@ -125,6 +126,21 @@ msgstr "Gemini 2.5 Flash/Pro — Rask og kapabel"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
 msgid "$25 free credits — 2M context window"
 msgstr "$25 gratis kreditter — 2M kontekstvindu"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
+#. Provider row
+msgid "Provider"
+msgstr "Leverandør"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 336
+#: NEEDS WORK
+msgid "Very low cost — Good for high-volume translation"
+msgstr "Veldig lav kostnad — Bra for høyvolumoversettelse"
 # #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 150

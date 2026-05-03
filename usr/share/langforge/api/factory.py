@@ -20,6 +20,7 @@ class APIFactory:
         "openai": ("api.paid_apis", "OpenAIAPI"),
         "gemini": ("api.paid_apis", "GeminiAPI"),
         "grok": ("api.paid_apis", "GrokAPI"),
+        "deepseek": ("api.paid_apis", "DeepSeekAPI"),
     }
 
     @classmethod
