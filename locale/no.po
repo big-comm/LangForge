@@ -131,17 +131,6 @@ msgstr "$25 gratis kreditter — 2M kontekstvindu"
 #: NEEDS WORK
 msgid "Very low cost — Good for high-volume translation"
 msgstr "Veldig lav kostnad — Bra for høyvolumoversettelse"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
-#. Provider row
-msgid "Provider"
-msgstr "Leverandør"
-# 
 # File: usr/share/langforge/ui/settings_dialog.py, line: 359
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
 msgid "Fix Context"

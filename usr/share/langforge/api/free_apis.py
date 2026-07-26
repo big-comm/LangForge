@@ -5,14 +5,15 @@ import logging
 import requests
 
 from api.base import (
+    BatchAlignmentError,
     TranslationAPI,
     build_batch_prompt,
     build_translation_prompt,
-    clean_batch_parts,
+    parse_batch_response,
     prepare_batch_texts,
-    restore_batch_texts,
     retry_on_rate_limit,
 )
+from api.models import ModelSpec, default_model, get_model, normalize_model
 from core.languages import get_api_lang_code
 
 log = logging.getLogger(__name__)
@@ -21,21 +22,72 @@ log = logging.getLogger(__name__)
 _BATCH_SIZE = 15
 
 
+def _value(obj, name: str, default=0):
+    """Read one field from SDK objects or dictionaries."""
+    if obj is None:
+        return default
+    if isinstance(obj, dict):
+        value = obj.get(name, default)
+    else:
+        value = getattr(obj, name, default)
+    return default if value is None else value
+
+
+def _track_model_usage(
+    api: TranslationAPI,
+    spec: ModelSpec | None,
+    input_tokens: int,
+    output_tokens: int,
+    cached_input_tokens: int = 0,
+) -> None:
+    """Track free-tier token usage without reporting hypothetical charges."""
+    if not hasattr(api, "_total_input_tokens"):
+        api._reset_usage()
+    api._total_input_tokens += input_tokens
+    api._total_output_tokens += output_tokens
+    api._api_calls += 1
+
+
 class GroqAPI(TranslationAPI):
-    """
-    Groq - Super rápido com LPU hardware.
-    Limite: 14,400 requests/dia (melhor opção gratuita!)
-    Qualidade: Excelente
-    Velocidade: Mais rápida do mercado
-    """
+    """Groq GPT-OSS translation through the OpenAI-compatible endpoint."""
 
     batch_delay = 2.0  # Groq free: 30 RPM
 
-    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("groq"),
+    ):
         self.api_key = api_key
-        self.model = model
+        self.model = normalize_model("groq", model)
+        self._model_spec = get_model("groq", self.model)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
+        self._reset_usage()
         self.session = requests.Session()
         self.base_url = "https://api.groq.com/openai/v1"
+
+    def _payload(self, messages: list[dict], max_tokens: int) -> dict:
+        """Build the supported GPT-OSS Chat Completions payload."""
+        return {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.3,
+            "max_completion_tokens": max_tokens,
+            "reasoning_effort": "low",
+            "include_reasoning": False,
+        }
+
+    def _track_groq_response(self, data: dict) -> None:
+        usage = data.get("usage") or {}
+        details = usage.get("prompt_tokens_details") or {}
+        _track_model_usage(
+            self,
+            self._model_spec,
+            usage.get("prompt_tokens", 0),
+            usage.get("completion_tokens", 0),
+            details.get("cached_tokens", 0),
+        )
 
     @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
@@ -49,19 +101,19 @@ class GroqAPI(TranslationAPI):
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={
-                "model": self.model,
-                "messages": [
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": text},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 512,
-            },
+                512,
+            ),
             timeout=30,
         )
         response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"].strip()
+        data = response.json()
+        self._track_groq_response(data)
+        return data["choices"][0]["message"]["content"].strip()
 
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
@@ -81,7 +133,17 @@ class GroqAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "Groq batch alignment failed; retrying the entire chunk "
+                    "individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -98,32 +160,20 @@ class GroqAPI(TranslationAPI):
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={
-                "model": self.model,
-                "messages": [
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 2048,
-            },
+                2048,
+            ),
             timeout=60,
         )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "Groq batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        data = response.json()
+        self._track_groq_response(data)
+        content = data["choices"][0]["message"]["content"].strip()
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com Groq."""
@@ -139,18 +189,19 @@ class GroqAPI(TranslationAPI):
             raise ConnectionError(f"Groq: {e}") from e
 
     def get_name(self) -> str:
-        return "Groq (14.4k req/dia)"
+        return f"Groq ({self.model})"
 
 
 class LibreTranslateAPI(TranslationAPI):
-    """
-    LibreTranslate - API opensource gratuita.
-    Limite: Ilimitado (API pública pode ter rate limit)
-    Qualidade: Boa
-    """
+    """LibreTranslate public or self-hosted translation API."""
 
-    def __init__(self, url: str = "https://libretranslate.com"):
+    def __init__(
+        self,
+        url: str = "https://libretranslate.com",
+        api_key: str = "",
+    ):
         self.url = url.rstrip("/")
+        self.api_key = api_key
         self.session = requests.Session()
 
     @retry_on_rate_limit
@@ -159,9 +210,17 @@ class LibreTranslateAPI(TranslationAPI):
         source = get_api_lang_code(source_lang)
         target = get_api_lang_code(target_lang)
 
+        payload = {
+            "q": text,
+            "source": source,
+            "target": target,
+            "format": "text",
+        }
+        if self.api_key:
+            payload["api_key"] = self.api_key
         response = self.session.post(
             f"{self.url}/translate",
-            json={"q": text, "source": source, "target": target, "format": "text"},
+            json=payload,
             timeout=30,
         )
         response.raise_for_status()
@@ -170,9 +229,7 @@ class LibreTranslateAPI(TranslationAPI):
     def test_connection(self) -> bool:
         """Testa conexão com LibreTranslate."""
         try:
-            response = self.session.get(f"{self.url}/languages", timeout=10)
-            response.raise_for_status()
-            return True
+            return bool(self.translate("test", "en", "es"))
         except Exception as e:
             raise ConnectionError(f"LibreTranslate: {e}") from e
 
@@ -181,14 +238,9 @@ class LibreTranslateAPI(TranslationAPI):
 
 
 class DeepLFreeAPI(TranslationAPI):
-    """
-    DeepL Free API - Best translation quality.
-    Limit: 500,000 characters/month
-    Quality: Excellent (better than Google)
-    Requires: Free API key from https://www.deepl.com/pro-api
-    """
+    """DeepL API with automatic Free/Pro endpoint selection."""
 
-    # DeepL supported target languages (as of 2024)
+    # Supported LangForge targets and their DeepL API codes.
     DEEPL_LANG_MAP = {
         "bg": "BG",
         "cs": "CS",
@@ -200,6 +252,7 @@ class DeepLFreeAPI(TranslationAPI):
         "et": "ET",
         "fi": "FI",
         "fr": "FR",
+        "he": "HE",
         "hu": "HU",
         "it": "IT",
         "ja": "JA",
@@ -216,7 +269,7 @@ class DeepLFreeAPI(TranslationAPI):
         "tr": "TR",
         "uk": "UK",
         "zh": "ZH",
-        # Not supported by DeepL: he (Hebrew), hr (Croatian), is (Icelandic)
+        # Not supported by DeepL: hr (Croatian), is (Icelandic)
     }
 
     def __init__(self, api_key: str):
@@ -237,17 +290,15 @@ class DeepLFreeAPI(TranslationAPI):
         """Try current endpoint; on 403 swap to the other one."""
         if self._resolved:
             return
-        try:
-            r = self.session.get(
-                f"{self.base_url}/usage",
-                headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
-                timeout=10,
-            )
-            if r.status_code != 403:
-                self._resolved = True
-                return
-        except Exception:
-            pass
+        response = self.session.get(
+            f"{self.base_url}/usage",
+            headers={"Authorization": f"DeepL-Auth-Key {self.api_key}"},
+            timeout=10,
+        )
+        if response.status_code != 403:
+            response.raise_for_status()
+            self._resolved = True
+            return
         # Swap endpoint and retry
         if "api-free" in self.base_url:
             self.base_url = "https://api.deepl.com/v2"
@@ -324,32 +375,54 @@ class DeepLFreeAPI(TranslationAPI):
 
 
 class GeminiFreeAPI(TranslationAPI):
-    """
-    Google Gemini Flash - Free tier generoso.
-    Limite: 1,000 requests/dia (Flash-Lite), 15 RPM
-    Qualidade: Excelente
-    API Key gratuita em: https://aistudio.google.com/apikey
-    Uses new google-genai SDK (replaces deprecated google-generativeai).
-    """
+    """Gemini Flash translation through the Google Gen AI free tier."""
 
-    batch_delay = 5.0  # 12 RPM — safely under 15 RPM limit
+    batch_delay = 5.0
 
-    def __init__(self, api_key: str, model: str = "gemini-2.5-flash-lite"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("gemini-free"),
+    ):
         try:
             from google import genai
         except ImportError:
             raise ImportError("Install: pip install google-genai")
 
+        self.model_name = normalize_model("gemini-free", model)
+        self._model_spec = get_model("gemini-free", self.model_name)
         self.client = genai.Client(
             api_key=api_key,
             http_options={"timeout": 60_000},
         )
-        self.model_name = model
+        self._reset_usage()
 
-        # Disable thinking for 2.5+ models — saves tokens on free tier
-        self._no_think = {}
-        if "2.5" in model or "2.6" in model:
-            self._no_think = {"thinking_config": {"thinking_budget": 0}}
+    def _track_gemini_response(self, response) -> None:
+        meta = getattr(response, "usage_metadata", None)
+        if meta:
+            _track_model_usage(
+                self,
+                self._model_spec,
+                _value(meta, "prompt_token_count"),
+                _value(meta, "candidates_token_count"),
+                _value(meta, "cached_content_token_count"),
+            )
+
+    def _config(
+        self, max_output_tokens: int, system_instruction: str = ""
+    ) -> dict:
+        """Build Gemini 3 generation config without deprecated sampling fields."""
+        config: dict = {"max_output_tokens": max_output_tokens}
+        if system_instruction:
+            config["system_instruction"] = system_instruction
+        profile = self._model_spec.request_profile if self._model_spec else ""
+        if profile == "gemini-3-flash-lite":
+            config["thinking_config"] = {"thinking_level": "minimal"}
+        elif profile == "gemini-3-flash":
+            config["thinking_config"] = {"thinking_level": "minimal"}
+        else:
+            config["temperature"] = 0.3
+        return config
 
     @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
@@ -360,12 +433,12 @@ class GeminiFreeAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        prompt = f"{system_prompt}\n\n{text}"
         response = self.client.models.generate_content(
             model=self.model_name,
-            contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 512, **self._no_think},
+            contents=text,
+            config=self._config(512, system_prompt),
         )
+        self._track_gemini_response(response)
         return response.text.strip()
 
     def translate_batch(
@@ -382,7 +455,17 @@ class GeminiFreeAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "Gemini Free batch alignment failed; retrying the entire "
+                    "chunk individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -396,32 +479,21 @@ class GeminiFreeAPI(TranslationAPI):
             getattr(self, "_context_entries", None),
         )
         user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
-        prompt = f"{system_prompt}\n\n{user_msg}"
         response = self.client.models.generate_content(
             model=self.model_name,
-            contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
+            contents=user_msg,
+            config=self._config(2048, system_prompt),
         )
-        parts = restore_batch_texts(clean_batch_parts(response.text))
-        if len(parts) != len(texts):
-            log.warning(
-                "GeminiFree batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts) :]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        self._track_gemini_response(response)
+        return parse_batch_response(response.text, len(texts))
 
     def test_connection(self) -> bool:
         """Test Gemini connection with actual generation."""
         try:
             response = self.client.models.generate_content(
-                model=self.model_name, contents="Say OK",
-                config={"max_output_tokens": 10, **self._no_think},
+                model=self.model_name,
+                contents="Say OK",
+                config=self._config(10),
             )
             return bool(response.text)
         except Exception as e:
@@ -436,26 +508,57 @@ class GeminiFreeAPI(TranslationAPI):
             raise ConnectionError(f"Gemini: {e}") from e
 
     def get_name(self) -> str:
-        return "Gemini Free (1k req/dia)"
+        return f"Gemini Free ({self.model_name})"
 
 
 class OpenRouterAPI(TranslationAPI):
-    """
-    OpenRouter - 18 modelos gratuitos.
-    Limite: Varia por modelo (muitos ilimitados)
-    Qualidade: Excelente (Meta, Mistral, NVIDIA)
-    API Key gratuita em: https://openrouter.ai/
-    """
+    """OpenRouter's availability-aware free model router."""
 
     batch_delay = 2.0  # Conservative for varied free model limits
 
     def __init__(
-        self, api_key: str, model: str = "meta-llama/llama-3.1-8b-instruct:free"
+        self,
+        api_key: str,
+        model: str = default_model("openrouter"),
     ):
         self.api_key = api_key
-        self.model = model
+        self.model = normalize_model("openrouter", model)
+        self._model_spec = get_model("openrouter", self.model)
+        self._reset_usage()
         self.session = requests.Session()
         self.base_url = "https://openrouter.ai/api/v1"
+
+    def _headers(self) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self.api_key}",
+            "HTTP-Referer": "https://github.com/big-comm/LangForge",
+            "X-Title": "LangForge",
+        }
+
+    def _payload(self, messages: list[dict], max_tokens: int) -> dict:
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.3,
+            "max_tokens": max_tokens,
+        }
+        if (
+            self._model_spec
+            and self._model_spec.request_profile == "openrouter-gpt-oss"
+        ):
+            payload["reasoning"] = {"effort": "low", "exclude": True}
+        return payload
+
+    def _track_openrouter_response(self, data: dict) -> None:
+        usage = data.get("usage") or {}
+        details = usage.get("prompt_tokens_details") or {}
+        _track_model_usage(
+            self,
+            self._model_spec,
+            usage.get("prompt_tokens", 0),
+            usage.get("completion_tokens", 0),
+            details.get("cached_tokens", 0),
+        )
 
     @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
@@ -468,24 +571,20 @@ class OpenRouterAPI(TranslationAPI):
         )
         response = self.session.post(
             f"{self.base_url}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "HTTP-Referer": "https://github.com/translation-automator",
-                "X-Title": "Translation Automator",
-            },
-            json={
-                "model": self.model,
-                "messages": [
+            headers=self._headers(),
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": text},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 512,
-            },
+                512,
+            ),
             timeout=30,
         )
         response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"].strip()
+        data = response.json()
+        self._track_openrouter_response(data)
+        return data["choices"][0]["message"]["content"].strip()
 
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
@@ -501,7 +600,17 @@ class OpenRouterAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "OpenRouter batch alignment failed; retrying the entire "
+                    "chunk individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -517,44 +626,28 @@ class OpenRouterAPI(TranslationAPI):
         user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
         response = self.session.post(
             f"{self.base_url}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "HTTP-Referer": "https://github.com/translation-automator",
-                "X-Title": "Translation Automator",
-            },
-            json={
-                "model": self.model,
-                "messages": [
+            headers=self._headers(),
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 2048,
-            },
+                2048,
+            ),
             timeout=60,
         )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "OpenRouter batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        data = response.json()
+        self._track_openrouter_response(data)
+        content = data["choices"][0]["message"]["content"].strip()
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenRouter."""
         try:
             response = self.session.get(
-                f"{self.base_url}/models",
-                headers={"Authorization": f"Bearer {self.api_key}"},
+                f"{self.base_url}/key",
+                headers=self._headers(),
                 timeout=10,
             )
             response.raise_for_status()
@@ -563,24 +656,52 @@ class OpenRouterAPI(TranslationAPI):
             raise ConnectionError(f"OpenRouter: {e}") from e
 
     def get_name(self) -> str:
-        return "OpenRouter (18 modelos grátis)"
+        return f"OpenRouter ({self.model})"
 
 
 class MistralFreeAPI(TranslationAPI):
-    """
-    Mistral - Tier "Experiment" gratuito.
-    Limite: Generoso para teste
-    Qualidade: Excelente
-    API Key gratuita em: https://console.mistral.ai/
-    """
+    """Current Mistral generalist models on the Experiment tier."""
 
     batch_delay = 2.0  # Conservative for free tier
 
-    def __init__(self, api_key: str, model: str = "mistral-small-latest"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("mistral-free"),
+    ):
         self.api_key = api_key
-        self.model = model
+        self.model = normalize_model("mistral-free", model)
+        self._model_spec = get_model("mistral-free", self.model)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
+        self._reset_usage()
         self.session = requests.Session()
         self.base_url = "https://api.mistral.ai/v1"
+
+    def _payload(self, messages: list[dict], max_tokens: int) -> dict:
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.3,
+            "max_tokens": max_tokens,
+        }
+        if (
+            self._model_spec
+            and self._model_spec.request_profile == "mistral-reasoning-none"
+        ):
+            payload["reasoning_effort"] = "none"
+        return payload
+
+    def _track_mistral_response(self, data: dict) -> None:
+        usage = data.get("usage") or {}
+        details = usage.get("prompt_tokens_details") or {}
+        _track_model_usage(
+            self,
+            self._model_spec,
+            usage.get("prompt_tokens", 0),
+            usage.get("completion_tokens", 0),
+            details.get("cached_tokens", 0),
+        )
 
     @retry_on_rate_limit
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
@@ -594,19 +715,19 @@ class MistralFreeAPI(TranslationAPI):
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={
-                "model": self.model,
-                "messages": [
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": text},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 512,
-            },
+                512,
+            ),
             timeout=30,
         )
         response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"].strip()
+        data = response.json()
+        self._track_mistral_response(data)
+        return data["choices"][0]["message"]["content"].strip()
 
     def translate_batch(
         self, texts: list[str], source_lang: str, target_lang: str
@@ -622,7 +743,17 @@ class MistralFreeAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "Mistral batch alignment failed; retrying the entire "
+                    "chunk individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -639,32 +770,20 @@ class MistralFreeAPI(TranslationAPI):
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
-            json={
-                "model": self.model,
-                "messages": [
+            json=self._payload(
+                [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                "temperature": 0.3,
-                "max_tokens": 2048,
-            },
+                2048,
+            ),
             timeout=60,
         )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"].strip()
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "Mistral batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        data = response.json()
+        self._track_mistral_response(data)
+        content = data["choices"][0]["message"]["content"].strip()
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com Mistral."""
@@ -680,4 +799,4 @@ class MistralFreeAPI(TranslationAPI):
             raise ConnectionError(f"Mistral: {e}") from e
 
     def get_name(self) -> str:
-        return "Mistral Free"
+        return f"Mistral Free ({self.model})"

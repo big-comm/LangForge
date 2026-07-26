@@ -5,14 +5,15 @@ import logging
 import requests
 
 from api.base import (
+    BatchAlignmentError,
     TranslationAPI,
     build_batch_prompt,
     build_translation_prompt,
-    clean_batch_parts,
+    parse_batch_response,
     prepare_batch_texts,
-    restore_batch_texts,
     retry_on_rate_limit,
 )
+from api.models import ModelSpec, default_model, get_model, normalize_model
 
 log = logging.getLogger(__name__)
 
@@ -20,29 +21,83 @@ log = logging.getLogger(__name__)
 _BATCH_SIZE = 15
 
 
+def _value(obj, name: str, default=0):
+    """Read one field from SDK objects or plain dictionaries."""
+    if obj is None:
+        return default
+    if isinstance(obj, dict):
+        value = obj.get(name, default)
+    else:
+        value = getattr(obj, name, default)
+    return default if value is None else value
+
+
+def _track_model_usage(
+    api: TranslationAPI,
+    spec: ModelSpec | None,
+    input_tokens: int,
+    output_tokens: int,
+    cached_input_tokens: int = 0,
+) -> None:
+    """Track tokens with model-specific cached pricing."""
+    if not hasattr(api, "_total_input_tokens"):
+        api._reset_usage()
+    api._total_input_tokens += input_tokens
+    api._total_output_tokens += output_tokens
+    api._api_calls += 1
+    if spec:
+        api._total_cost_usd += spec.estimate_cost(
+            input_tokens,
+            output_tokens,
+            cached_input_tokens,
+        )
+
+
 class OpenAIAPI(TranslationAPI):
-    """API paga do OpenAI (GPT-4, GPT-4o-mini, etc)."""
+    """OpenAI GPT-5 translation through Chat Completions."""
 
-    # GPT-4o-mini pricing (USD per 1M tokens)
-    _token_pricing = (0.15, 0.60)
-
-    def __init__(self, api_key: str, model: str = "gpt-4o-mini"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("openai"),
+    ):
         try:
             from openai import OpenAI
         except ImportError:
             raise ImportError("Install openai: pip install openai")
 
         self.client = OpenAI(api_key=api_key, timeout=60.0, max_retries=0)
-        self.model = model
+        self.model = normalize_model("openai", model)
+        self._model_spec = get_model("openai", self.model)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
         self._reset_usage()
+
+    def _instruction_role(self) -> str:
+        return "developer" if self._model_spec else "system"
+
+    def _completion_options(self, max_tokens: int) -> dict:
+        if (
+            self._model_spec
+            and self._model_spec.request_profile == "openai-no-reasoning"
+        ):
+            return {
+                "reasoning_effort": "none",
+                "max_completion_tokens": max_tokens,
+            }
+        return {"temperature": 0.3, "max_tokens": max_tokens}
 
     def _track_openai_response(self, response) -> None:
         """Extract and track token usage from an OpenAI response."""
         usage = getattr(response, "usage", None)
         if usage:
-            self._track_usage(
-                usage.prompt_tokens or 0,
-                usage.completion_tokens or 0,
+            details = _value(usage, "prompt_tokens_details", None)
+            _track_model_usage(
+                self,
+                self._model_spec,
+                _value(usage, "prompt_tokens"),
+                _value(usage, "completion_tokens"),
+                _value(details, "cached_tokens"),
             )
 
     @retry_on_rate_limit
@@ -57,11 +112,10 @@ class OpenAIAPI(TranslationAPI):
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
-                {"role": "system", "content": system_prompt},
+                {"role": self._instruction_role(), "content": system_prompt},
                 {"role": "user", "content": text},
             ],
-            temperature=0.3,
-            max_tokens=512,
+            **self._completion_options(512),
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content
@@ -77,7 +131,17 @@ class OpenAIAPI(TranslationAPI):
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "OpenAI batch alignment failed; retrying the entire chunk "
+                    "individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -94,27 +158,14 @@ class OpenAIAPI(TranslationAPI):
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
-                {"role": "system", "content": system_prompt},
+                {"role": self._instruction_role(), "content": system_prompt},
                 {"role": "user", "content": user_msg},
             ],
-            temperature=0.3,
-            max_tokens=2048,
+            **self._completion_options(2048),
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content or ""
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "Batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenAI."""
@@ -139,35 +190,53 @@ class GeminiAPI(TranslationAPI):
     """
 
     batch_delay = 0.1  # Paid tier has 2000 RPM; retry handles bursts
-    # Gemini Flash pricing (USD per 1M tokens) — non-thinking output
-    _token_pricing = (0.15, 0.60)
 
-    def __init__(self, api_key: str, model: str = "gemini-2.0-flash-exp"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("gemini"),
+    ):
         try:
             from google import genai
         except ImportError:
             raise ImportError("Install: pip install google-genai")
 
+        self.model_name = normalize_model("gemini", model)
+        self._model_spec = get_model("gemini", self.model_name)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
         self.client = genai.Client(
             api_key=api_key,
             http_options={"timeout": 60_000},
         )
-        self.model_name = model
         self._reset_usage()
 
-        # Disable thinking for 2.5+ models — translation doesn't need it
-        # and thinking tokens cost 6x more ($3.50 vs $0.60 per 1M)
-        self._no_think = {}
-        if "2.5" in model or "2.6" in model:
-            self._no_think = {"thinking_config": {"thinking_budget": 0}}
+    def _config(
+        self, max_output_tokens: int, system_instruction: str = ""
+    ) -> dict:
+        """Build Gemini 3 config without deprecated sampling parameters."""
+        config: dict = {"max_output_tokens": max_output_tokens}
+        if system_instruction:
+            config["system_instruction"] = system_instruction
+        profile = self._model_spec.request_profile if self._model_spec else ""
+        if profile == "gemini-3-flash-lite":
+            config["thinking_config"] = {"thinking_level": "minimal"}
+        elif profile == "gemini-3-flash":
+            config["thinking_config"] = {"thinking_level": "minimal"}
+        else:
+            config["temperature"] = 0.3
+        return config
 
     def _track_gemini_response(self, response) -> None:
         """Extract and track token usage from a Gemini response."""
         meta = getattr(response, "usage_metadata", None)
         if meta:
-            self._track_usage(
-                meta.prompt_token_count or 0,
-                meta.candidates_token_count or 0,
+            _track_model_usage(
+                self,
+                self._model_spec,
+                _value(meta, "prompt_token_count"),
+                _value(meta, "candidates_token_count"),
+                _value(meta, "cached_content_token_count"),
             )
 
     @retry_on_rate_limit
@@ -179,11 +248,10 @@ class GeminiAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        prompt = f"{system_prompt}\n\n{text}"
         response = self.client.models.generate_content(
             model=self.model_name,
-            contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 512, **self._no_think},
+            contents=text,
+            config=self._config(512, system_prompt),
         )
         self._track_gemini_response(response)
         return response.text.strip()
@@ -206,7 +274,17 @@ class GeminiAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "Gemini batch alignment failed; retrying the entire chunk "
+                    "individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -220,34 +298,21 @@ class GeminiAPI(TranslationAPI):
             getattr(self, "_context_entries", None),
         )
         user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
-        prompt = f"{system_prompt}\n\n{user_msg}"
         response = self.client.models.generate_content(
             model=self.model_name,
-            contents=prompt,
-            config={"temperature": 0.3, "max_output_tokens": 2048, **self._no_think},
+            contents=user_msg,
+            config=self._config(2048, system_prompt),
         )
         self._track_gemini_response(response)
-        parts = restore_batch_texts(clean_batch_parts(response.text))
-        if len(parts) != len(texts):
-            log.warning(
-                "Batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            # Keep good partial results, translate the rest individually
-            if len(parts) < len(texts):
-                for t in texts[len(parts) :]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        return parse_batch_response(response.text, len(texts))
 
     def test_connection(self) -> bool:
         """Test Gemini connection with actual generation."""
         try:
             response = self.client.models.generate_content(
-                model=self.model_name, contents="Say OK",
-                config={"max_output_tokens": 10},
+                model=self.model_name,
+                contents="Say OK",
+                config=self._config(10),
             )
             return bool(response.text)
         except Exception as e:
@@ -267,34 +332,40 @@ class GeminiAPI(TranslationAPI):
 
 
 class GrokAPI(TranslationAPI):
-    """
-    xAI Grok API - $25 créditos iniciais + $150/mês.
-    Contexto: 2M tokens (maior do mercado)
-    """
+    """xAI Grok 4 translation through Chat Completions."""
 
-    # Grok pricing (USD per 1M tokens) — grok-4-fast
-    _token_pricing = (3.00, 15.00)
-
-    def __init__(self, api_key: str, model: str = "grok-4-fast"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("grok"),
+    ):
         self.api_key = api_key
-        self.model = model
+        self.model = normalize_model("grok", model)
+        self._model_spec = get_model("grok", self.model)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
         self.session = requests.Session()
         self.base_url = "https://api.x.ai/v1"
         self._reset_usage()
 
-        # Disable reasoning for grok-3+/grok-4+ models — translation
-        # doesn't need it and reasoning tokens are very expensive
         self._extra_params: dict = {}
-        if any(tag in model for tag in ("grok-3", "grok-4")):
+        profile = self._model_spec.request_profile if self._model_spec else ""
+        if profile == "grok-no-reasoning":
             self._extra_params["reasoning_effort"] = "none"
+        elif profile == "grok-low-reasoning":
+            self._extra_params["reasoning_effort"] = "low"
 
     def _track_grok_response(self, data: dict) -> None:
         """Extract and track token usage from a Grok JSON response."""
         usage = data.get("usage")
         if usage:
-            self._track_usage(
+            details = usage.get("prompt_tokens_details") or {}
+            _track_model_usage(
+                self,
+                self._model_spec,
                 usage.get("prompt_tokens", 0),
                 usage.get("completion_tokens", 0),
+                details.get("cached_tokens", 0),
             )
 
     @retry_on_rate_limit
@@ -340,7 +411,17 @@ class GrokAPI(TranslationAPI):
             if start > 0 and self.batch_delay > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "Grok batch alignment failed; retrying the entire chunk "
+                    "individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -373,19 +454,7 @@ class GrokAPI(TranslationAPI):
         data = response.json()
         self._track_grok_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "Grok batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com Grok."""
@@ -406,37 +475,57 @@ class GrokAPI(TranslationAPI):
 
 
 class DeepSeekAPI(TranslationAPI):
-    """
-    DeepSeek API — OpenAI-compatible endpoint.
-    Very low cost (~10–20× cheaper than GPT/Gemini), decent quality for
-    high-volume translation. Strongest on EN↔ZH; competent on PT/ES/EU langs.
-    """
+    """DeepSeek V4 translation through its OpenAI-compatible endpoint."""
 
-    # deepseek-chat pricing (USD per 1M tokens, cache-miss rate)
-    _token_pricing = (0.27, 1.10)
-
-    def __init__(self, api_key: str, model: str = "deepseek-chat"):
+    def __init__(
+        self,
+        api_key: str,
+        model: str = default_model("deepseek"),
+    ):
         try:
             from openai import OpenAI
         except ImportError:
             raise ImportError("Install openai: pip install openai")
 
+        self.model = normalize_model("deepseek", model)
+        self._model_spec = get_model("deepseek", self.model)
+        if self._model_spec:
+            self._token_pricing = self._model_spec.token_pricing
         self.client = OpenAI(
             api_key=api_key,
-            base_url="https://api.deepseek.com/v1",
+            base_url="https://api.deepseek.com",
             timeout=60.0,
             max_retries=0,
         )
-        self.model = model
         self._reset_usage()
+
+    def _completion_options(self, max_tokens: int) -> dict:
+        if (
+            self._model_spec
+            and self._model_spec.request_profile == "deepseek-no-thinking"
+        ):
+            return {
+                "temperature": 1.3,
+                "max_tokens": max_tokens,
+                "extra_body": {"thinking": {"type": "disabled"}},
+            }
+        return {"temperature": 0.3, "max_tokens": max_tokens}
 
     def _track_deepseek_response(self, response) -> None:
         """Extract and track token usage from a DeepSeek response."""
         usage = getattr(response, "usage", None)
         if usage:
-            self._track_usage(
-                usage.prompt_tokens or 0,
-                usage.completion_tokens or 0,
+            cached = _value(usage, "prompt_cache_hit_tokens")
+            uncached = _value(usage, "prompt_cache_miss_tokens")
+            prompt_tokens = _value(usage, "prompt_tokens")
+            if not prompt_tokens and (cached or uncached):
+                prompt_tokens = cached + uncached
+            _track_model_usage(
+                self,
+                self._model_spec,
+                prompt_tokens,
+                _value(usage, "completion_tokens"),
+                cached,
             )
 
     @retry_on_rate_limit
@@ -454,8 +543,7 @@ class DeepSeekAPI(TranslationAPI):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": text},
             ],
-            temperature=0.3,
-            max_tokens=512,
+            **self._completion_options(512),
         )
         self._track_deepseek_response(response)
         content = response.choices[0].message.content
@@ -471,7 +559,17 @@ class DeepSeekAPI(TranslationAPI):
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
             chunk = texts[start : start + sub_batch_size]
-            results.extend(self._do_batch(chunk, source_lang, target_lang))
+            try:
+                results.extend(self._do_batch(chunk, source_lang, target_lang))
+            except BatchAlignmentError as exc:
+                log.warning(
+                    "DeepSeek batch alignment failed; retrying the entire "
+                    "chunk individually: %s",
+                    exc,
+                )
+                results.extend(
+                    self.translate(text, source_lang, target_lang) for text in chunk
+                )
         return results
 
     @retry_on_rate_limit
@@ -491,24 +589,11 @@ class DeepSeekAPI(TranslationAPI):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_msg},
             ],
-            temperature=0.3,
-            max_tokens=2048,
+            **self._completion_options(2048),
         )
         self._track_deepseek_response(response)
         content = response.choices[0].message.content or ""
-        parts = restore_batch_texts(clean_batch_parts(content))
-        if len(parts) != len(texts):
-            log.warning(
-                "DeepSeek batch mismatch: expected %d, got %d. Translating remaining individually.",
-                len(texts),
-                len(parts),
-            )
-            if len(parts) < len(texts):
-                for t in texts[len(parts):]:
-                    parts.append(self.translate(t, source_lang, target_lang))
-            else:
-                parts = parts[: len(texts)]
-        return parts
+        return parse_batch_response(content, len(texts))
 
     def test_connection(self) -> bool:
         """Testa conexão com DeepSeek."""

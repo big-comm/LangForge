@@ -1,5 +1,15 @@
 """Constantes de idiomas suportados para tradução."""
 
+from typing import NamedTuple
+
+
+class PluralRule(NamedTuple):
+    """GNU gettext plural rule for a language."""
+
+    forms: int
+    header: str
+
+
 SUPPORTED_LANGUAGES = {
     "bg": "Bulgarian",
     "cs": "Czech",
@@ -32,6 +42,68 @@ SUPPORTED_LANGUAGES = {
     "zh": "Chinese",
 }
 
+_ONE_FORM = PluralRule(1, "nplurals=1; plural=0;")
+_TWO_FORMS = PluralRule(2, "nplurals=2; plural=(n != 1);")
+_TWO_FORMS_ZERO_ONE = PluralRule(2, "nplurals=2; plural=(n > 1);")
+_CZECH_SLOVAK_FORMS = PluralRule(
+    3,
+    "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;",
+)
+_SLAVIC_FORMS = PluralRule(
+    3,
+    "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : "
+    "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);",
+)
+
+# `sl` is a generic four-form reference without being enabled in the UI.
+GETTEXT_PLURAL_RULES = {
+    "bg": _TWO_FORMS,
+    "cs": _CZECH_SLOVAK_FORMS,
+    "da": _TWO_FORMS,
+    "de": _TWO_FORMS,
+    "el": _TWO_FORMS,
+    "en": _TWO_FORMS,
+    "es": _TWO_FORMS,
+    "et": _TWO_FORMS,
+    "fi": _TWO_FORMS,
+    "fr": _TWO_FORMS_ZERO_ONE,
+    "he": _TWO_FORMS,
+    "hr": _SLAVIC_FORMS,
+    "hu": _TWO_FORMS,
+    "is": PluralRule(
+        2,
+        "nplurals=2; plural=(n%10!=1 || n%100==11);",
+    ),
+    "it": _TWO_FORMS,
+    "ja": _ONE_FORM,
+    "ko": _ONE_FORM,
+    "nl": _TWO_FORMS,
+    "no": _TWO_FORMS,
+    "pl": PluralRule(
+        3,
+        "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+        "(n%100<10 || n%100>=20) ? 1 : 2);",
+    ),
+    "pt-BR": _TWO_FORMS_ZERO_ONE,
+    "pt": _TWO_FORMS,
+    "ro": PluralRule(
+        3,
+        "nplurals=3; plural=(n==1 ? 0 : (n==0 || "
+        "(n%100 > 0 && n%100 < 20)) ? 1 : 2);",
+    ),
+    "ru": _SLAVIC_FORMS,
+    "sk": _CZECH_SLOVAK_FORMS,
+    "sv": _TWO_FORMS,
+    "tr": _TWO_FORMS,
+    "uk": _SLAVIC_FORMS,
+    "zh": _ONE_FORM,
+    "sl": PluralRule(
+        4,
+        "nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : "
+        "n%100==3 || n%100==4 ? 3 : 0);",
+    ),
+}
+
 # Mapeamento de códigos de idioma para LibreTranslate/APIs
 LANGUAGE_CODE_MAP = {
     "pt-BR": "pt",  # LibreTranslate usa 'pt' para português
@@ -62,7 +134,7 @@ FILE_LANG_CODES = {
     "nl": "dut",
     "no": "nor",
     "pl": "pol",
-    "pt-BR": "por",
+    "pt-BR": "por-BR",
     "pt": "por",
     "ro": "rum",
     "ru": "rus",
@@ -72,6 +144,14 @@ FILE_LANG_CODES = {
     "uk": "ukr",
     "zh": "chi",
 }
+
+
+def get_plural_rule(lang: str) -> PluralRule:
+    """Return the GNU gettext plural rule for a language."""
+    try:
+        return GETTEXT_PLURAL_RULES[lang]
+    except KeyError as error:
+        raise ValueError(f"Unsupported plural rules for language: {lang}") from error
 
 
 def get_api_lang_code(lang: str) -> str:

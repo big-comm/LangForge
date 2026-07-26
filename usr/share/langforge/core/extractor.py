@@ -2,9 +2,12 @@
 
 import logging
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import List
 import polib
+
+from core.scanner import ProjectScanner
 
 log = logging.getLogger(__name__)
 
@@ -55,29 +58,92 @@ _LANG_EXTRA_KEYWORDS: dict[str, list[str]] = {
         "i18n_n!:1,2",
     ],
 }
+_LOCALE_DIR_NAMES = ("locale", "po", "locales", "translations")
+
+
+def find_locale_directory(project_path: Path, textdomain: str) -> Path:
+    """Find a safe project-owned gettext source directory."""
+    project_root = Path(project_path).resolve(strict=True)
+    project_files = ProjectScanner(str(project_root))._project_files()
+
+    existing_directories = []
+    for directory_name in _LOCALE_DIR_NAMES:
+        directory = project_root / directory_name
+        if directory.is_symlink():
+            raise ValueError("Locale directory cannot be a symlink")
+        if directory.is_dir():
+            existing_directories.append(directory)
+            has_catalog = any(
+                path.parent == directory and path.suffix in {".po", ".pot"}
+                for path in project_files
+            )
+            if has_catalog:
+                return directory
+            continue
+        if directory.exists():
+            raise ValueError("Locale path is not a directory")
+
+    matching_templates = [
+        path
+        for path in project_files
+        if path.name == f"{textdomain}.pot" and not path.name.startswith(".")
+    ]
+    if matching_templates:
+        return min(
+            matching_templates,
+            key=lambda path: (
+                len(path.relative_to(project_root).parts),
+                path.relative_to(project_root).as_posix(),
+            ),
+        ).parent
+
+    catalog_directories = {
+        path.parent
+        for path in project_files
+        if path.suffix == ".po"
+        and path.parent.name.casefold() in _LOCALE_DIR_NAMES
+    }
+    if catalog_directories:
+        return min(
+            catalog_directories,
+            key=lambda path: (
+                len(path.relative_to(project_root).parts),
+                path.relative_to(project_root).as_posix(),
+            ),
+        )
+
+    for directory in existing_directories:
+        if directory.name in {"locale", "po"}:
+            return directory
+
+    locale_dir = project_root / "locale"
+    if locale_dir.is_symlink():
+        raise ValueError("Locale directory cannot be a symlink")
+    return locale_dir
 
 
 class GettextExtractor:
     """Wrapper for the xgettext command with multi-language support."""
 
     def __init__(self, project_path: str, textdomain: str):
-        self.project_path = Path(project_path)
+        self.project_path = Path(project_path).resolve(strict=True)
+        if (
+            not textdomain
+            or textdomain.startswith(".")
+            or "/" in textdomain
+            or "\\" in textdomain
+            or "\0" in textdomain
+        ):
+            textdomain = self.project_path.name
         if not textdomain or textdomain.startswith("."):
-            textdomain = Path(project_path).name
+            raise ValueError("Invalid gettext textdomain")
         self.textdomain = textdomain
         self.locale_dir = self._find_locale_dir()
         self.pot_file = self.locale_dir / f"{textdomain}.pot"
 
     def _find_locale_dir(self) -> Path:
         """Find locale dir containing .pot/.po files, fallback to <root>/locale."""
-        # check for existing .pot matching textdomain
-        for pot in self.project_path.rglob(f"{self.textdomain}.pot"):
-            if not pot.name.startswith("."):
-                return pot.parent
-        # check for any .po files
-        for po in self.project_path.rglob("*.po"):
-            return po.parent
-        return self.project_path / "locale"
+        return find_locale_directory(self.project_path, self.textdomain)
 
     def extract_strings(self, source_files: List[Path]) -> bool:
         """Run xgettext to generate the .pot file.
@@ -123,80 +189,82 @@ class GettextExtractor:
                 return True
             raise ValueError("No extractable source files found")
 
-        # Extract per language into temp files, then merge
-        temp_pots: list[Path] = []
         try:
-            for lang, files in lang_groups.items():
-                tmp_pot = self.locale_dir / f".tmp_{lang.lower()}.pot"
-                keywords = _BASE_KEYWORDS + _LANG_EXTRA_KEYWORDS.get(lang, [])
-                cmd = [
-                    "xgettext",
-                    f"--language={lang}",
-                ]
-                cmd += [f"--keyword={k}" for k in keywords]
-                cmd += [
-                    "--from-code=UTF-8",
-                    "--add-comments",
-                    "--force-po",
-                    f"--output={tmp_pot}",
-                    f"--package-name={self.textdomain}",
-                    "--msgid-bugs-address=",
-                ] + files
+            # Keep all intermediate files in a private, unpredictable directory.
+            # This avoids clobbering project files or following attacker-created
+            # symlinks at the former predictable .tmp_<language>.pot paths.
+            with tempfile.TemporaryDirectory(
+                prefix=".langforge-", dir=self.locale_dir
+            ) as temp_dir:
+                work_dir = Path(temp_dir)
+                temp_pots: list[Path] = []
 
-                result = subprocess.run(
-                    cmd, check=True, capture_output=True, text=True
-                )
-                if result.stderr:
-                    log.debug("xgettext (%s) stderr: %s", lang, result.stderr)
-                if tmp_pot.exists():
-                    temp_pots.append(tmp_pot)
+                for index, (lang, files) in enumerate(lang_groups.items()):
+                    tmp_pot = work_dir / f"{index}.pot"
+                    keywords = _BASE_KEYWORDS + _LANG_EXTRA_KEYWORDS.get(lang, [])
+                    cmd = [
+                        "xgettext",
+                        f"--language={lang}",
+                    ]
+                    cmd += [f"--keyword={k}" for k in keywords]
+                    cmd += [
+                        "--from-code=UTF-8",
+                        "--add-comments",
+                        "--force-po",
+                        f"--output={tmp_pot}",
+                        f"--package-name={self.textdomain}",
+                        "--msgid-bugs-address=",
+                    ] + files
 
-            if not temp_pots:
-                if self.pot_file.exists():
-                    return True
-                raise RuntimeError(
-                    "xgettext could not write the .pot file. "
-                    "Check write permissions on "
-                    f"{self.locale_dir}"
-                )
-
-            if len(temp_pots) == 1:
-                temp_pots[0].rename(self.pot_file)
-            else:
-                cmd = ["msgcat", "--use-first", f"--output={self.pot_file}"]
-                cmd.extend(str(p) for p in temp_pots)
-                subprocess.run(cmd, check=True, capture_output=True, text=True)
-
-            if not self.pot_file.exists():
-                return False
-
-            # Verify the .pot has at least one translatable string.
-            # With --force-po, xgettext writes a header-only .pot when no
-            # gettext markers are found — surface that as a clear error
-            # instead of silently producing an empty translation.
-            try:
-                pot = polib.pofile(str(self.pot_file))
-                if not any(entry.msgid for entry in pot):
-                    raise RuntimeError(
-                        "No translatable strings found. Make sure your "
-                        "source files use gettext markers like _(\"text\") "
-                        "or gettext(\"text\")."
+                    result = subprocess.run(
+                        cmd, check=True, capture_output=True, text=True
                     )
-            except RuntimeError:
-                raise
-            except Exception as e:
-                raise RuntimeError(f"Failed to read generated .pot: {e}")
+                    if result.stderr:
+                        log.debug("xgettext (%s) stderr: %s", lang, result.stderr)
+                    if tmp_pot.exists():
+                        temp_pots.append(tmp_pot)
 
-            return True
+                if not temp_pots:
+                    if self.pot_file.exists():
+                        return True
+                    raise RuntimeError(
+                        "xgettext could not write the .pot file. "
+                        "Check write permissions on "
+                        f"{self.locale_dir}"
+                    )
+
+                if len(temp_pots) == 1:
+                    generated_pot = temp_pots[0]
+                else:
+                    generated_pot = work_dir / "merged.pot"
+                    cmd = ["msgcat", "--use-first", f"--output={generated_pot}"]
+                    cmd.extend(str(p) for p in temp_pots)
+                    subprocess.run(cmd, check=True, capture_output=True, text=True)
+
+                if not generated_pot.exists():
+                    return False
+
+                # Validate before replacing an existing catalog.
+                try:
+                    pot = polib.pofile(str(generated_pot))
+                    if not any(entry.msgid for entry in pot):
+                        raise RuntimeError(
+                            "No translatable strings found. Make sure your "
+                            "source files use gettext markers like _(\"text\") "
+                            "or gettext(\"text\")."
+                        )
+                except RuntimeError:
+                    raise
+                except Exception as e:
+                    raise RuntimeError(f"Failed to read generated .pot: {e}")
+
+                generated_pot.replace(self.pot_file)
+                return True
 
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"xgettext error: {e.stderr}")
         except FileNotFoundError:
             raise RuntimeError("xgettext not found. Install the gettext package.")
-        finally:
-            # Clean up temp files
-            for tmp in temp_pots:
-                tmp.unlink(missing_ok=True)
 
     def get_extracted_strings(self) -> List[str]:
         """

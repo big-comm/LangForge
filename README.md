@@ -32,7 +32,7 @@ Point LangForge at any Python project that uses gettext, and it will:
 ## Features
 
 - 🌍 **29 Languages** — Translate to Bulgarian, Czech, Danish, German, Greek, Estonian, Finnish, French, Hebrew, Croatian, Hungarian, Icelandic, Italian, Japanese, Korean, Dutch, Norwegian, Polish, Portuguese, Brazilian Portuguese, Romanian, Russian, Slovak, Swedish, Turkish, Ukrainian, Chinese, Spanish, and English
-- 🤖 **Multiple AI APIs** — DeepL, Groq, Gemini, OpenRouter, Mistral, and LibreTranslate
+- 🤖 **Multiple AI APIs** — DeepL, Groq, Gemini, OpenRouter, Mistral, LibreTranslate, OpenAI, Grok, and DeepSeek
 - 💸 **Free & Paid Tiers** — Use free API tiers or unlock paid APIs for higher limits
 - 📦 **Auto-compile** — Optionally compile `.po` → `.mo` after translation
 - 🎯 **Drag & Drop** — Drop a project folder directly onto the window
@@ -57,7 +57,8 @@ makepkg -si
 
 ```bash
 # Dependencies
-sudo pacman -S python gtk4 libadwaita python-gobject
+sudo pacman -S python gtk4 libadwaita libsecret python-gobject python-cairo \
+  python-requests python-polib python-openai python-google-genai gettext
 
 # Install
 sudo cp -r usr/share/langforge /usr/share/
@@ -85,14 +86,21 @@ python3 usr/share/langforge/main.py
 
 Click **API Settings** in the sidebar to configure your API keys:
 
-| Provider | Tier | Key Required |
-|---|---|---|
-| DeepL Free | Free | ✅ |
-| LibreTranslate | Free | ❌ |
-| Groq | Free | ✅ |
-| Gemini Free | Free | ✅ |
-| OpenRouter | Paid | ✅ |
-| Mistral | Paid | ✅ |
+| Provider | Tier | Default translation model | Key required |
+|---|---|---|---|
+| DeepL | Free | DeepL translator | ✅ |
+| Groq | Free | `openai/gpt-oss-120b` | ✅ |
+| Gemini | Free | `gemini-3.5-flash-lite` | ✅ |
+| OpenRouter | Free | `openai/gpt-oss-120b:free` | ✅ |
+| Mistral | Free | `mistral-small-latest` | ✅ |
+| LibreTranslate | Free | LibreTranslate | Public key or self-hosted URL |
+| OpenAI | Paid | `gpt-5.6-luna` | ✅ |
+| Gemini | Paid | `gemini-3.5-flash-lite` | ✅ |
+| Grok | Paid | `grok-4.3` | ✅ |
+| DeepSeek | Paid | `deepseek-v4-flash` | ✅ |
+
+Model choices are stored independently per provider. Deprecated model IDs in
+older configuration files are migrated to a current supported equivalent.
 
 ## Project Structure
 
@@ -106,6 +114,7 @@ LangForge/
 │       │   ├── api/                     # API integrations
 │       │   │   ├── base.py              # Base API class
 │       │   │   ├── factory.py           # API factory
+│       │   │   ├── models.py            # Curated model catalog and pricing
 │       │   │   ├── free_apis.py         # Free tier APIs
 │       │   │   └── paid_apis.py         # Paid tier APIs
 │       │   ├── config/

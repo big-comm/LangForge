@@ -54,10 +54,16 @@ class APIFactory:
 
         # LibreTranslate usa URL ao invés de API key
         if provider == "libretranslate":
-            url = kwargs.get("url", "https://libretranslate.com")
-            return api_class(url)
+            url = kwargs.get("url", "https://libretranslate.com").rstrip("/")
+            if url == "https://libretranslate.com" and not api_key.strip():
+                raise ValueError(
+                    "LibreTranslate public service requires an API key"
+                )
+            return api_class(url, api_key)
 
         # Outros usam api_key e opcionalmente model
+        if not api_key.strip():
+            raise ValueError(f"API key required for {provider}")
         model = kwargs.get("model")
         if model:
             return api_class(api_key, model)
@@ -79,13 +85,13 @@ class APIFactory:
         if api_type == "free":
             provider = settings.get_free_provider()
             api_key = settings.get_provider_key("free_api", provider)
-            model = settings.get("free_api.model", "")
+            model = settings.get_provider_model("free_api", provider)
 
             if provider == "libretranslate":
                 url = settings.get(
                     "free_api.libretranslate_url", "https://libretranslate.com"
                 )
-                return cls.create(provider, url=url)
+                return cls.create(provider, api_key, url=url)
 
             if model:
                 return cls.create(provider, api_key, model=model)
@@ -94,7 +100,7 @@ class APIFactory:
         else:  # paid
             provider = settings.get_paid_provider()
             api_key = settings.get_provider_key("paid_api", provider)
-            model = settings.get("paid_api.model", "")
+            model = settings.get_provider_model("paid_api", provider)
 
             return cls.create(provider, api_key, model=model)
 

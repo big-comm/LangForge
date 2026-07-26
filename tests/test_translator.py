@@ -1,11 +1,18 @@
 """Tests for core.translator placeholder protection and validation."""
 
+import json
 import sys
+import threading
 from pathlib import Path
+
+import polib
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "usr" / "share" / "langforge"))
 
 from core.translator import (
+    TranslationEngine,
+    _save_po_atomic,
     _protect_placeholders,
     _restore_placeholders,
     _validate_placeholders,
@@ -49,6 +56,27 @@ class TestProtectPlaceholders:
         protected, tokens = _protect_placeholders(text)
         assert len(tokens) == 3
 
+    def test_width_precision_length_and_positional_printf(self):
+        text = "%(value)08.2f | %1$.*2$f | %zu | %%"
+        protected, tokens = _protect_placeholders(text)
+
+        assert len(tokens) == 4
+        assert [placeholder for _, placeholder in tokens] == [
+            "%(value)08.2f",
+            "%1$.*2$f",
+            "%zu",
+            "%%",
+        ]
+        assert _restore_placeholders(protected, tokens) == text
+
+    def test_escaped_curly_braces_are_not_placeholders(self):
+        protected, tokens = _protect_placeholders(
+            "{{literal}} and {value:{width}.2f}"
+        )
+
+        assert tokens == [("<x1/>", "{value:{width}.2f}")]
+        assert protected == "{{literal}} and <x1/>"
+
     def test_empty_string(self):
         text = ""
         protected, tokens = _protect_placeholders(text)
@@ -89,10 +117,19 @@ class TestValidatePlaceholders:
     def test_invalid_missing_placeholder(self):
         assert not _validate_placeholders("Hello %s", "Olá")
 
-    def test_valid_reordered(self):
-        # Same placeholders but in different order — still valid (sorted comparison)
+    def test_unnumbered_printf_reordering_is_invalid(self):
+        assert not _validate_placeholders("%s has %d items", "%d itens de %s")
+
+    def test_numbered_printf_reordering_is_valid(self):
         assert _validate_placeholders(
-            "%s has %d items", "%d itens de %s"
+            "%1$s has %2$d items",
+            "%2$d itens de %1$s",
+        )
+
+    def test_named_reordering_is_valid(self):
+        assert _validate_placeholders(
+            "{name} has {count} items",
+            "{count} itens de {name}",
         )
 
     def test_valid_no_placeholders(self):
@@ -110,6 +147,12 @@ class TestFixPlaceholders:
     def test_preserves_correct_translation(self):
         result = _fix_placeholders("Hello %s", "Olá %s")
         assert result == "Olá %s"
+
+    def test_repairs_unsafe_unnumbered_reordering_without_cascade(self):
+        result = _fix_placeholders("%s has %d items", "%d itens de %s")
+
+        assert result == "%s itens de %d"
+        assert _validate_placeholders("%s has %d items", result)
 
 
 class TestBuildTranslationPrompt:
@@ -416,3 +459,293 @@ class TestFixPlaceholdersAdvanced:
         translated = "Olá %s e"
         result = _fix_placeholders(original, translated)
         assert "%d" in result
+
+
+class TestCatalogWrites:
+    def test_english_source_is_copied_without_api_calls(self, tmp_path):
+        class NoCallAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, *_args, **_kwargs):
+                pytest.fail("English source must not call the API")
+
+            def translate_batch(self, *_args, **_kwargs):
+                pytest.fail("English source must not call the API")
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.append(polib.POEntry(msgid="Open"))
+        pot.append(
+            polib.POEntry(
+                msgid="{count} file",
+                msgid_plural="{count} files",
+                msgstr_plural={0: "", 1: ""},
+            )
+        )
+        pot.save(str(pot_path))
+
+        count = TranslationEngine(NoCallAPI(), "app").translate_language(
+            pot_path, "en", tmp_path
+        )
+
+        translated = polib.pofile(str(tmp_path / "en.po"))
+        assert count == 2
+        assert translated[0].msgstr == "Open"
+        assert translated[1].msgstr_plural == {
+            0: "{count} file",
+            1: "{count} files",
+        }
+        assert translated.metadata["Plural-Forms"] == (
+            "nplurals=2; plural=(n != 1);"
+        )
+
+    def test_failed_atomic_save_preserves_existing_catalog(self, tmp_path):
+        destination = tmp_path / "app.po"
+        destination.write_text("original", encoding="utf-8")
+
+        class BrokenCatalog:
+            def save(self, path):
+                Path(path).write_text("partial", encoding="utf-8")
+                raise RuntimeError("write failed")
+
+        with pytest.raises(RuntimeError, match="write failed"):
+            _save_po_atomic(BrokenCatalog(), destination)
+
+        assert destination.read_text(encoding="utf-8") == "original"
+        assert not list(tmp_path.glob(".app.po.*.tmp"))
+
+    def test_existing_catalog_symlink_is_replaced(self, tmp_path):
+        class EchoAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate_batch(self, texts, *_args, **_kwargs):
+                return [f"fr:{text}" for text in texts]
+
+            def translate(self, text, *_args, **_kwargs):
+                return f"fr:{text}"
+
+        pot_path = tmp_path / "app.pot"
+        catalog = polib.POFile()
+        catalog.append(polib.POEntry(msgid="Open"))
+        catalog.save(str(pot_path))
+        victim = tmp_path / "victim.po"
+        victim.write_text("do not change", encoding="utf-8")
+        output = tmp_path / "fr.po"
+        output.symlink_to(victim)
+
+        TranslationEngine(EchoAPI(), "app").translate_language(
+            pot_path,
+            "fr",
+            tmp_path,
+        )
+
+        assert not output.is_symlink()
+        assert polib.pofile(str(output))[0].msgstr == "fr:Open"
+        assert victim.read_text(encoding="utf-8") == "do not change"
+
+
+class TestContextCache:
+    class SequencedAPI:
+        batch_delay = 0
+
+        def __init__(self, outputs=None, fail=False):
+            self.outputs = outputs or []
+            self.fail = fail
+            self.batch_calls = 0
+            self.individual_calls = 0
+
+        def set_context(self, *_args):
+            pass
+
+        def translate_batch(self, texts, *_args, **_kwargs):
+            self.batch_calls += 1
+            if self.fail:
+                raise RuntimeError("batch unavailable")
+            return self.outputs[: len(texts)]
+
+        def translate(self, text, *_args, **_kwargs):
+            self.individual_calls += 1
+            if self.fail:
+                raise RuntimeError("translation unavailable")
+            return f"translated:{text}"
+
+    @staticmethod
+    def _write_catalog(path, entries):
+        catalog = polib.POFile()
+        for entry in entries:
+            catalog.append(entry)
+        catalog.save(str(path))
+
+    def test_duplicate_msgids_with_distinct_contexts_are_checked(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        entries = [
+            polib.POEntry(msgctxt="menu", msgid="Open"),
+            polib.POEntry(msgctxt="verb", msgid="Open"),
+        ]
+        self._write_catalog(pot_path, entries)
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [
+                polib.POEntry(msgctxt="menu", msgid="Open", msgstr="Menu old"),
+                polib.POEntry(msgctxt="verb", msgid="Open", msgstr="Verb old"),
+            ],
+        )
+        api = self.SequencedAPI(["Menu new", "Verb new"])
+
+        result = TranslationEngine(api, "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        translated = polib.pofile(str(tmp_path / "fr.po"))
+        assert result == {"fr": True}
+        assert api.batch_calls == 1
+        assert [entry.msgstr for entry in translated] == [
+            "Menu new",
+            "Verb new",
+        ]
+
+    def test_failed_reference_check_is_reported_and_cached(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Ouvrir")],
+        )
+
+        result = TranslationEngine(
+            self.SequencedAPI(fail=True),
+            "app",
+        ).fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        cache_path = tmp_path / ".langforge_context_cache.json"
+        assert result == {"fr": False}
+        assert cache_path.is_file()
+        assert json.loads(cache_path.read_text(encoding="utf-8"))["checked"] == []
+
+    def test_cancelled_check_preserves_cache_and_can_resume(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Old")],
+        )
+        cancel_event = threading.Event()
+        cancel_event.set()
+
+        cancelled = TranslationEngine(
+            self.SequencedAPI(["New"]),
+            "app",
+        ).fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+            cancel_event=cancel_event,
+        )
+
+        cache_path = tmp_path / ".langforge_context_cache.json"
+        assert cancelled == {}
+        assert cache_path.is_file()
+
+        api = self.SequencedAPI(["New"])
+        resumed = TranslationEngine(api, "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        assert resumed == {"fr": True}
+        assert api.batch_calls == 1
+        assert not cache_path.exists()
+
+    def test_stale_cache_fingerprint_is_ignored(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Old")],
+        )
+        cache_path = tmp_path / ".langforge_context_cache.json"
+        cache_path.write_text(
+            json.dumps(
+                {
+                    "version": 2,
+                    "fingerprint": "stale",
+                    "checked": ['["","Open",""]'],
+                    "changed": [],
+                    "fixed_langs": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        api = self.SequencedAPI(["New"])
+
+        result = TranslationEngine(api, "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        assert result == {"fr": True}
+        assert api.batch_calls == 1
+
+    def test_cache_symlink_is_replaced_without_touching_target(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Old")],
+        )
+        victim = tmp_path / "victim.json"
+        victim.write_text("keep", encoding="utf-8")
+        cache_path = tmp_path / ".langforge_context_cache.json"
+        cache_path.symlink_to(victim)
+        cancel_event = threading.Event()
+        cancel_event.set()
+
+        TranslationEngine(self.SequencedAPI(["New"]), "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+            cancel_event=cancel_event,
+        )
+
+        assert not cache_path.is_symlink()
+        assert json.loads(cache_path.read_text(encoding="utf-8"))["version"] == 2
+        assert victim.read_text(encoding="utf-8") == "keep"
+
+    @pytest.mark.parametrize("method", ["translate_language", "fix_context"])
+    def test_template_symlink_is_rejected(self, tmp_path, method):
+        victim = tmp_path / "victim.pot"
+        self._write_catalog(victim, [polib.POEntry(msgid="Open")])
+        pot_path = tmp_path / "app.pot"
+        pot_path.symlink_to(victim)
+        engine = TranslationEngine(self.SequencedAPI(["New"]), "app")
+
+        with pytest.raises(ValueError, match="cannot be a symlink"):
+            if method == "translate_language":
+                engine.translate_language(pot_path, "fr", tmp_path)
+            else:
+                engine.fix_context(
+                    pot_path,
+                    tmp_path,
+                    reference_lang="fr",
+                    languages=["fr"],
+                )

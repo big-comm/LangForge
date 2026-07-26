@@ -1,5 +1,8 @@
 """Entry point for LangForge."""
 
+# Imports below must follow path setup and GI version selection.
+# ruff: noqa: E402
+
 import logging
 import sys
 from pathlib import Path
@@ -43,14 +46,47 @@ class LangForgeApp(Adw.Application):
     """Main application."""
 
     def __init__(self):
-        super().__init__(application_id="org.communitybig.langforge")
+        super().__init__(
+            application_id="org.communitybig.langforge",
+            flags=Gio.ApplicationFlags.HANDLES_OPEN,
+        )
+
+    def _get_main_window(self):
+        """Return the existing main window or create it."""
+        win = self.props.active_window
+        if isinstance(win, MainWindow):
+            return win
+
+        for candidate in self.get_windows():
+            if isinstance(candidate, MainWindow):
+                return candidate
+
+        return MainWindow(self)
 
     def do_activate(self):
         """Called when application is activated."""
-        win = self.props.active_window
-        if not win:
-            win = MainWindow(self)
+        win = self._get_main_window()
         win.present()
+
+    def do_open(self, files, _n_files, _hint):
+        """Open the first usable local target supplied by the launcher."""
+        win = self._get_main_window()
+        win.present()
+
+        for gfile in files or ():
+            try:
+                path = gfile.get_path()
+                if not path:
+                    continue
+                target = Path(path)
+                if not target.is_file() and not target.is_dir():
+                    continue
+                if win._on_drop(None, gfile, 0, 0):
+                    break
+            except (AttributeError, OSError, TypeError, ValueError) as error:
+                logging.getLogger(__name__).warning(
+                    "Ignoring invalid open target: %s", error
+                )
 
     def do_startup(self):
         """Configure menu actions and keyboard shortcuts."""
@@ -81,7 +117,7 @@ class LangForgeApp(Adw.Application):
 
         # Action: Quit
         quit_action = Gio.SimpleAction.new("quit", None)
-        quit_action.connect("activate", lambda *_: self.quit())
+        quit_action.connect("activate", self._on_quit)
         self.add_action(quit_action)
         self.set_accels_for_action("app.quit", ["<Control>q"])
 
@@ -103,6 +139,23 @@ class LangForgeApp(Adw.Application):
         if win:
             win._on_start_translation(None)
 
+    def _on_quit(self, action, param):
+        """Quit now or defer until the active translation has stopped."""
+        win = self.props.active_window
+        if not isinstance(win, MainWindow):
+            win = next(
+                (
+                    candidate
+                    for candidate in self.get_windows()
+                    if isinstance(candidate, MainWindow)
+                ),
+                None,
+            )
+        if win:
+            win.request_quit()
+        else:
+            self.quit()
+
     def _on_about(self, action, param):
         """Show About dialog."""
         about = Adw.AboutWindow(
@@ -111,11 +164,11 @@ class LangForgeApp(Adw.Application):
             developer_name="BigLinux",
             version=APP_VERSION,
             comments=_("Automatic translator for gettext projects"),
-            website="https://github.com/biglinux/langforge",
-            issue_url="https://github.com/biglinux/langforge/issues",
+            website="https://github.com/big-comm/LangForge",
+            issue_url="https://github.com/big-comm/LangForge/issues",
             developers=["BigLinux Team"],
             copyright="© 2024 BigLinux",
-            license_type=Gtk.License.GPL_3_0,
+            license_type=Gtk.License.MIT_X11,
             transient_for=self.props.active_window,
         )
         about.present()

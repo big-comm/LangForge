@@ -8,106 +8,34 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gtk, Adw, GLib
 
-from config.settings import Settings
 from api.factory import APIFactory
+from api.models import get_model, is_recommended, model_ids
+from config.settings import Settings
 from utils.i18n import _
 
 log = logging.getLogger(__name__)
 
-# Available models per free provider
-_FREE_MODELS: dict[str, list[str]] = {
-    "openrouter": [
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "google/gemma-2-9b-it:free",
-        "google/gemma-3-4b-it:free",
-        "google/gemma-3-12b-it:free",
-        "google/gemma-3-27b-it:free",
-        "mistralai/mistral-7b-instruct:free",
-        "microsoft/phi-3-mini-128k-instruct:free",
-        "microsoft/phi-3-medium-128k-instruct:free",
-        "qwen/qwen-2-7b-instruct:free",
-        "qwen/qwen-2.5-7b-instruct:free",
-        "qwen/qwen-2.5-72b-instruct:free",
-        "deepseek/deepseek-r1-distill-llama-70b:free",
-        "nousresearch/hermes-3-llama-3.1-405b:free",
-        "huggingfaceh4/zephyr-7b-beta:free",
-        "openchat/openchat-7b:free",
-        "undi95/toppy-m-7b:free",
-        "gryphe/mythomist-7b:free",
-    ],
-    "groq": [
-        "llama-3.3-70b-versatile",
-        "llama-3.1-8b-instant",
-        "gemma2-9b-it",
-        "mixtral-8x7b-32768",
-    ],
-    "gemini-free": [
-        "gemini-2.5-flash-lite",
-        "gemini-2.5-flash",
-    ],
-    "mistral-free": [
-        "mistral-small-latest",
-        "open-mistral-7b",
-        "open-mixtral-8x7b",
-    ],
-}
+_FREE_PROVIDER_IDS = (
+    "deepl-free",
+    "groq",
+    "gemini-free",
+    "openrouter",
+    "mistral-free",
+    "libretranslate",
+)
+_PAID_PROVIDER_IDS = ("openai", "gemini", "grok", "deepseek")
 
-# Available models per paid provider
-_PAID_MODELS: dict[str, list[str]] = {
-    "openai": [
-        "gpt-5-mini",
-        "gpt-5",
-        "gpt-5-nano",
-        "gpt-4.1-mini",
-        "gpt-4.1",
-        "gpt-4.1-nano",
-        "gpt-4o-mini",
-        "gpt-4o",
-    ],
-    "gemini": [
-        "gemini-2.5-flash",
-        "gemini-2.5-pro",
-        "gemini-2.0-flash",
-    ],
-    "grok": [
-        "grok-4-fast",
-        "grok-3-fast",
-        "grok-3-mini-fast",
-        "grok-2",
-    ],
-    "deepseek": [
-        "deepseek-chat",
-        "deepseek-reasoner",
-    ],
-}
+_FREE_MODELS = {provider: list(model_ids(provider)) for provider in _FREE_PROVIDER_IDS}
+_PAID_MODELS = {provider: list(model_ids(provider)) for provider in _PAID_PROVIDER_IDS}
 
 
-# Models recommended for translation (best quality/cost ratio)
-_RECOMMENDED = {
-    # Free
-    "llama-3.3-70b-versatile",       # Fastest free, 14.4k RPD
-    "gemini-2.5-flash-lite",         # Best free quality
-    # Paid
-    "gpt-5-mini",                    # Best paid value (replaces 4.1-mini)
-    "gemini-2.5-flash",              # Great quality/price
-    "deepseek-chat",                 # Cheapest paid — good enough quality
-}
-
-
-def _model_display_name(model_id: str) -> str:
-    """Extract a clean display name from a full model ID.
-
-    'meta-llama/llama-3.1-8b-instruct:free' → 'llama-3.1-8b-instruct'
-    'gpt-4o-mini' → 'gpt-4o-mini'
-    Recommended models get a star prefix.
-    """
-    name = model_id
-    if "/" in name:
-        name = name.split("/", 1)[1]
-    if name.endswith(":free"):
-        name = name[:-5]
-    if model_id in _RECOMMENDED or name in _RECOMMENDED:
+def _model_display_name(provider: str, model_id: str) -> str:
+    """Return the curated label, price hint, and recommendation marker."""
+    spec = get_model(provider, model_id)
+    name = spec.label if spec else model_id
+    if spec and provider in _PAID_PROVIDER_IDS:
+        name += f" · ${spec.input_price:g}/${spec.output_price:g} / 1M"
+    if is_recommended(provider, model_id):
         name = f"\u2605 {name}"
     return name
 
@@ -118,12 +46,20 @@ class SettingsDialog(Adw.PreferencesWindow):
     def __init__(self, parent, settings: Settings):
         super().__init__()
         self.settings = settings
+        self._current_free_provider = settings.get_free_provider()
+        self._current_paid_provider = settings.get_paid_provider()
+        self._loading_key_fields = True
+        self._free_key_dirty = False
+        self._paid_key_dirty = False
         self.set_transient_for(parent)
         self.set_modal(True)
         self.set_default_size(720, 500)
 
         self._build_ui()
         self._load_settings()
+        self._loading_key_fields = False
+        self._free_key_dirty = False
+        self._paid_key_dirty = False
 
         # Auto-save on close
         self.connect("close-request", self._on_close)
@@ -142,8 +78,9 @@ class SettingsDialog(Adw.PreferencesWindow):
         free_provider = self._get_selected_free_provider()
         self.settings.set("free_api.provider", free_provider)
         # Save key per-provider (not shared)
-        free_key = self.free_api_key.get_text()
-        self.settings.set_provider_key("free_api", free_provider, free_key)
+        if self._free_key_dirty:
+            free_key = self.free_api_key.get_text()
+            self.settings.set_provider_key("free_api", free_provider, free_key)
         self.settings.set(
             "free_api.libretranslate_url", self.libretranslate_url.get_text()
         )
@@ -152,18 +89,19 @@ class SettingsDialog(Adw.PreferencesWindow):
         if models:
             idx = self.free_model_row.get_selected()
             if 0 <= idx < len(models):
-                self.settings.set("free_api.model", models[idx])
+                self.settings.set_provider_model("free_api", free_provider, models[idx])
 
         # Paid API
         paid_provider = self._get_selected_paid_provider()
         self.settings.set("paid_api.provider", paid_provider)
         # Save key per-provider (not shared)
-        paid_key = self.api_key.get_text()
-        self.settings.set_provider_key("paid_api", paid_provider, paid_key)
+        if self._paid_key_dirty:
+            paid_key = self.api_key.get_text()
+            self.settings.set_provider_key("paid_api", paid_provider, paid_key)
         # Save selected paid model
         for model_id, check in self._paid_model_checks.items():
             if check.get_active():
-                self.settings.set("paid_api.model", model_id)
+                self.settings.set_provider_model("paid_api", paid_provider, model_id)
                 break
 
         # Fix Context reference language
@@ -209,31 +147,31 @@ class SettingsDialog(Adw.PreferencesWindow):
             {
                 "id": "groq",
                 "name": "Groq",
-                "subtitle": _("14.4k req/day — Fastest, excellent quality"),
+                "subtitle": "GPT-OSS 120B · GPT-OSS 20B",
                 "recommended": True,
             },
             {
                 "id": "gemini-free",
                 "name": "Gemini Free",
-                "subtitle": _("1,000 req/day — Google AI"),
+                "subtitle": "Gemini 3.5 Flash-Lite · Gemini 3.6 Flash",
                 "recommended": False,
             },
             {
                 "id": "openrouter",
                 "name": "OpenRouter",
-                "subtitle": _("18 free models available"),
+                "subtitle": "GPT-OSS free · OpenRouter Free",
                 "recommended": False,
             },
             {
                 "id": "mistral-free",
                 "name": "Mistral Free",
-                "subtitle": _("Free tier — Quality models"),
+                "subtitle": "Mistral Small 4 · Mistral Large 3",
                 "recommended": False,
             },
             {
                 "id": "libretranslate",
                 "name": "LibreTranslate",
-                "subtitle": _("Open source — No API key needed"),
+                "subtitle": _("Open source — Key optional when self-hosted"),
                 "recommended": False,
             },
         ]
@@ -284,6 +222,7 @@ class SettingsDialog(Adw.PreferencesWindow):
         self.free_api_key = Adw.PasswordEntryRow()
         self.free_api_key.set_title(_("API Key"))
         self.free_api_key.set_visible(True)
+        self.free_api_key.connect("changed", self._on_free_key_changed)
         self.free_group.add(self.free_api_key)
 
         # DeepL usage info row (shown only when DeepL is selected and has key)
@@ -318,22 +257,22 @@ class SettingsDialog(Adw.PreferencesWindow):
             {
                 "id": "openai",
                 "name": "OpenAI",
-                "subtitle": _("GPT-5, GPT-4.1 — Industry standard"),
+                "subtitle": "GPT-5.6 Luna · Terra · Sol",
             },
             {
                 "id": "gemini",
                 "name": "Gemini (Google AI)",
-                "subtitle": _("Gemini 2.5 Flash/Pro — Fast and capable"),
+                "subtitle": "Gemini 3.5 Flash-Lite · Gemini 3.6 Flash",
             },
             {
                 "id": "grok",
                 "name": "Grok (xAI)",
-                "subtitle": _("$25 free credits — 2M context window"),
+                "subtitle": "Grok 4.3 · Grok 4.5",
             },
             {
                 "id": "deepseek",
                 "name": "DeepSeek",
-                "subtitle": _("Very low cost — Good for high-volume translation"),
+                "subtitle": "DeepSeek V4 Flash · DeepSeek V4 Pro",
             },
         ]
 
@@ -363,6 +302,7 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         self.api_key = Adw.PasswordEntryRow()
         self.api_key.set_title(_("API Key"))
+        self.api_key.connect("changed", self._on_paid_key_changed)
         self.paid_group.add(self.api_key)
 
         # Model selector as ExpanderRow with radio buttons
@@ -387,17 +327,13 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         self.ref_lang_row = Adw.ComboRow()
         self.ref_lang_row.set_title(_("Reference language"))
-        self.ref_lang_row.set_subtitle(
-            _("★ = recommended")
-        )
+        self.ref_lang_row.set_subtitle(_("★ = recommended"))
         self._ref_lang_options = [
             ("fr", _("★ French")),
             ("pt-BR", _("★ Portuguese (Brazil)")),
             ("es", _("★ Spanish")),
         ]
-        ref_model = Gtk.StringList.new(
-            [label for _, label in self._ref_lang_options]
-        )
+        ref_model = Gtk.StringList.new([label for _, label in self._ref_lang_options])
         self.ref_lang_row.set_model(ref_model)
         fix_group.add(self.ref_lang_row)
 
@@ -494,15 +430,31 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Called when a free provider radio button is toggled."""
         if not check.get_active():
             return
-        # Save current key for old provider before switching
-        old_provider = self.settings.get("free_api.provider", "")
+        old_provider = self._current_free_provider
+        if (
+            old_provider
+            and old_provider != provider_id
+            and self._free_key_dirty
+        ):
+            self.settings.set_provider_key(
+                "free_api", old_provider, self.free_api_key.get_text()
+            )
         if old_provider and old_provider != provider_id:
-            current_key = self.free_api_key.get_text()
-            self.settings.set_provider_key("free_api", old_provider, current_key)
-        # Load key for the new provider
+            self._save_selected_free_model(old_provider)
+        self._current_free_provider = provider_id
+        self.settings.set("free_api.provider", provider_id)
         new_key = self.settings.get_provider_key("free_api", provider_id)
+        was_loading = self._loading_key_fields
+        self._loading_key_fields = True
         self.free_api_key.set_text(new_key)
+        self._loading_key_fields = was_loading
+        self._free_key_dirty = False
         self._update_free_api_fields()
+
+    def _on_free_key_changed(self, *_args):
+        """Track explicit edits without treating programmatic loads as clears."""
+        if not self._loading_key_fields:
+            self._free_key_dirty = True
 
     def _update_visibility(self):
         """Update group visibility based on type."""
@@ -518,23 +470,46 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Called when a paid provider radio button is toggled."""
         if not check.get_active():
             return
-        # Save current key for old provider before switching
-        old_provider = self._get_selected_paid_provider_except(provider_id)
-        if old_provider:
-            current_key = self.api_key.get_text()
-            self.settings.set_provider_key("paid_api", old_provider, current_key)
-        # Load key for the new provider
+        old_provider = self._current_paid_provider
+        if (
+            old_provider
+            and old_provider != provider_id
+            and self._paid_key_dirty
+        ):
+            self.settings.set_provider_key(
+                "paid_api", old_provider, self.api_key.get_text()
+            )
+        if old_provider and old_provider != provider_id:
+            self._save_selected_paid_model(old_provider)
+        self._current_paid_provider = provider_id
+        self.settings.set("paid_api.provider", provider_id)
         new_key = self.settings.get_provider_key("paid_api", provider_id)
+        was_loading = self._loading_key_fields
+        self._loading_key_fields = True
         self.api_key.set_text(new_key)
+        self._loading_key_fields = was_loading
+        self._paid_key_dirty = False
         self._update_paid_provider_subtitle()
         self._update_paid_model_list()
 
-    def _get_selected_paid_provider_except(self, exclude: str) -> str:
-        """Return the previously active paid provider (before the toggle)."""
-        # Since toggled fires on the new check becoming active,
-        # the 'old' provider is tracked via settings
-        current = self.settings.get("paid_api.provider", "")
-        return current if current != exclude else ""
+    def _on_paid_key_changed(self, *_args):
+        """Track explicit edits without treating programmatic loads as clears."""
+        if not self._loading_key_fields:
+            self._paid_key_dirty = True
+
+    def _save_selected_free_model(self, provider: str) -> None:
+        """Persist the visible free model before switching providers."""
+        models = _FREE_MODELS.get(provider, [])
+        selected = self.free_model_row.get_selected()
+        if 0 <= selected < len(models):
+            self.settings.set_provider_model("free_api", provider, models[selected])
+
+    def _save_selected_paid_model(self, provider: str) -> None:
+        """Persist the visible paid model before switching providers."""
+        for model_id, check in self._paid_model_checks.items():
+            if check.get_active():
+                self.settings.set_provider_model("paid_api", provider, model_id)
+                return
 
     def _get_selected_paid_provider(self) -> str:
         """Return the currently selected paid provider ID."""
@@ -567,11 +542,11 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         provider = self._get_selected_paid_provider()
         models = _PAID_MODELS.get(provider, [])
-        saved_model = self.settings.get("paid_api.model", "")
+        saved_model = self.settings.get_provider_model("paid_api", provider)
 
         first_check: Gtk.CheckButton | None = None
         for model_id in models:
-            display = _model_display_name(model_id)
+            display = _model_display_name(provider, model_id)
             row = Adw.ActionRow()
             row.set_title(display)
             check = Gtk.CheckButton()
@@ -601,7 +576,10 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Update the paid model expander subtitle with selected model."""
         for model_id, check in self._paid_model_checks.items():
             if check.get_active():
-                self._paid_model_expander.set_subtitle(_model_display_name(model_id))
+                provider = self._get_selected_paid_provider()
+                self._paid_model_expander.set_subtitle(
+                    _model_display_name(provider, model_id)
+                )
                 return
 
     def _get_selected_free_provider(self) -> str:
@@ -614,7 +592,7 @@ class SettingsDialog(Adw.PreferencesWindow):
     def _update_free_api_fields(self):
         """Update free API fields visibility based on selected provider."""
         provider = self._get_selected_free_provider()
-        needs_key = provider != "libretranslate"
+        needs_key = True
         self.free_api_key.set_visible(needs_key)
         self.libretranslate_url.set_visible(provider == "libretranslate")
 
@@ -624,14 +602,15 @@ class SettingsDialog(Adw.PreferencesWindow):
         # Model selector
         models = _FREE_MODELS.get(provider, [])
         if models:
-            display_names = [_model_display_name(m) for m in models]
+            display_names = [_model_display_name(provider, m) for m in models]
             self.free_model_row.set_model(Gtk.StringList.new(display_names))
-            # Restore saved model
-            saved_model = self.settings.get("free_api.model", "")
+            saved_model = self.settings.get_provider_model("free_api", provider)
+            selected = 0
             for i, m in enumerate(models):
                 if m == saved_model:
-                    self.free_model_row.set_selected(i)
+                    selected = i
                     break
+            self.free_model_row.set_selected(selected)
             self.free_model_row.set_visible(True)
         else:
             self.free_model_row.set_visible(False)
@@ -642,6 +621,7 @@ class SettingsDialog(Adw.PreferencesWindow):
             "gemini-free": _("{provider} API Key").format(provider="Gemini"),
             "openrouter": _("{provider} API Key").format(provider="OpenRouter"),
             "mistral-free": _("{provider} API Key").format(provider="Mistral"),
+            "libretranslate": _("API Key (optional when self-hosted)"),
         }
         if needs_key:
             self.free_api_key.set_title(key_titles.get(provider, _("API Key")))
@@ -650,6 +630,30 @@ class SettingsDialog(Adw.PreferencesWindow):
         """Test API connection in background thread."""
         import threading
 
+        api_type = "free" if self.api_type_row.get_selected() == 0 else "paid"
+        provider = (
+            self._get_selected_free_provider()
+            if api_type == "free"
+            else self._get_selected_paid_provider()
+        )
+        api_key = (
+            self.free_api_key.get_text()
+            if api_type == "free"
+            else self.api_key.get_text()
+        )
+        libretranslate_url = self.libretranslate_url.get_text()
+        model = ""
+        if api_type == "free":
+            models = _FREE_MODELS.get(provider, [])
+            selected = self.free_model_row.get_selected()
+            if 0 <= selected < len(models):
+                model = models[selected]
+        else:
+            for model_id, check in self._paid_model_checks.items():
+                if check.get_active():
+                    model = model_id
+                    break
+
         # Show testing state
         button.set_sensitive(False)
         button.set_label(_("Testing..."))
@@ -657,35 +661,19 @@ class SettingsDialog(Adw.PreferencesWindow):
 
         def _test():
             try:
-                api_type = "free" if self.api_type_row.get_selected() == 0 else "paid"
-
                 if api_type == "free":
-                    provider = self._get_selected_free_provider()
-                    api_key = self.free_api_key.get_text()
-
                     if provider == "libretranslate":
                         api = APIFactory.create(
-                            provider, url=self.libretranslate_url.get_text()
+                            provider,
+                            api_key,
+                            url=libretranslate_url,
                         )
                     else:
-                        models = _FREE_MODELS.get(provider, [])
-                        model = None
-                        if models:
-                            idx = self.free_model_row.get_selected()
-                            if 0 <= idx < len(models):
-                                model = models[idx]
                         if model:
                             api = APIFactory.create(provider, api_key, model=model)
                         else:
                             api = APIFactory.create(provider, api_key)
                 else:
-                    provider = self._get_selected_paid_provider()
-                    api_key = self.api_key.get_text()
-                    model = ""
-                    for mid, chk in self._paid_model_checks.items():
-                        if chk.get_active():
-                            model = mid
-                            break
                     api = APIFactory.create(provider, api_key, model=model)
 
                 if api.test_connection():
@@ -794,8 +782,8 @@ class SettingsDialog(Adw.PreferencesWindow):
                 "name": "Groq",
                 "icon": "media-playback-start-symbolic",
                 "badge": _("Fastest"),
-                "limit": _("14,400 requests/day"),
-                "quality": _("LLaMA 3 - Excellent value"),
+                "limit": _("Free tier available"),
+                "quality": _("GPT-OSS - Excellent value"),
                 "url": "https://console.groq.com",
                 "steps": _("Create account → API Keys → Create"),
             },
@@ -803,8 +791,8 @@ class SettingsDialog(Adw.PreferencesWindow):
                 "name": "Gemini Free",
                 "icon": "applications-science-symbolic",
                 "badge": None,
-                "limit": _("1,000 requests/day"),
-                "quality": _("Google AI - Good quality"),
+                "limit": _("Free tier available"),
+                "quality": _("Flash-Lite - Optimized for translation"),
                 "url": "https://aistudio.google.com/apikey",
                 "steps": _("Google Login → Get API Key"),
             },
@@ -812,8 +800,8 @@ class SettingsDialog(Adw.PreferencesWindow):
                 "name": "OpenRouter",
                 "icon": "network-server-symbolic",
                 "badge": None,
-                "limit": _("18 free models"),
-                "quality": _("Multiple models available"),
+                "limit": _("Free models available"),
+                "quality": _("GPT-OSS and availability-aware routing"),
                 "url": "https://openrouter.ai",
                 "steps": _("Create account → Keys → Create Key"),
             },
@@ -829,11 +817,11 @@ class SettingsDialog(Adw.PreferencesWindow):
             {
                 "name": "LibreTranslate",
                 "icon": "emblem-documents-symbolic",
-                "badge": _("No API Key"),
+                "badge": _("Self-hostable"),
                 "limit": _("Unlimited (self-hosted)"),
                 "quality": _("Open source - Basic quality"),
                 "url": "https://libretranslate.com",
-                "steps": _("Use default URL or your own server"),
+                "steps": _("Add a key for the public service or use your own server"),
             },
         ]
 

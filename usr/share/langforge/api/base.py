@@ -1,9 +1,17 @@
 """Interface abstrata para APIs de tradução."""
 
+import functools
 import logging
+import math
+import random
+import re
 import time
 from abc import ABC, abstractmethod
+from datetime import timezone
+from email.utils import parsedate_to_datetime
 from typing import Optional
+
+import requests
 
 from core.languages import SUPPORTED_LANGUAGES
 
@@ -13,6 +21,33 @@ log = logging.getLogger(__name__)
 _MAX_RETRIES = 5
 _INITIAL_BACKOFF = 2.0  # seconds
 _BACKOFF_FACTOR = 2.0
+_MAX_RETRY_DELAY = 60.0
+_RETRYABLE_HTTP_STATUSES = frozenset({408, 409, 425, 429})
+_STATUS_NAME_TO_HTTP = {
+    "ABORTED": 409,
+    "ALREADY_EXISTS": 409,
+    "CANCELLED": 499,
+    "DEADLINE_EXCEEDED": 408,
+    "INTERNAL": 500,
+    "INVALID_ARGUMENT": 400,
+    "NOT_FOUND": 404,
+    "PERMISSION_DENIED": 403,
+    "RESOURCE_EXHAUSTED": 429,
+    "UNAUTHENTICATED": 401,
+    "UNAVAILABLE": 503,
+}
+_NETWORK_EXCEPTION_NAMES = {
+    "aiohttp": frozenset(
+        {
+            "ClientConnectionError",
+            "ServerConnectionError",
+            "ServerTimeoutError",
+        }
+    ),
+    "httpcore": frozenset({"NetworkError", "TimeoutException"}),
+    "httpx": frozenset({"NetworkError", "TimeoutException"}),
+    "openai": frozenset({"APIConnectionError", "APITimeoutError"}),
+}
 
 # Shared prompt template for all LLM-based translation APIs.
 # Placeholders: {source}, {target}, {app_name}, {context_section}
@@ -21,6 +56,8 @@ _BACKOFF_FACTOR = 2.0
 def _resolve_lang(code: str) -> str:
     """Resolve a language code to its full name for clearer LLM prompts."""
     return SUPPORTED_LANGUAGES.get(code, code)
+
+
 _TRANSLATION_PROMPT = (
     "You are a professional translator specializing in software localization. "
     "You are translating UI strings for the application '{app_name}'. "
@@ -146,6 +183,7 @@ def clean_batch_parts(raw: str) -> list[str]:
         parts.pop()
     # Strip LLM-echoed numbering prefixes: [1] , [2] , etc.
     import re as _re
+
     parts = [_re.sub(r"^\[\d+\]\s*", "", p) for p in parts]
     return parts
 
@@ -153,31 +191,98 @@ def clean_batch_parts(raw: str) -> list[str]:
 # Newline placeholder for batch input — prevents multi-line texts from
 # confusing the |||NEXT||| separator boundary.
 _NL_PLACEHOLDER = " <NL> "
+_BATCH_SEPARATOR = "|||NEXT|||"
+_BATCH_ID_PATTERN = re.compile(r"^\s*\[\s*(-?\d+)\s*\]\s*(.*)\Z", re.DOTALL)
+
+
+class BatchAlignmentError(ValueError):
+    """Raised when a batch response cannot be aligned safely."""
+
+
+def _restore_batch_payload(text: str) -> str:
+    """Restore control tokens without removing payload text."""
+    text = text.replace(_BATCH_SEPARATOR, "")
+    text = text.replace(" <NL> ", "\n")
+    text = text.replace(" <NL>", "\n")
+    text = text.replace("<NL> ", "\n")
+    text = text.replace("<NL>", "\n")
+    return text.strip(" \t")
+
+
+def parse_batch_response(raw: str, expected_count: int) -> list[str]:
+    """Parse and strictly align a delimited batch response.
+
+    Numbered responses are reordered by their ``[N]`` IDs. Duplicate,
+    missing, out-of-range, or mixed numbered/unnumbered parts are rejected.
+    Unnumbered responses are accepted only when their cardinality is exact.
+    """
+    if not isinstance(raw, str):
+        raise BatchAlignmentError("Batch response must be text")
+    if not isinstance(expected_count, int) or expected_count < 0:
+        raise ValueError("expected_count must be a non-negative integer")
+
+    parts = [part.strip() for part in raw.split(_BATCH_SEPARATOR)]
+    while parts and not parts[0]:
+        parts.pop(0)
+    while parts and not parts[-1]:
+        parts.pop()
+
+    numbered: list[tuple[int, str]] = []
+    unnumbered: list[str] = []
+    for part in parts:
+        match = _BATCH_ID_PATTERN.match(part)
+        if match:
+            numbered.append((int(match.group(1)), match.group(2)))
+        else:
+            unnumbered.append(part)
+
+    if numbered and unnumbered:
+        raise BatchAlignmentError("Batch response mixes numbered and unnumbered parts")
+
+    if numbered:
+        by_id: dict[int, str] = {}
+        for item_id, payload in numbered:
+            if not 1 <= item_id <= expected_count:
+                raise BatchAlignmentError(
+                    f"Batch response ID {item_id} is outside 1..{expected_count}"
+                )
+            if item_id in by_id:
+                raise BatchAlignmentError(
+                    f"Batch response contains duplicate ID {item_id}"
+                )
+            by_id[item_id] = payload
+
+        missing = [
+            item_id for item_id in range(1, expected_count + 1) if item_id not in by_id
+        ]
+        if missing:
+            missing_ids = ", ".join(str(item_id) for item_id in missing)
+            raise BatchAlignmentError(f"Batch response is missing IDs: {missing_ids}")
+        ordered = [by_id[item_id] for item_id in range(1, expected_count + 1)]
+    else:
+        if len(parts) != expected_count:
+            raise BatchAlignmentError(
+                "Batch response cardinality mismatch: "
+                f"expected {expected_count}, got {len(parts)}"
+            )
+        ordered = parts
+
+    return [_restore_batch_payload(part) for part in ordered]
 
 
 def prepare_batch_texts(texts: list[str]) -> list[str]:
     """Replace newlines with placeholder and add numbering for batch alignment."""
     return [
-        f"[{i+1}] {t.replace(chr(10), _NL_PLACEHOLDER)}"
-        for i, t in enumerate(texts)
+        f"[{i + 1}] {t.replace(chr(10), _NL_PLACEHOLDER)}" for i, t in enumerate(texts)
     ]
 
 
 def restore_batch_texts(parts: list[str]) -> list[str]:
     """Restore newlines from placeholder, strip numbering prefixes and stray separators."""
-    import re as _re
     restored = []
     for p in parts:
-        p = _re.sub(r"^\[\d+\]\s*", "", p)  # Strip [N] prefix
-        p = p.replace("|||NEXT|||", "")
-        # Restore NL placeholders — handle with/without surrounding spaces
-        p = p.replace(" <NL> ", "\n")
-        p = p.replace(" <NL>", "\n")
-        p = p.replace("<NL> ", "\n")
-        p = p.replace("<NL>", "\n")
-        # Strip only spaces/tabs, preserve intentional newlines
-        p = p.strip(" \t")
-        restored.append(p)
+        p = re.sub(r"^\[\d+\]\s*", "", p)
+        restored.append(_restore_batch_payload(p))
     return restored
 
 
@@ -211,8 +316,7 @@ class TranslationAPI(ABC):
         self._api_calls += 1
         inp_price, out_price = self._token_pricing
         self._total_cost_usd += (
-            input_tokens * inp_price / 1_000_000
-            + output_tokens * out_price / 1_000_000
+            input_tokens * inp_price / 1_000_000 + output_tokens * out_price / 1_000_000
         )
 
     def get_usage(self) -> dict:
@@ -285,73 +389,191 @@ class TranslationAPI(ABC):
 
 def _parse_retry_delay(error_msg: str) -> float | None:
     """Extract retryDelay from Gemini/Google API error messages."""
-    import re
-
-    match = re.search(r"retry in (\d+(?:\.\d+)?)s", error_msg, re.IGNORECASE)
-    if match:
-        return float(match.group(1))
-    match = re.search(r"retryDelay.*?(\d+)s", error_msg)
-    if match:
-        return float(match.group(1))
+    patterns = (
+        r"\bretry\s+in\s+(\d+(?:\.\d+)?)\s*s\b",
+        r"\bretryDelay\b.*?(\d+(?:\.\d+)?)\s*s\b",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, error_msg, re.IGNORECASE)
+        if match:
+            return float(match.group(1))
     return None
 
 
+def _coerce_status_code(value) -> int | None:
+    """Convert SDK status representations to an HTTP status code."""
+    if value is None or isinstance(value, bool):
+        return None
+    if callable(value):
+        try:
+            value = value()
+        except TypeError:
+            return None
+
+    name = getattr(value, "name", None)
+    if isinstance(name, str) and name.upper() in _STATUS_NAME_TO_HTTP:
+        return _STATUS_NAME_TO_HTTP[name.upper()]
+
+    if isinstance(value, str):
+        status_name = value.strip().rsplit(".", 1)[-1].upper()
+        if status_name in _STATUS_NAME_TO_HTTP:
+            return _STATUS_NAME_TO_HTTP[status_name]
+        value = value.strip()
+    else:
+        value = getattr(value, "value", value)
+
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(numeric) or not numeric.is_integer():
+        return None
+
+    status = int(numeric)
+    return status if 100 <= status <= 599 else None
+
+
+def _exception_status_code(error: Exception) -> int | None:
+    """Read a status code from requests and common API SDK exceptions."""
+    response = getattr(error, "response", None)
+    candidates = (
+        getattr(error, "status_code", None),
+        getattr(response, "status_code", None),
+        getattr(error, "code", None),
+        getattr(error, "status", None),
+        getattr(error, "grpc_status_code", None),
+    )
+    for candidate in candidates:
+        status = _coerce_status_code(candidate)
+        if status is not None:
+            return status
+    return None
+
+
+def _is_connection_or_timeout(error: Exception) -> bool:
+    """Identify concrete network exceptions, including wrapped SDK errors."""
+    pending: list[BaseException] = [error]
+    seen: set[int] = set()
+    while pending:
+        current = pending.pop()
+        if id(current) in seen:
+            continue
+        seen.add(id(current))
+
+        if isinstance(
+            current,
+            (
+                ConnectionError,
+                TimeoutError,
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ),
+        ):
+            return True
+
+        for exception_type in type(current).__mro__:
+            module = exception_type.__module__.partition(".")[0]
+            names = _NETWORK_EXCEPTION_NAMES.get(module)
+            if names and exception_type.__name__ in names:
+                return True
+
+        if current.__cause__ is not None:
+            pending.append(current.__cause__)
+        if current.__context__ is not None:
+            pending.append(current.__context__)
+    return False
+
+
+def _is_retryable_error(error: Exception) -> bool:
+    """Classify transient failures without inspecting human-readable text."""
+    status = _exception_status_code(error)
+    if status is not None:
+        return status in _RETRYABLE_HTTP_STATUSES or 500 <= status <= 599
+    return _is_connection_or_timeout(error)
+
+
+def _parse_numeric_delay(value) -> float | None:
+    """Parse and safely bound a numeric server-provided delay."""
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        delay = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(delay) or delay < 0:
+        return None
+    return min(delay, _MAX_RETRY_DELAY)
+
+
+def _retry_after_delay(error: Exception) -> float | None:
+    """Read a bounded delta-seconds or HTTP-date Retry-After header."""
+    response = getattr(error, "response", None)
+    headers = getattr(response, "headers", None)
+    if headers is None:
+        return None
+    try:
+        retry_after = headers.get("Retry-After")
+    except AttributeError:
+        return None
+    numeric_delay = _parse_numeric_delay(retry_after)
+    if numeric_delay is not None:
+        return numeric_delay
+    if not isinstance(retry_after, str):
+        return None
+
+    try:
+        retry_at = parsedate_to_datetime(retry_after)
+        if retry_at.tzinfo is None:
+            retry_at = retry_at.replace(tzinfo=timezone.utc)
+        delay = retry_at.timestamp() - time.time()
+    except (OverflowError, TypeError, ValueError):
+        return None
+    return min(max(delay, 0.0), _MAX_RETRY_DELAY)
+
+
+def _retry_wait(error: Exception, failure_index: int) -> float:
+    """Choose server delay or bounded exponential backoff with equal jitter."""
+    server_delay = _retry_after_delay(error)
+    if server_delay is not None:
+        return server_delay
+
+    gemini_delay = _parse_retry_delay(str(error))
+    if gemini_delay is not None:
+        return min(gemini_delay, _MAX_RETRY_DELAY)
+
+    backoff = min(
+        _INITIAL_BACKOFF * (_BACKOFF_FACTOR**failure_index),
+        _MAX_RETRY_DELAY,
+    )
+    return random.uniform(backoff / 2, backoff)
+
+
 def retry_on_rate_limit(func):
-    """Decorator that retries API calls on HTTP 429 / rate limit errors.
+    """Retry transient API errors up to ``_MAX_RETRIES`` total calls.
 
     Respects Retry-After header and Gemini's retryDelay field.
     """
-    import functools
-    import requests
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        backoff = _INITIAL_BACKOFF
         for attempt in range(_MAX_RETRIES):
             try:
                 return func(*args, **kwargs)
-            except requests.exceptions.HTTPError as e:
-                status = getattr(e.response, "status_code", 0)
-                if status == 429 and attempt < _MAX_RETRIES - 1:
-                    retry_after = e.response.headers.get("Retry-After")
-                    wait = float(retry_after) if retry_after else backoff
-                    log.warning(
-                        "Rate limited (429). Retrying in %.1fs (attempt %d/%d)",
-                        wait,
-                        attempt + 1,
-                        _MAX_RETRIES,
-                    )
-                    time.sleep(wait)
-                    backoff *= _BACKOFF_FACTOR
-                    continue
-                raise
-            except Exception as e:
-                msg = str(e).lower()
-                is_quota = "quota" in msg or "resource_exhausted" in msg
-                is_rate = "rate" in msg or "429" in msg
-                is_timeout = (
-                    "timeout" in msg or "timed out" in msg or "read timeout" in msg
+            except Exception as error:
+                if not _is_retryable_error(error) or attempt == _MAX_RETRIES - 1:
+                    raise
+
+                wait = _retry_wait(error, attempt)
+                status = _exception_status_code(error)
+                reason = f"HTTP {status}" if status else type(error).__name__
+                log.warning(
+                    "Transient API error (%s). Retrying in %.1fs (attempt %d/%d)",
+                    reason,
+                    wait,
+                    attempt + 1,
+                    _MAX_RETRIES,
                 )
-                if (is_quota or is_rate or is_timeout) and attempt < _MAX_RETRIES - 1:
-                    # Quota exhaustion is persistent — fail fast after 1 retry
-                    if is_quota and attempt >= 1:
-                        log.error("Quota exhausted — aborting retries.")
-                        raise
-                    # Try to extract retry delay from error message
-                    delay = _parse_retry_delay(str(e))
-                    wait = delay if delay else backoff
-                    reason = "Timeout" if is_timeout else "Rate limit"
-                    log.warning(
-                        "%s detected. Retrying in %.1fs (attempt %d/%d)",
-                        reason,
-                        wait,
-                        attempt + 1,
-                        _MAX_RETRIES,
-                    )
-                    time.sleep(wait)
-                    backoff *= _BACKOFF_FACTOR
-                    continue
-                raise
-        return func(*args, **kwargs)
+                time.sleep(wait)
+        raise RuntimeError("Retry loop exhausted without an exception")
 
     return wrapper

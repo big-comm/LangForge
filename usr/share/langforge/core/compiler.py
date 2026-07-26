@@ -1,26 +1,26 @@
 """Compilador de arquivos .po para .mo."""
 
+import os
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Dict, Optional, Callable
+
+from core.extractor import find_locale_directory
+from utils.i18n import _
 
 
 class MoCompiler:
     """Compilador de arquivos .po para .mo binários."""
 
     def __init__(self, project_path: Path, textdomain: str):
-        self.project_path = Path(project_path)
+        self.project_path = Path(project_path).resolve(strict=True)
         self.textdomain = textdomain
         self.locale_dir = self._find_locale_dir()
 
     def _find_locale_dir(self) -> Path:
         """Find locale dir containing .po files, fallback to <root>/locale."""
-        for pot in self.project_path.rglob(f"{self.textdomain}.pot"):
-            if not pot.name.startswith("."):
-                return pot.parent
-        for po in self.project_path.rglob("*.po"):
-            return po.parent
-        return self.project_path / "locale"
+        return find_locale_directory(self.project_path, self.textdomain)
 
     def compile_all(
         self, progress_callback: Optional[Callable[[str, str, int, int], None]] = None
@@ -66,7 +66,9 @@ class MoCompiler:
         # Caminhos
         po_file = self.locale_dir / f"{lang}.po"
         if not po_file.exists():
-            raise FileNotFoundError(f"Arquivo {po_file} não encontrado")
+            raise FileNotFoundError(
+                _("Catalog not found: {path}").format(path=po_file)
+            )
 
         # Converte código do idioma para formato locale (pt-BR → pt_BR)
         locale_code = lang.replace("-", "_")
@@ -77,21 +79,44 @@ class MoCompiler:
         )
         mo_file = mo_dir / f"{self.textdomain}.mo"
 
-        # Cria diretórios
-        mo_dir.mkdir(parents=True, exist_ok=True)
+        current_dir = self.project_path
+        for part in ("usr", "share", "locale", locale_code, "LC_MESSAGES"):
+            current_dir /= part
+            if current_dir.is_symlink():
+                raise RuntimeError(_("MO output directory contains a symlink"))
+            current_dir.mkdir(exist_ok=True)
 
-        # Compila com msgfmt
+        fd, temporary_name = tempfile.mkstemp(
+            prefix=f".{self.textdomain}.", suffix=".mo.tmp", dir=mo_dir
+        )
+        os.close(fd)
         try:
             subprocess.run(
-                ["msgfmt", str(po_file), "-o", str(mo_file)],
+                ["msgfmt", "--check", str(po_file), "-o", temporary_name],
                 check=True,
                 capture_output=True,
                 text=True,
             )
+            os.chmod(temporary_name, 0o644)
+            with open(temporary_name, "rb") as temporary:
+                os.fsync(temporary.fileno())
+            os.replace(temporary_name, mo_file)
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Erro ao compilar {lang}: {e.stderr}")
+            raise RuntimeError(
+                _("Could not compile {lang}: {error}").format(
+                    lang=lang,
+                    error=e.stderr,
+                )
+            )
         except FileNotFoundError:
-            raise RuntimeError("msgfmt não encontrado. Instale o pacote gettext.")
+            raise RuntimeError(
+                _("msgfmt was not found. Install the gettext package.")
+            )
+        finally:
+            try:
+                os.unlink(temporary_name)
+            except OSError:
+                pass
 
     def get_compiled_languages(self) -> list[str]:
         """Retorna lista de idiomas já compilados."""

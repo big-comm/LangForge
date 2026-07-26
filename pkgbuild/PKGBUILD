@@ -5,14 +5,17 @@ pkgdesc="Automatic translation tool for gettext projects using AI-powered APIs"
 depends=(
     'python'
     'python-gobject'
+    'python-cairo'
     'python-requests'
     'python-polib'
     'libadwaita'
+    'libsecret'
     'gtk4'
     'gettext'
     'python-openai'
     'python-google-genai'
 )
+checkdepends=('python-pytest')
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')
@@ -36,14 +39,25 @@ prepare() {
 
 build() {
     cd "${srcdir}/${pkgname}"
-    # Add build steps here, if needed
-    # For example: make
+    local lang po
+    for po in locale/*.po; do
+        lang="${po##*/}"
+        lang="${lang%.po}"
+        lang="${lang/-/_}"
+        install -d "usr/share/locale/${lang}/LC_MESSAGES"
+        msgfmt --check --check-format --check-accelerators \
+            -o "usr/share/locale/${lang}/LC_MESSAGES/langforge.mo" "${po}"
+    done
 }
 
 check() {
     cd "${srcdir}/${pkgname}"
-    # Add check/test steps here, if needed
-    # For example: make check
+    pytest -q
+    local po
+    for po in locale/*.po; do
+        msgfmt --check --check-format --check-accelerators \
+            -o /dev/null "${po}"
+    done
 }
 
 package() {

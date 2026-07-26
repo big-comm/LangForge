@@ -1,8 +1,9 @@
 """Tests for core.scanner project detection."""
 
 import sys
-import tempfile
 from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "usr" / "share" / "langforge"))
 
@@ -26,11 +27,50 @@ class TestProjectScanner:
         assert scanner.find_python_files() == []
 
     def test_find_python_files_nonexistent(self, tmp_path):
-        import pytest
-
         scanner = ProjectScanner(str(tmp_path / "nonexistent"))
         with pytest.raises(FileNotFoundError):
             scanner.find_python_files()
+
+    def test_discovery_skips_generated_vendor_and_vcs_trees(self, tmp_path):
+        source = tmp_path / "main.py"
+        source.write_text("print('source')\n")
+        for dirname in ("build", "vendor", ".git", ".hg", ".svn", "node_modules"):
+            ignored = tmp_path / dirname
+            ignored.mkdir()
+            (ignored / "ignored.py").write_text('_("Ignored")\n')
+            (ignored / f"{dirname.strip('.')}.pot").write_text(
+                'msgid "Ignored"\nmsgstr ""\n'
+            )
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.find_source_files() == [source]
+        assert scanner.find_python_files() == [source]
+        assert scanner.validate_project() is False
+        assert scanner.count_translatable_strings() == 0
+        assert scanner.detect_textdomain() == tmp_path.name
+
+    def test_external_symlinks_do_not_escape_project(self, tmp_path):
+        project = tmp_path / "project"
+        project.mkdir()
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        outside_source = outside / "outside.py"
+        outside_source.write_text(
+            'import gettext\ngettext.textdomain("outside")\n_("Outside")\n'
+        )
+        outside_pot = outside / "outside.pot"
+        outside_pot.write_text('msgid "Outside"\nmsgstr ""\n')
+
+        (project / "linked.py").symlink_to(outside_source)
+        (project / "linked.pot").symlink_to(outside_pot)
+        (project / "linked-directory").symlink_to(outside, target_is_directory=True)
+        scanner = ProjectScanner(str(project))
+
+        assert scanner.find_source_files() == []
+        assert scanner.validate_project() is False
+        assert scanner.count_translatable_strings() == 0
+        assert scanner.detect_textdomain() == "project"
 
     def test_detect_textdomain(self, tmp_path):
         (tmp_path / "app.py").write_text(
@@ -39,15 +79,24 @@ class TestProjectScanner:
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.detect_textdomain() == "myapp"
 
+    def test_python_declaration_detection_ignores_string_examples(self, tmp_path):
+        (tmp_path / "app.py").write_text(
+            "EXAMPLE = 'gettext.textdomain(\"not-the-domain\")'\n"
+            "import gettext\n"
+            'gettext.textdomain("actual-domain")\n'
+        )
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.detect_textdomain() == "actual-domain"
+
     def test_detect_textdomain_fallback(self, tmp_path):
         (tmp_path / "app.py").write_text("print('no gettext')\n")
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.detect_textdomain() == tmp_path.name
 
     def test_validate_project_with_gettext(self, tmp_path):
-        (tmp_path / "app.py").write_text(
-            'import gettext\nprint(_("Hello"))\n'
-        )
+        (tmp_path / "app.py").write_text('import gettext\nprint(_("Hello"))\n')
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.validate_project() is True
 
@@ -61,9 +110,7 @@ class TestProjectScanner:
         assert scanner.validate_project() is False
 
     def test_count_translatable_strings(self, tmp_path):
-        (tmp_path / "app.py").write_text(
-            '_(\"Hello\")\n_(\"World\")\n_(\"Test\")\n'
-        )
+        (tmp_path / "app.py").write_text('_("Hello")\n_("World")\n_("Test")\n')
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.count_translatable_strings() == 3
 
@@ -143,6 +190,36 @@ class TestMultiLanguageDetection:
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.detect_textdomain() == "gnome-shell-big-shot"
 
+    def test_explicit_textdomain_takes_priority_over_pot(self, tmp_path):
+        locale = tmp_path / "locale"
+        locale.mkdir()
+        (locale / "stale.pot").write_text("# stale\n")
+        (tmp_path / "app.py").write_text(
+            'import gettext\ngettext.textdomain("canonical")\n'
+        )
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.detect_textdomain() == "canonical"
+
+    def test_multiple_pots_without_declaration_are_rejected_deterministically(
+        self, tmp_path
+    ):
+        locale = tmp_path / "locale"
+        locale.mkdir()
+        (locale / "zeta.pot").write_text("# zeta\n")
+        (locale / "alpha.pot").write_text("# alpha\n")
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        with pytest.raises(
+            ValueError,
+            match=r"Multiple gettext templates found \(alpha, zeta\)",
+        ):
+            scanner.detect_textdomain()
+        with pytest.raises(ValueError):
+            scanner.count_translatable_strings()
+
     def test_detect_textdomain_js_metadata(self, tmp_path):
         (tmp_path / "metadata.json").write_text("{}")
         (tmp_path / "prefs.js").write_text('const textdomain = "my-extension";\n')
@@ -151,10 +228,72 @@ class TestMultiLanguageDetection:
 
     def test_detect_textdomain_meson(self, tmp_path):
         (tmp_path / "meson.build").write_text("i18n.gettext('cool-app')\n")
-        # meson.build is not in _SOURCE_EXTENSIONS, so this tests fallback
         scanner = ProjectScanner(str(tmp_path))
-        # Falls back to directory name since meson.build isn't scanned
-        assert scanner.detect_textdomain() == tmp_path.name
+        assert scanner.detect_textdomain() == "cool-app"
+
+    def test_commented_c_textdomain_does_not_create_conflict(self, tmp_path):
+        (tmp_path / "app.c").write_text(
+            'bindtextdomain("real-app", "/usr/share/locale");\n'
+            '// bindtextdomain("retired-app", "/tmp");\n'
+            '/* textdomain("also-retired"); */\n',
+            encoding="utf-8",
+        )
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.detect_textdomain() == "real-app"
+
+    def test_commented_gettext_calls_are_not_counted_as_usage(self, tmp_path):
+        (tmp_path / "app.c").write_text(
+            '// _("retired")\n/* gettext("also retired") */\n',
+            encoding="utf-8",
+        )
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.validate_project() is False
+        assert scanner.count_translatable_strings() == 0
+
+    def test_python_comments_and_docstrings_are_not_gettext_usage(self, tmp_path):
+        (tmp_path / "app.py").write_text(
+            '# _("commented")\n'
+            '"""Documentation mentioning _("not a call")."""\n',
+            encoding="utf-8",
+        )
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.validate_project() is False
+        assert scanner.count_translatable_strings() == 0
+
+    def test_python2_syntax_uses_token_fallback(self, tmp_path):
+        (tmp_path / "app.py").write_text(
+            'import gettext\n'
+            'gettext.textdomain("legacy-app")\n'
+            'print _("Hello")\n'
+            'print ngettext("One file", "Many files", count)\n',
+            encoding="utf-8",
+        )
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.validate_project() is True
+        assert scanner.detect_textdomain() == "legacy-app"
+        assert scanner.count_translatable_strings() == 2
+
+    def test_python2_token_fallback_ignores_comments_and_string_examples(
+        self, tmp_path
+    ):
+        (tmp_path / "app.py").write_text(
+            'import gettext\n'
+            '# gettext.textdomain("commented-domain")\n'
+            'EXAMPLE = \'gettext.textdomain("string-domain")\'\n'
+            'gettext.textdomain("legacy-app")\n'
+            '# _("commented")\n'
+            'print _("Real")\n',
+            encoding="utf-8",
+        )
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.detect_textdomain() == "legacy-app"
+        assert scanner.count_translatable_strings() == 1
 
     def test_count_strings_from_pot(self, tmp_path):
         """count_translatable_strings should prefer .pot entry count."""
@@ -169,6 +308,23 @@ class TestMultiLanguageDetection:
         (locale / "app.pot").write_text(pot_content)
         scanner = ProjectScanner(str(tmp_path))
         assert scanner.count_translatable_strings() == 3
+
+    def test_count_uses_pot_matching_explicit_textdomain(self, tmp_path):
+        locale = tmp_path / "locale"
+        locale.mkdir()
+        (locale / "alpha.pot").write_text(
+            'msgid ""\nmsgstr ""\n\nmsgid "Alpha"\nmsgstr ""\n'
+        )
+        (locale / "beta.pot").write_text(
+            'msgid ""\nmsgstr ""\n\n'
+            'msgid "Beta one"\nmsgstr ""\n\n'
+            'msgid "Beta two"\nmsgstr ""\n'
+        )
+        (tmp_path / "app.py").write_text('import gettext\ngettext.textdomain("beta")\n')
+
+        scanner = ProjectScanner(str(tmp_path))
+
+        assert scanner.count_translatable_strings() == 2
 
     def test_count_strings_from_js_source(self, tmp_path):
         (tmp_path / "app.js").write_text(

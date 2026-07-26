@@ -1,24 +1,68 @@
 """Motor de tradução que coordena APIs e arquivos .po."""
 
+import hashlib
+import json
 import logging
+import os
 import re
+import stat
+import tempfile
 import threading
 import polib
+from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Tuple, Callable, Optional
 from datetime import datetime
 
-from core.languages import SUPPORTED_LANGUAGES, resolve_po_path
+from core.languages import SUPPORTED_LANGUAGES, get_plural_rule, resolve_po_path
 from api.base import TranslationAPI
 
 log = logging.getLogger(__name__)
 
-# Padrões de formato Python que devem ser preservados durante a tradução
+_PRINTF_PATTERN = re.compile(
+    r"%(?:"
+    r"%"
+    r"|(?:\([^)]+\)|\d+\$)?"
+    r"[-+#0 'I]*"
+    r"(?:\*(?:\d+\$)?|\d+)?"
+    r"(?:\.(?:\*(?:\d+\$)?|\d*))?"
+    r"(?:hh|ll|[hlLjztq])?"
+    r"[diouxXaAeEfFgGcCsSpnrb]"
+    r")"
+)
+_BRACE_PATTERN = re.compile(
+    r"(?<!\{)\{(?!\{)(?:[^{}]|\{[^{}]*\})*\}(?!\})"
+)
 _FORMAT_PATTERNS = [
-    re.compile(r"%\([^)]+\)[sdifcr]"),  # %(name)s, %(count)d
-    re.compile(r"%[sdifcr%]"),  # %s, %d, %i, %f, %c, %r, %%
-    re.compile(r"\{[^}]*\}"),  # {}, {0}, {name}, {count:.2f}
+    _PRINTF_PATTERN,
+    _BRACE_PATTERN,
 ]
+
+
+def _save_po_atomic(po: polib.POFile, path: Path) -> None:
+    """Save a catalog atomically without following a destination symlink."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    mode = (
+        stat.S_IMODE(path.stat().st_mode)
+        if path.exists() and not path.is_symlink()
+        else 0o644
+    )
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    os.close(fd)
+    try:
+        po.save(temporary_name)
+        os.chmod(temporary_name, mode)
+        with open(temporary_name, "rb") as temporary:
+            os.fsync(temporary.fileno())
+        os.replace(temporary_name, path)
+    except Exception:
+        try:
+            os.unlink(temporary_name)
+        except OSError:
+            pass
+        raise
 
 
 def _protect_placeholders(text: str) -> Tuple[str, List[Tuple[str, str]]]:
@@ -109,11 +153,32 @@ def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
 
 
 def _validate_placeholders(original: str, translated: str) -> bool:
-    """Valida se todos os placeholders do original existem na tradução."""
+    """Validate placeholder identity and unsafe positional ordering."""
     for pattern in _FORMAT_PATTERNS:
-        orig_matches = sorted(pattern.findall(original))
-        trans_matches = sorted(pattern.findall(translated))
-        if orig_matches != trans_matches:
+        original_matches = pattern.findall(original)
+        translated_matches = pattern.findall(translated)
+
+        def explicitly_addressed(placeholder: str) -> bool:
+            if pattern is _PRINTF_PATTERN:
+                return (
+                    placeholder == "%%"
+                    or placeholder.startswith("%(")
+                    or bool(re.match(r"%\d+\$", placeholder))
+                )
+            field = placeholder[1:-1].split("!", 1)[0].split(":", 1)[0]
+            return bool(field)
+
+        can_reorder = all(
+            explicitly_addressed(placeholder)
+            for placeholder in original_matches + translated_matches
+        )
+        if can_reorder:
+            matches_equal = Counter(original_matches) == Counter(
+                translated_matches
+            )
+        else:
+            matches_equal = original_matches == translated_matches
+        if not matches_equal:
             return False
     return True
 
@@ -128,33 +193,58 @@ def _fix_placeholders(original: str, translated: str) -> str:
     3. Placeholder missing entirely — append it.
     """
     for pattern in _FORMAT_PATTERNS:
-        orig_matches = pattern.findall(original)
-        trans_matches = pattern.findall(translated)
+        original_matches = pattern.findall(original)
+        translated_match_objects = list(pattern.finditer(translated))
+        translated_matches = [
+            match.group() for match in translated_match_objects
+        ]
 
-        if not orig_matches:
+        if not original_matches:
             # No placeholders in original — remove any the LLM invented
-            for spurious in trans_matches:
-                translated = translated.replace(spurious, "", 1)
+            for match in reversed(translated_match_objects):
+                translated = (
+                    translated[: match.start()] + translated[match.end() :]
+                )
             continue
 
         # Quick path: counts match but names differ → positional rename
-        if len(orig_matches) == len(trans_matches) and orig_matches != trans_matches:
-            for orig_ph, trans_ph in zip(orig_matches, trans_matches):
-                if orig_ph != trans_ph:
-                    translated = translated.replace(trans_ph, orig_ph, 1)
+        if (
+            len(original_matches) == len(translated_matches)
+            and original_matches != translated_matches
+        ):
+            replacements = zip(
+                translated_match_objects,
+                original_matches,
+            )
+            for match, replacement in reversed(list(replacements)):
+                translated = (
+                    translated[: match.start()]
+                    + replacement
+                    + translated[match.end() :]
+                )
             continue
 
         # If LLM added extra placeholders not in original, remove them
-        if len(trans_matches) > len(orig_matches):
-            extra = [p for p in trans_matches if p not in orig_matches]
-            for p in extra:
-                translated = translated.replace(p, "", 1)
-            trans_matches = pattern.findall(translated)
+        wanted = Counter(original_matches)
+        extra_match_objects = []
+        for match in translated_match_objects:
+            placeholder = match.group()
+            if wanted[placeholder] > 0:
+                wanted[placeholder] -= 1
+            else:
+                extra_match_objects.append(match)
+        for match in reversed(extra_match_objects):
+            translated = translated[: match.start()] + translated[match.end() :]
 
-        for placeholder in orig_matches:
-            if placeholder not in trans_matches:
-                # Not found at all — append at the end
-                translated = translated.rstrip() + " " + placeholder
+        available = Counter(pattern.findall(translated))
+        missing = []
+        for placeholder in original_matches:
+            if available[placeholder] > 0:
+                available[placeholder] -= 1
+            else:
+                missing.append(placeholder)
+        if missing:
+            translated = translated.rstrip() + " " + " ".join(missing)
     return translated
 
 
@@ -185,26 +275,198 @@ def _is_translation_plausible(msgid: str, msgstr: str) -> bool:
     return True
 
 
+def _normalize_plural_entry(entry: polib.POEntry, forms: int) -> None:
+    """Keep valid plural values while enforcing the target form indexes."""
+    existing = dict(entry.msgstr_plural)
+    entry.msgstr = ""
+    entry.msgstr_plural = {
+        index: existing.get(index, existing.get(str(index), ""))
+        for index in range(forms)
+    }
+
+
+def _plural_source(entry: polib.POEntry, index: int, forms: int) -> str:
+    """Return the source form whose placeholders apply to a target index."""
+    if forms == 1 or index > 0:
+        return entry.msgid_plural
+    return entry.msgid
+
+
+def _finalize_form_translation(
+    api: TranslationAPI,
+    original: str,
+    protected: str,
+    tokens: List[Tuple[str, str]],
+    candidate,
+    lang: str,
+) -> Tuple[str, bool]:
+    """Restore and validate one translated gettext form."""
+
+    def restore(value):
+        if not isinstance(value, str) or not value:
+            return None
+        return _restore_placeholders(value, tokens) if tokens else value
+
+    translated = restore(candidate)
+    if translated is None or not _is_translation_plausible(original, translated):
+        try:
+            translated = restore(
+                api.translate(
+                    protected,
+                    "en",
+                    lang,
+                )
+            )
+        except Exception:
+            translated = None
+
+    if translated is None or not _is_translation_plausible(original, translated):
+        return original, False
+
+    if not _validate_placeholders(original, translated):
+        translated = _fix_placeholders(original, translated)
+        if not _validate_placeholders(original, translated):
+            return original, False
+
+    translated = _match_newlines(original, translated)
+    if not translated or not _validate_placeholders(original, translated):
+        return original, False
+    return translated, True
+
+
+def _validate_entry_translation(
+    entry: polib.POEntry,
+    forms: int,
+    fill_singular: bool,
+) -> Tuple[bool, int]:
+    """Validate every output form and replace irreparable values with source."""
+    valid = True
+    fixed = 0
+
+    if entry.msgid_plural:
+        entry.msgstr = ""
+        for index in range(forms):
+            original = _plural_source(entry, index, forms)
+            translated = entry.msgstr_plural.get(index, "")
+            if not translated:
+                entry.msgstr_plural[index] = original
+                valid = False
+                fixed += 1
+                continue
+            if _validate_placeholders(original, translated):
+                continue
+            repaired = _fix_placeholders(original, translated)
+            if _validate_placeholders(original, repaired):
+                entry.msgstr_plural[index] = repaired
+            else:
+                entry.msgstr_plural[index] = original
+                valid = False
+            fixed += 1
+        return valid, fixed
+
+    if not entry.msgstr:
+        if fill_singular:
+            entry.msgstr = entry.msgid
+            return False, 1
+        return True, 0
+    if _validate_placeholders(entry.msgid, entry.msgstr):
+        return True, 0
+
+    repaired = _fix_placeholders(entry.msgid, entry.msgstr)
+    if _validate_placeholders(entry.msgid, repaired):
+        entry.msgstr = repaired
+        return True, 1
+    entry.msgstr = entry.msgid
+    return False, 1
+
+
 def _save_context_cache(
     cache_path: Path,
     checked: set[str],
     changed: set[str],
     fixed_langs: set[str],
+    fingerprint: str,
 ) -> None:
     """Persist fix_context progress for resume after cancellation."""
-    import json as _json
-
-    cache_path.write_text(
-        _json.dumps(
-            {
-                "checked": list(checked),
-                "changed": list(changed),
-                "fixed_langs": list(fixed_langs),
-            },
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
+    payload = json.dumps(
+        {
+            "version": 2,
+            "fingerprint": fingerprint,
+            "checked": sorted(checked),
+            "changed": sorted(changed),
+            "fixed_langs": sorted(fixed_langs),
+        },
+        ensure_ascii=False,
+        sort_keys=True,
     )
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{cache_path.name}.",
+        suffix=".tmp",
+        dir=cache_path.parent,
+    )
+    try:
+        os.fchmod(fd, 0o644)
+        with os.fdopen(fd, "w", encoding="utf-8") as temporary:
+            temporary.write(payload)
+            temporary.write("\n")
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        os.replace(temporary_name, cache_path)
+    except Exception:
+        try:
+            os.unlink(temporary_name)
+        except OSError:
+            pass
+        raise
+
+
+def _entry_identity(entry: polib.POEntry) -> str:
+    """Return a stable context-aware identity for one gettext entry."""
+    return json.dumps(
+        [entry.msgctxt or "", entry.msgid, entry.msgid_plural or ""],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+
+def _entry_matches(entry: polib.POEntry, selectors: set[str]) -> bool:
+    """Match current context-aware selectors and legacy msgid selectors."""
+    return _entry_identity(entry) in selectors or entry.msgid in selectors
+
+
+def _context_cache_fingerprint(
+    pot_file: Path,
+    locale_dir: Path,
+    reference_lang: str,
+    languages: list[str],
+    api: TranslationAPI,
+) -> str:
+    """Fingerprint source catalogs and the translation implementation."""
+    digest = hashlib.sha256()
+    api_identity = {
+        "class": f"{type(api).__module__}.{type(api).__qualname__}",
+        "model": getattr(api, "model", getattr(api, "model_name", "")),
+        "reference_lang": reference_lang,
+        "languages": sorted(set(languages)),
+    }
+    digest.update(
+        json.dumps(api_identity, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    )
+    paths = [Path(pot_file)]
+    paths.extend(
+        resolve_po_path(locale_dir, lang)
+        for lang in sorted(set(languages) | {reference_lang})
+    )
+    for path in paths:
+        digest.update(b"\0")
+        digest.update(path.name.encode("utf-8", errors="surrogateescape"))
+        if path.is_symlink():
+            digest.update(b"symlink")
+        elif path.is_file():
+            digest.update(path.read_bytes())
+        else:
+            digest.update(b"missing")
+    return digest.hexdigest()
 
 
 class TranslationEngine:
@@ -213,6 +475,7 @@ class TranslationEngine:
     def __init__(self, api_client: TranslationAPI, textdomain: str):
         self.api = api_client
         self.textdomain = textdomain
+        self.last_language_complete = True
 
     def translate_project(
         self,
@@ -251,7 +514,6 @@ class TranslationEngine:
             # Report batch-level progress within each language
             def _batch_progress(done: int, total: int, _lc: str = lang_code) -> None:
                 if progress_callback and total > 0:
-                    sub_fraction = done / total
                     progress_callback(
                         _lc,
                         f"translating: {done}/{total} strings",
@@ -269,12 +531,17 @@ class TranslationEngine:
                     detail_callback=(lambda pairs, _lc=lang_code: detail_callback(_lc, pairs)) if detail_callback else None,
                     batch_progress=_batch_progress,
                 )
-                results[lang_code] = True
+                results[lang_code] = self.last_language_complete
 
                 if progress_callback:
+                    status = (
+                        f"success: {strings_translated} strings"
+                        if self.last_language_complete
+                        else "error: incomplete translation"
+                    )
                     progress_callback(
                         lang_code,
-                        f"success: {strings_translated} strings",
+                        status,
                         current,
                         total_langs,
                     )
@@ -310,7 +577,14 @@ class TranslationEngine:
             Número de strings traduzidas
         """
         # Carrega template .pot
+        self.last_language_complete = True
+        pot_file = Path(pot_file)
+        if pot_file.is_symlink():
+            raise ValueError("Template catalog cannot be a symlink")
+        if not pot_file.is_file():
+            raise FileNotFoundError(f"Template catalog not found: {pot_file}")
         pot = polib.pofile(str(pot_file))
+        plural_rule = get_plural_rule(lang)
 
         # Provide app context to LLM-based APIs (name + sample strings)
         context_strings = [e.msgid for e in pot if e.msgid][:20]
@@ -323,7 +597,7 @@ class TranslationEngine:
         po_path = resolve_po_path(locale_dir, lang)
 
         # Cria ou carrega arquivo .po
-        if po_path.exists():
+        if po_path.is_file() and not po_path.is_symlink():
             po = polib.pofile(str(po_path))
             # Merge com pot (adiciona novas entries)
             po.merge(pot)
@@ -335,9 +609,16 @@ class TranslationEngine:
             for entry in pot:
                 po.append(entry)
 
+        po.metadata["Language"] = lang
+        po.metadata["Plural-Forms"] = plural_rule.header
+        po.encoding = "utf-8"
+        for entry in po:
+            if entry.msgid_plural and not entry.obsolete:
+                _normalize_plural_entry(entry, plural_rule.forms)
+
         if force_retranslate:
             # Retranslate ALL entries (including already translated ones)
-            entries_to_translate = [e for e in po if e.msgid]
+            entries_to_translate = [e for e in po if e.msgid and not e.obsolete]
         else:
             # Only untranslated + fuzzy
             entries_to_translate = list(po.untranslated_entries()) + list(
@@ -346,139 +627,204 @@ class TranslationEngine:
 
         # If fix_msgids is set, also include translated entries whose msgid is in that set
         if fix_msgids:
-            existing_ids = {e.msgid for e in entries_to_translate}
-            for entry in po.translated_entries():
-                if entry.msgid in fix_msgids and entry.msgid not in existing_ids:
+            selected_entries = {id(entry) for entry in entries_to_translate}
+            for entry in po:
+                if (
+                    _entry_matches(entry, fix_msgids)
+                    and not entry.obsolete
+                    and id(entry) not in selected_entries
+                ):
                     entries_to_translate.append(entry)
+                    selected_entries.add(id(entry))
 
-        translated_count = 0
+        unique_entries = []
+        selected_entries = set()
+        for entry in entries_to_translate:
+            if entry.msgid and not entry.obsolete and id(entry) not in selected_entries:
+                unique_entries.append(entry)
+                selected_entries.add(id(entry))
+        entries_to_translate = unique_entries
 
-        # Use batch translation when available (reduces API calls dramatically)
+        # The source catalog is English. Copy it without spending API calls.
+        if lang == "en":
+            copied_count = 0
+            for entry in entries_to_translate:
+                if not entry.msgid or entry.obsolete:
+                    continue
+                if entry.msgid_plural:
+                    entry.msgstr = ""
+                    for plural_index in range(plural_rule.forms):
+                        entry.msgstr_plural[plural_index] = _plural_source(
+                            entry,
+                            plural_index,
+                            plural_rule.forms,
+                        )
+                else:
+                    entry.msgstr = entry.msgid
+                if "fuzzy" in entry.flags:
+                    entry.flags.remove("fuzzy")
+                copied_count += 1
+            _save_po_atomic(po, po_path)
+            self.last_language_complete = True
+            return copied_count
+
+        translation_tasks = []
+        entry_task_totals = {}
+        entry_task_results = {}
+
+        def add_task(entry, original, plural_indexes=None):
+            entry_id = id(entry)
+            translation_tasks.append((entry, original, plural_indexes))
+            entry_task_totals[entry_id] = entry_task_totals.get(entry_id, 0) + 1
+            entry_task_results.setdefault(entry_id, [])
+
+        for entry in entries_to_translate:
+            retranslate_all = (
+                force_retranslate
+                or "fuzzy" in entry.flags
+                or (
+                    fix_msgids is not None
+                    and _entry_matches(entry, fix_msgids)
+                )
+            )
+            if not entry.msgid_plural:
+                add_task(entry, entry.msgid)
+                continue
+
+            if plural_rule.forms == 1:
+                indexes = tuple(
+                    index
+                    for index in range(plural_rule.forms)
+                    if retranslate_all or not entry.msgstr_plural[index]
+                )
+                if indexes:
+                    add_task(entry, entry.msgid_plural, indexes)
+                continue
+
+            if retranslate_all or not entry.msgstr_plural[0]:
+                add_task(entry, entry.msgid, (0,))
+            plural_indexes = tuple(
+                index
+                for index in range(1, plural_rule.forms)
+                if retranslate_all or not entry.msgstr_plural[index]
+            )
+            if plural_indexes:
+                add_task(entry, entry.msgid_plural, plural_indexes)
+
+        # Use batch translation when available (reduces API calls dramatically).
         batch_size = 15
-        for batch_start in range(0, len(entries_to_translate), batch_size):
+        for batch_start in range(0, len(translation_tasks), batch_size):
             if cancel_event and cancel_event.is_set():
                 break
 
-            # Respect API rate limits between outer batches
             if batch_start > 0 and self.api.batch_delay > 0:
                 import time as _time
 
                 _time.sleep(self.api.batch_delay)
 
-            batch_entries = entries_to_translate[batch_start : batch_start + batch_size]
-            batch_entries = [e for e in batch_entries if e.msgid]
-            if not batch_entries:
-                continue
-
-            # Protect placeholders for all entries in the batch
+            batch_tasks = translation_tasks[batch_start : batch_start + batch_size]
             protected_texts = []
             token_maps = []
-            for entry in batch_entries:
-                protected, tokens = _protect_placeholders(entry.msgid)
+            for _entry, original, _plural_indexes in batch_tasks:
+                protected, tokens = _protect_placeholders(original)
                 protected_texts.append(protected)
                 token_maps.append(tokens)
 
             try:
                 translations = self.api.translate_batch(
-                    texts=protected_texts, source_lang="en", target_lang=lang
+                    texts=protected_texts,
+                    source_lang="en",
+                    target_lang=lang,
                 )
-            except Exception:
-                # Batch failed — fall back to individual calls
-                translations = []
-                for text in protected_texts:
-                    try:
-                        translations.append(
-                            self.api.translate(
-                                text=text, source_lang="en", target_lang=lang
-                            )
-                        )
-                    except Exception:
-                        translations.append(None)
-
-            for entry, translation, tokens in zip(
-                batch_entries, translations, token_maps
-            ):
-                if translation is None:
-                    if "fuzzy" not in entry.flags:
-                        entry.flags.append("fuzzy")
-                    if not entry.msgstr:
-                        entry.msgstr = entry.msgid
-                    continue
-
-                # Restaura placeholders originais
-                if tokens:
-                    translation = _restore_placeholders(translation, tokens)
-
-                # Reject implausible translations (batch shifting detection)
-                if not _is_translation_plausible(entry.msgid, translation):
-                    log.warning(
-                        "Implausible translation rejected for '%s': '%s'",
-                        entry.msgid[:40], translation[:40],
+                if len(translations) != len(protected_texts):
+                    raise ValueError(
+                        "Batch translation cardinality mismatch: "
+                        f"expected {len(protected_texts)}, "
+                        f"got {len(translations)}"
                     )
-                    # Fall back to individual translation
-                    try:
-                        protected, single_tokens = _protect_placeholders(entry.msgid)
-                        single_trans = self.api.translate(
-                            text=protected, source_lang="en", target_lang=lang
-                        )
-                        if single_tokens:
-                            single_trans = _restore_placeholders(single_trans, single_tokens)
-                        translation = single_trans
-                    except Exception:
-                        translation = entry.msgid
-                        if "fuzzy" not in entry.flags:
-                            entry.flags.append("fuzzy")
+            except Exception:
+                # Each form gets one individual retry during finalization.
+                translations = [None] * len(protected_texts)
 
-                # Valida se placeholders estão intactos
-                if not _validate_placeholders(entry.msgid, translation):
-                    translation = _fix_placeholders(entry.msgid, translation)
-                    if not _validate_placeholders(entry.msgid, translation):
-                        translation = entry.msgid
-                        if "fuzzy" not in entry.flags:
-                            entry.flags.append("fuzzy")
+            detail_pairs = []
+            for task, protected, tokens, translation in zip(
+                batch_tasks,
+                protected_texts,
+                token_maps,
+                translations,
+            ):
+                entry, original, plural_indexes = task
+                translated, succeeded = _finalize_form_translation(
+                    self.api,
+                    original,
+                    protected,
+                    tokens,
+                    translation,
+                    lang,
+                )
+                if plural_indexes is None:
+                    entry.msgstr = translated
+                else:
+                    entry.msgstr = ""
+                    for plural_index in plural_indexes:
+                        entry.msgstr_plural[plural_index] = translated
+                entry_task_results[id(entry)].append(succeeded)
+                detail_pairs.append((original, translated, ""))
 
-                entry.msgstr = _match_newlines(entry.msgid, translation)
-                if _validate_placeholders(entry.msgid, entry.msgstr):
-                    if "fuzzy" in entry.flags:
-                        entry.flags.remove("fuzzy")
-                translated_count += 1
-
-            # Emit detail pairs for live viewer
-            if detail_callback:
-                pairs = []
-                for entry, translation in zip(batch_entries, translations):
-                    if translation is not None:
-                        pairs.append((entry.msgid, entry.msgstr, ""))
-                if pairs:
-                    detail_callback(pairs)
+            if detail_callback and detail_pairs:
+                detail_callback(detail_pairs)
 
             if batch_progress:
                 batch_progress(
-                    min(batch_start + batch_size, len(entries_to_translate)),
-                    len(entries_to_translate),
+                    min(batch_start + batch_size, len(translation_tasks)),
+                    len(translation_tasks),
                 )
 
-        # Final validation pass — catch any remaining placeholder issues
+        selected_entry_ids = {id(entry) for entry in entries_to_translate}
+        validation_results = {}
         fixed_in_validation = 0
         for entry in po:
-            if not entry.msgstr or entry.obsolete:
+            if not entry.msgid or entry.obsolete:
                 continue
-            if not _validate_placeholders(entry.msgid, entry.msgstr):
-                repaired = _fix_placeholders(entry.msgid, entry.msgstr)
-                if _validate_placeholders(entry.msgid, repaired):
-                    entry.msgstr = repaired
-                    fixed_in_validation += 1
-                else:
-                    # Cannot fix — revert to original and mark fuzzy
-                    entry.msgstr = entry.msgid
-                    if "fuzzy" not in entry.flags:
-                        entry.flags.append("fuzzy")
-                    fixed_in_validation += 1
-        if fixed_in_validation:
-            log.info("Post-save validation fixed %d entries in %s", fixed_in_validation, lang)
+            valid, fixed = _validate_entry_translation(
+                entry,
+                plural_rule.forms,
+                fill_singular=id(entry) in selected_entry_ids,
+            )
+            validation_results[id(entry)] = valid
+            fixed_in_validation += fixed
+            if not valid and "fuzzy" not in entry.flags:
+                entry.flags.append("fuzzy")
 
-        # Save .po file
-        po.save(str(po_path))
+        translated_count = 0
+        language_complete = True
+        for entry in entries_to_translate:
+            entry_id = id(entry)
+            task_results = entry_task_results.get(entry_id, [])
+            succeeded = (
+                entry_task_totals.get(entry_id, 0) > 0
+                and len(task_results) == entry_task_totals[entry_id]
+                and all(task_results)
+                and validation_results.get(entry_id, False)
+            )
+            if succeeded:
+                if "fuzzy" in entry.flags:
+                    entry.flags.remove("fuzzy")
+                translated_count += 1
+            else:
+                language_complete = False
+                if "fuzzy" not in entry.flags:
+                    entry.flags.append("fuzzy")
+
+        if fixed_in_validation:
+            log.info(
+                "Post-save validation fixed %d forms in %s",
+                fixed_in_validation,
+                lang,
+            )
+
+        _save_po_atomic(po, po_path)
+        self.last_language_complete = language_complete
         return translated_count
 
     def fix_context(
@@ -500,8 +846,11 @@ class TranslationEngine:
         Supports resuming: saves progress to a cache file so that cancelled
         runs can be continued without re-checking already verified entries.
         """
-        import json as _json
-
+        pot_file = Path(pot_file)
+        if pot_file.is_symlink():
+            raise ValueError("Template catalog cannot be a symlink")
+        if not pot_file.is_file():
+            raise FileNotFoundError(f"Template catalog not found: {pot_file}")
         pot = polib.pofile(str(pot_file))
         context_strings = [e.msgid for e in pot if e.msgid][:20]
         self.api.set_context(self.textdomain, context_strings)
@@ -509,35 +858,93 @@ class TranslationEngine:
         locale_dir = pot_file.parent
         ref_po_path = resolve_po_path(locale_dir, reference_lang)
         cache_path = locale_dir / ".langforge_context_cache.json"
+        lang_list = languages if languages else list(SUPPORTED_LANGUAGES.keys())
+        fingerprint_languages = list(set(lang_list) | {reference_lang})
+        cache_fingerprint = _context_cache_fingerprint(
+            pot_file,
+            locale_dir,
+            reference_lang,
+            fingerprint_languages,
+            self.api,
+        )
         log.info(
             "fix_context: ref_po_path=%s exists=%s", ref_po_path, ref_po_path.exists()
         )
+        if ref_po_path.is_symlink():
+            raise ValueError("Reference catalog cannot be a symlink")
+        if not ref_po_path.is_file():
+            raise FileNotFoundError(
+                f"Reference catalog not found: {ref_po_path}"
+            )
 
-        # Load resume cache (msgids already checked + changed)
+        # Load resume cache only when its complete source state still matches.
         already_checked: set[str] = set()
         changed_msgids: set[str] = set()
         fixed_langs: set[str] = set()
-        if cache_path.exists():
+        if cache_path.is_file() and not cache_path.is_symlink():
             try:
-                cache = _json.loads(cache_path.read_text(encoding="utf-8"))
-                already_checked = set(cache.get("checked", []))
-                changed_msgids = set(cache.get("changed", []))
-                fixed_langs = set(cache.get("fixed_langs", []))
-                log.info(
-                    "fix_context: resuming — %d checked, %d changed, %d langs fixed",
-                    len(already_checked),
-                    len(changed_msgids),
-                    len(fixed_langs),
-                )
-            except Exception:
-                pass
+                cache = json.loads(cache_path.read_text(encoding="utf-8"))
+                if (
+                    isinstance(cache, dict)
+                    and cache.get("version") == 2
+                    and cache.get("fingerprint") == cache_fingerprint
+                ):
+                    already_checked = {
+                        value
+                        for value in cache.get("checked", [])
+                        if isinstance(value, str)
+                    }
+                    changed_msgids = {
+                        value
+                        for value in cache.get("changed", [])
+                        if isinstance(value, str)
+                    }
+                    fixed_langs = {
+                        value
+                        for value in cache.get("fixed_langs", [])
+                        if isinstance(value, str) and value in lang_list
+                    }
+                    log.info(
+                        "fix_context: resuming — %d checked, %d changed, "
+                        "%d langs fixed",
+                        len(already_checked),
+                        len(changed_msgids),
+                        len(fixed_langs),
+                    )
+            except (OSError, TypeError, ValueError):
+                log.warning("Ignoring invalid fix-context cache")
 
         # Phase 1: find entries that change when translated with context (batch)
         if ref_po_path.exists():
             ref_po = polib.pofile(str(ref_po_path))
-            all_entries = [e for e in ref_po.translated_entries() if e.msgid]
-            remaining = [e for e in all_entries if e.msgid not in already_checked]
-            total_entries = len(all_entries)
+            reference_rule = get_plural_rule(reference_lang)
+            ref_po.metadata["Language"] = reference_lang
+            ref_po.metadata["Plural-Forms"] = reference_rule.header
+            for entry in ref_po:
+                if entry.msgid_plural and not entry.obsolete:
+                    _normalize_plural_entry(entry, reference_rule.forms)
+                    valid, _fixed = _validate_entry_translation(
+                        entry,
+                        reference_rule.forms,
+                        fill_singular=False,
+                    )
+                    if not valid and "fuzzy" not in entry.flags:
+                        entry.flags.append("fuzzy")
+            entries_by_key = {
+                _entry_identity(entry): entry
+                for entry in ref_po.translated_entries()
+                if entry.msgid
+            }
+            all_entry_keys = set(entries_by_key)
+            already_checked.intersection_update(all_entry_keys)
+            changed_msgids.intersection_update(all_entry_keys)
+            all_entries = list(entries_by_key.values())
+            remaining = [
+                entry
+                for entry in all_entries
+                if _entry_identity(entry) not in already_checked
+            ]
+            total_entries = len(all_entry_keys)
             checked = len(already_checked)
             log.info(
                 "fix_context: %d total, %d already checked, %d remaining",
@@ -554,28 +961,87 @@ class TranslationEngine:
                     total_entries,
                 )
 
-            # Process in batches for efficiency
+            translation_tasks = []
+            entry_task_totals = {}
+            entry_task_results = {}
+            entry_task_values = {}
+            for entry in remaining:
+                entry_id = id(entry)
+                if not entry.msgid_plural:
+                    tasks = [(entry.msgid, None)]
+                elif reference_rule.forms == 1:
+                    tasks = [(entry.msgid_plural, (0,))]
+                else:
+                    tasks = [
+                        (entry.msgid, (0,)),
+                        (
+                            entry.msgid_plural,
+                            tuple(range(1, reference_rule.forms)),
+                        ),
+                    ]
+                entry_task_totals[entry_id] = len(tasks)
+                entry_task_results[entry_id] = []
+                entry_task_values[entry_id] = []
+                for original, plural_indexes in tasks:
+                    translation_tasks.append((entry, original, plural_indexes))
+
+            processed_entries = set()
+
+            def process_completed_entries():
+                nonlocal checked
+                for entry in remaining:
+                    entry_id = id(entry)
+                    if entry_id in processed_entries:
+                        continue
+                    task_results = entry_task_results[entry_id]
+                    if len(task_results) != entry_task_totals[entry_id]:
+                        continue
+                    processed_entries.add(entry_id)
+                    if not all(task_results):
+                        continue
+
+                    changed = False
+                    for plural_indexes, translated in entry_task_values[entry_id]:
+                        if plural_indexes is None:
+                            if translated.strip() != entry.msgstr.strip():
+                                entry.msgstr = translated
+                                changed = True
+                            continue
+                        for plural_index in plural_indexes:
+                            previous = entry.msgstr_plural[plural_index]
+                            if translated.strip() != previous.strip():
+                                entry.msgstr_plural[plural_index] = translated
+                                changed = True
+
+                    checked += 1
+                    entry_key = _entry_identity(entry)
+                    already_checked.add(entry_key)
+                    if changed:
+                        changed_msgids.add(entry_key)
+                        log.info(
+                            "fix_context: CHANGED '%s'",
+                            entry.msgid[:40],
+                        )
+                        if "fuzzy" in entry.flags:
+                            entry.flags.remove("fuzzy")
+
             batch_size = 15
-            for batch_start in range(0, len(remaining), batch_size):
+            for batch_start in range(0, len(translation_tasks), batch_size):
                 if cancel_event and cancel_event.is_set():
                     break
 
-                # Respect API rate limits between outer batches
                 if batch_start > 0 and self.api.batch_delay > 0:
                     import time as _time
 
                     _time.sleep(self.api.batch_delay)
 
-                batch_entries = remaining[batch_start : batch_start + batch_size]
-                batch_entries = [e for e in batch_entries if e.msgid]
-                if not batch_entries:
-                    continue
-
-                # Protect placeholders
+                batch_tasks = translation_tasks[
+                    batch_start : batch_start + batch_size
+                ]
                 protected_texts = []
                 token_maps = []
-                for entry in batch_entries:
-                    protected, tokens = _protect_placeholders(entry.msgid)
+                for _entry, original, _plural_indexes in batch_tasks:
+                    protected, tokens = _protect_placeholders(original)
                     protected_texts.append(protected)
                     token_maps.append(tokens)
 
@@ -585,45 +1051,36 @@ class TranslationEngine:
                         source_lang="en",
                         target_lang=reference_lang,
                     )
-                except Exception:
-                    # Batch failed — fall back to individual
-                    new_translations = []
-                    for text in protected_texts:
-                        try:
-                            new_translations.append(
-                                self.api.translate(
-                                    text=text,
-                                    source_lang="en",
-                                    target_lang=reference_lang,
-                                )
-                            )
-                        except Exception as exc:
-                            log.warning("fix_context: error: %s", exc)
-                            new_translations.append(None)
-
-                for entry, new_translation, tokens in zip(
-                    batch_entries, new_translations, token_maps
-                ):
-                    checked += 1
-                    already_checked.add(entry.msgid)
-
-                    if new_translation is None:
-                        continue
-
-                    if tokens:
-                        new_translation = _restore_placeholders(new_translation, tokens)
-
-                    if new_translation.strip() != entry.msgstr.strip():
-                        changed_msgids.add(entry.msgid)
-                        log.info(
-                            "fix_context: CHANGED '%s' old='%s' new='%s'",
-                            entry.msgid[:40],
-                            entry.msgstr[:40],
-                            new_translation[:40],
+                    if len(new_translations) != len(protected_texts):
+                        raise ValueError(
+                            "Batch translation cardinality mismatch: "
+                            f"expected {len(protected_texts)}, "
+                            f"got {len(new_translations)}"
                         )
-                        entry.msgstr = _match_newlines(entry.msgid, new_translation)
-                        if "fuzzy" in entry.flags:
-                            entry.flags.remove("fuzzy")
+                except Exception:
+                    new_translations = [None] * len(protected_texts)
+
+                for task, protected, tokens, new_translation in zip(
+                    batch_tasks,
+                    protected_texts,
+                    token_maps,
+                    new_translations,
+                ):
+                    entry, original, plural_indexes = task
+                    translated, succeeded = _finalize_form_translation(
+                        self.api,
+                        original,
+                        protected,
+                        tokens,
+                        new_translation,
+                        reference_lang,
+                    )
+                    entry_task_results[id(entry)].append(succeeded)
+                    entry_task_values[id(entry)].append(
+                        (plural_indexes, translated)
+                    )
+
+                process_completed_entries()
 
                 if progress_callback:
                     progress_callback(
@@ -634,12 +1091,37 @@ class TranslationEngine:
                         total_entries,
                     )
 
-            ref_po.save(str(ref_po_path))
+            _save_po_atomic(ref_po, ref_po_path)
 
             # Save cache for resume
-            _save_context_cache(
-                cache_path, already_checked, changed_msgids, fixed_langs
+            cache_fingerprint = _context_cache_fingerprint(
+                pot_file,
+                locale_dir,
+                reference_lang,
+                fingerprint_languages,
+                self.api,
             )
+            _save_context_cache(
+                cache_path,
+                already_checked,
+                changed_msgids,
+                fixed_langs,
+                cache_fingerprint,
+            )
+
+            was_cancelled = bool(cancel_event and cancel_event.is_set())
+            reference_complete = all_entry_keys <= already_checked
+            if was_cancelled:
+                return {}
+            if not reference_complete:
+                if progress_callback:
+                    progress_callback(
+                        reference_lang,
+                        "error: incomplete context check",
+                        checked,
+                        total_entries,
+                    )
+                return {reference_lang: False}
 
             if progress_callback:
                 progress_callback(
@@ -655,14 +1137,11 @@ class TranslationEngine:
             return {}
 
         # Phase 2: fix those entries in all other languages
-        lang_list = languages if languages else list(SUPPORTED_LANGUAGES.keys())
         # Remove reference language (already fixed) and already-fixed langs
         other_langs = [
             lc for lc in lang_list if lc != reference_lang and lc not in fixed_langs
         ]
         results: Dict[str, bool] = {reference_lang: True}
-        # Total includes reference lang + already fixed + remaining
-        already_fixed_count = len(fixed_langs)
         total_langs = len(lang_list)  # all languages including reference
 
         # Report reference language as done (it was the baseline)
@@ -677,7 +1156,7 @@ class TranslationEngine:
         # Report already-fixed langs so the UI starts at the right offset
         # Reference lang counts as 1, then each fixed lang adds 1
         done_count = 1  # reference lang
-        for done_lang in fixed_langs:
+        for done_lang in sorted(fixed_langs):
             results[done_lang] = True
             done_count += 1
             if progress_callback:
@@ -726,12 +1205,17 @@ class TranslationEngine:
                     cancel_event=cancel_event,
                     detail_callback=(lambda pairs, _lc=lang: detail_callback(_lc, pairs)) if detail_callback else None,
                 )
-                results[lang] = True
-                fixed_langs.add(lang)
+                if self.last_language_complete:
+                    results[lang] = True
+                    fixed_langs.add(lang)
+                    status = f"success: fixed {len(changed_msgids)} entries"
+                else:
+                    results[lang] = False
+                    status = "error: incomplete translation"
                 if progress_callback:
                     progress_callback(
                         lang,
-                        f"success: fixed {len(changed_msgids)} entries",
+                        status,
                         done_count + i + 1,
                         total_langs,
                     )
@@ -743,12 +1227,23 @@ class TranslationEngine:
                     )
 
             # Save cache periodically for resume
+            cache_fingerprint = _context_cache_fingerprint(
+                pot_file,
+                locale_dir,
+                reference_lang,
+                fingerprint_languages,
+                self.api,
+            )
             _save_context_cache(
-                cache_path, already_checked, changed_msgids, fixed_langs
+                cache_path,
+                already_checked,
+                changed_msgids,
+                fixed_langs,
+                cache_fingerprint,
             )
 
         # If all languages completed, remove cache
-        all_langs = set(languages if languages else SUPPORTED_LANGUAGES.keys())
+        all_langs = set(lang_list)
         if fixed_langs | {reference_lang} >= all_langs:
             cache_path.unlink(missing_ok=True)
 
@@ -756,6 +1251,7 @@ class TranslationEngine:
 
     def _create_metadata(self, lang: str) -> Dict[str, str]:
         """Cria metadata para arquivo .po."""
+        plural_rule = get_plural_rule(lang)
         return {
             "Project-Id-Version": self.textdomain,
             "Report-Msgid-Bugs-To": "",
@@ -767,4 +1263,5 @@ class TranslationEngine:
             "MIME-Version": "1.0",
             "Content-Type": "text/plain; charset=UTF-8",
             "Content-Transfer-Encoding": "8bit",
+            "Plural-Forms": plural_rule.header,
         }

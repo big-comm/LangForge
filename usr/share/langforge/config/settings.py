@@ -2,10 +2,26 @@
 
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
+from api.models import default_model, normalize_model
 
 log = logging.getLogger(__name__)
+
+_SECTION_PROVIDERS = {
+    "free_api": (
+        "deepl-free",
+        "groq",
+        "gemini-free",
+        "openrouter",
+        "mistral-free",
+        "libretranslate",
+    ),
+    "paid_api": ("openai", "gemini", "grok", "deepseek"),
+}
 
 # Try to use system keyring for API key storage
 _secret_available = False
@@ -67,14 +83,44 @@ def _lookup_secret(key_name: str) -> str:
         return ""
 
 
+def _merge_config(defaults: Dict[str, Any], loaded: Dict[str, Any]) -> Dict[str, Any]:
+    """Recursively merge valid loaded values into defaults."""
+    merged = json.loads(json.dumps(defaults))
+    for key, value in loaded.items():
+        if key not in merged:
+            merged[key] = value
+        elif isinstance(merged[key], dict):
+            if isinstance(value, dict):
+                merged[key] = _merge_config(merged[key], value)
+        elif isinstance(value, type(merged[key])):
+            merged[key] = value
+    return merged
+
+
 class Settings:
     """Gerencia as configurações persistentes do aplicativo."""
 
     def __init__(self):
         self.config_dir = Path.home() / ".config" / "langforge"
         self.config_file = self.config_dir / "config.json"
+        self._secret_updates: set[str] = set()
+        self._legacy_secret_sections: set[str] = set()
+        self._needs_secure_save = False
         self._migrate_old_config()
+        self._harden_storage()
         self.config = self._load_config()
+        if self._needs_secure_save and self.config_file.exists():
+            self.save()
+
+    def _harden_storage(self) -> None:
+        """Ensure local fallback storage is private."""
+        self.config_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+        try:
+            os.chmod(self.config_dir, 0o700)
+            if self.config_file.exists() and not self.config_file.is_symlink():
+                os.chmod(self.config_file, 0o600)
+        except OSError as exc:
+            log.warning("Could not restrict configuration permissions: %s", exc)
 
     def _migrate_old_config(self):
         """Migrate config from old 'translation-automator' directory if needed."""
@@ -91,32 +137,116 @@ class Settings:
 
     def _load_config(self) -> Dict[str, Any]:
         """Carrega configurações do arquivo JSON + keyring secrets."""
-        if self.config_file.exists():
+        loaded: Dict[str, Any] = {}
+        if self.config_file.is_symlink():
+            log.warning("Ignoring symlinked configuration file")
+            self._needs_secure_save = True
+        elif self.config_file.exists():
             try:
                 with open(self.config_file, "r", encoding="utf-8") as f:
-                    config = json.load(f)
-            except Exception:
-                config = self._get_default_config()
-        else:
-            config = self._get_default_config()
-        # Recover API keys from keyring if not in file
-        for section in ("free_api", "paid_api"):
-            keys = config.get(section, {}).get("keys", {})
+                    candidate = json.load(f)
+                if not isinstance(candidate, dict):
+                    raise ValueError("configuration root must be an object")
+                loaded = candidate
+            except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+                log.warning("Ignoring invalid configuration file: %s", exc)
 
-            # Only recover legacy shared key if no per-provider keys exist
-            if not any(keys.values()):
-                if not config.get(section, {}).get("api_key"):
-                    secret = _lookup_secret(f"{section}_api_key")
-                    if secret:
-                        config.setdefault(section, {})["api_key"] = secret
+        config = _merge_config(self._get_default_config(), loaded)
+        if config.get("api_type") not in ("free", "paid"):
+            config["api_type"] = "free"
 
-            # Recover per-provider keys from keyring
-            for provider in list(keys.keys()):
-                if not keys[provider]:
-                    secret = _lookup_secret(f"{section}_{provider}_key")
+        for section, providers in _SECTION_PROVIDERS.items():
+            section_config = config[section]
+            loaded_section = loaded.get(section, {})
+            section_was_loaded = section in loaded and isinstance(
+                loaded_section, dict
+            )
+            if not section_was_loaded:
+                loaded_section = {}
+            modern_secret_storage = (
+                not section_was_loaded
+                or loaded_section.get("secret_schema") == 2
+                or "keys" in loaded_section
+                or "keyring_providers" in loaded_section
+            )
+            section_config["secret_schema"] = 2 if modern_secret_storage else 1
+
+            provider = section_config.get("provider")
+            if provider not in providers:
+                provider = self._get_default_config()[section]["provider"]
+                section_config["provider"] = provider
+
+            loaded_models = loaded_section.get("models", {})
+            if not isinstance(loaded_models, dict):
+                loaded_models = {}
+            legacy_model = loaded_section.get("model", "")
+            if (
+                isinstance(legacy_model, str)
+                and legacy_model
+                and provider not in loaded_models
+            ):
+                section_config["models"][provider] = normalize_model(
+                    provider, legacy_model
+                )
+                self._needs_secure_save = True
+            for model_provider in providers:
+                section_config["models"][model_provider] = normalize_model(
+                    model_provider,
+                    section_config["models"].get(model_provider, ""),
+                )
+            section_config.pop("model", None)
+
+            raw_keys = loaded_section.get("keys", {})
+            if not isinstance(raw_keys, dict):
+                raw_keys = {}
+            keys = {
+                key_provider: value
+                for key_provider, value in raw_keys.items()
+                if isinstance(key_provider, str) and isinstance(value, str)
+            }
+            if any(keys.values()):
+                self._needs_secure_save = True
+            keyring_providers = section_config.get("keyring_providers", [])
+            if not isinstance(keyring_providers, list):
+                keyring_providers = []
+            keyring_providers = {
+                key_provider
+                for key_provider in keyring_providers
+                if isinstance(key_provider, str)
+            }
+
+            legacy_key = loaded_section.get("api_key", "")
+            if isinstance(legacy_key, str) and legacy_key and not keys.get(provider):
+                keys[provider] = legacy_key
+                section_config["secret_schema"] = 2
+                self._legacy_secret_sections.add(section)
+                self._needs_secure_save = True
+            elif not keys.get(provider) and not modern_secret_storage:
+                legacy_secret = _lookup_secret(f"{section}_api_key")
+                if legacy_secret:
+                    keys[provider] = legacy_secret
+                    section_config["secret_schema"] = 2
+                    self._legacy_secret_sections.add(section)
+                    self._needs_secure_save = True
+
+            # Old releases represented keyring entries as empty key values.
+            legacy_keyring_candidates = {
+                key_provider
+                for key_provider, value in raw_keys.items()
+                if isinstance(key_provider, str) and value == ""
+            }
+            for key_provider in keyring_providers | legacy_keyring_candidates:
+                if not keys.get(key_provider):
+                    secret = _lookup_secret(f"{section}_{key_provider}_key")
                     if secret:
-                        keys[provider] = secret
-            config.setdefault(section, {})["keys"] = keys
+                        keys[key_provider] = secret
+                        keyring_providers.add(key_provider)
+                        if key_provider in legacy_keyring_candidates:
+                            self._needs_secure_save = True
+
+            section_config["api_key"] = ""
+            section_config["keys"] = keys
+            section_config["keyring_providers"] = sorted(keyring_providers)
 
         return config
 
@@ -125,17 +255,27 @@ class Settings:
         return {
             "api_type": "free",
             "free_api": {
-                "provider": "groq",  # Best free option: 14.4k req/day, excellent quality
+                "provider": "groq",
                 "api_key": "",
+                "secret_schema": 2,
                 "keys": {},  # Per-provider keys: {"groq": "key1", "deepl-free": "key2"}
+                "keyring_providers": [],
                 "libretranslate_url": "https://libretranslate.com",
-                "model": "",
+                "models": {
+                    provider: default_model(provider)
+                    for provider in _SECTION_PROVIDERS["free_api"]
+                },
             },
             "paid_api": {
                 "provider": "openai",  # openai, gemini, grok
                 "api_key": "",
+                "secret_schema": 2,
                 "keys": {},  # Per-provider keys: {"openai": "sk-...", "gemini": "AI..."}
-                "model": "gpt-4o-mini",
+                "keyring_providers": [],
+                "models": {
+                    provider: default_model(provider)
+                    for provider in _SECTION_PROVIDERS["paid_api"]
+                },
             },
             "fix_context": {
                 "reference_lang": "fr",  # pt-BR, fr, or es
@@ -145,23 +285,83 @@ class Settings:
     def save(self):
         """Salva configurações no arquivo JSON.
 
-        Keys are always kept in the JSON file to prevent data loss.
-        A copy is also stored in the system keyring when available.
+        Secrets use the system keyring when possible. The private JSON file is
+        only a fallback when keyring storage fails.
         """
-        self.config_dir.mkdir(parents=True, exist_ok=True)
+        self._harden_storage()
         config_to_save = json.loads(json.dumps(self.config))
+        plaintext_fallback = False
 
-        # Store a copy of keys in the system keyring (best-effort)
-        for section in ("free_api", "paid_api"):
-            api_key = config_to_save.get(section, {}).get("api_key", "")
-            _store_secret(f"{section}_api_key", api_key)
+        for section, providers in _SECTION_PROVIDERS.items():
+            live_section = self.config.setdefault(section, {})
+            live_keys = live_section.setdefault("keys", {})
+            active_provider = live_section.get("provider", providers[0])
+            legacy_key = live_section.get("api_key", "")
+            if legacy_key and not live_keys.get(active_provider):
+                live_keys[active_provider] = legacy_key
+                live_section["api_key"] = ""
+            stored = set(live_section.get("keyring_providers", []))
+            saved_section = config_to_save.setdefault(section, {})
+            saved_keys = saved_section.setdefault("keys", {})
 
-            keys = config_to_save.get(section, {}).get("keys", {})
-            for provider, key in keys.items():
-                _store_secret(f"{section}_{provider}_key", key)
+            for provider in set(providers) | set(live_keys):
+                key = live_keys.get(provider, "")
+                secret_name = f"{section}_{provider}_key"
+                if key:
+                    if _store_secret(secret_name, key):
+                        saved_keys.pop(provider, None)
+                        stored.add(provider)
+                    else:
+                        saved_keys[provider] = key
+                        stored.discard(provider)
+                        plaintext_fallback = True
+                else:
+                    saved_keys.pop(provider, None)
+                    if secret_name in self._secret_updates:
+                        stored.discard(provider)
+                        _store_secret(secret_name, "")
 
-        with open(self.config_file, "w", encoding="utf-8") as f:
-            json.dump(config_to_save, f, indent=2, ensure_ascii=False)
+            live_section["keyring_providers"] = sorted(stored)
+            saved_section["keyring_providers"] = sorted(stored)
+            saved_section["api_key"] = ""
+            saved_section["secret_schema"] = live_section.get("secret_schema", 2)
+            saved_section.pop("model", None)
+
+            if section in self._legacy_secret_sections:
+                _store_secret(f"{section}_api_key", "")
+
+        if plaintext_fallback:
+            log.warning(
+                "System keyring unavailable; API keys remain in the private "
+                "configuration file"
+            )
+
+        fd, temporary_name = tempfile.mkstemp(
+            prefix=".config-", suffix=".tmp", dir=self.config_dir
+        )
+        try:
+            os.fchmod(fd, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as temporary:
+                json.dump(config_to_save, temporary, indent=2, ensure_ascii=False)
+                temporary.write("\n")
+                temporary.flush()
+                os.fsync(temporary.fileno())
+            os.replace(temporary_name, self.config_file)
+            os.chmod(self.config_file, 0o600)
+            directory_fd = os.open(self.config_dir, os.O_RDONLY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+            self._secret_updates.clear()
+            self._legacy_secret_sections.clear()
+            self._needs_secure_save = False
+        except Exception:
+            try:
+                os.unlink(temporary_name)
+            except OSError:
+                pass
+            raise
 
     def get(self, key: str, default=None) -> Any:
         """Obtém valor de configuração."""
@@ -179,7 +379,7 @@ class Settings:
         keys = key.split(".")
         config = self.config
         for k in keys[:-1]:
-            if k not in config:
+            if not isinstance(config.get(k), dict):
                 config[k] = {}
             config = config[k]
         config[keys[-1]] = value
@@ -216,9 +416,10 @@ class Settings:
             provider: Provider ID (e.g. 'openai', 'groq')
         """
         # Per-provider key (new format)
-        keys = self.config.get(section, {}).get("keys", {})
+        section_config = self.config.get(section, {})
+        keys = section_config.get("keys", {})
         key = keys.get(provider, "")
-        if not key:
+        if not key and provider in section_config.get("keyring_providers", []):
             # Try keyring
             key = _lookup_secret(f"{section}_{provider}_key")
         if key:
@@ -231,7 +432,25 @@ class Settings:
 
     def set_provider_key(self, section: str, provider: str, key: str) -> None:
         """Set API key for a specific provider."""
-        self.config.setdefault(section, {}).setdefault("keys", {})[provider] = key
+        section_config = self.config.setdefault(section, {})
+        section_config.setdefault("keys", {})[provider] = key
+        section_config["secret_schema"] = 2
+        self._secret_updates.add(f"{section}_{provider}_key")
+
+    def get_provider_model(self, section: str, provider: str) -> str:
+        """Return the selected model for a provider."""
+        model = self.config.get(section, {}).get("models", {}).get(provider, "")
+        normalized = normalize_model(provider, model)
+        self.config.setdefault(section, {}).setdefault("models", {})[provider] = (
+            normalized
+        )
+        return normalized
+
+    def set_provider_model(self, section: str, provider: str, model: str) -> None:
+        """Store a model selection without affecting other providers."""
+        self.config.setdefault(section, {}).setdefault("models", {})[provider] = (
+            normalize_model(provider, model)
+        )
 
     def get_reference_lang(self) -> str:
         """Return the fix_context reference language ('auto' or a code like 'pt-BR')."""

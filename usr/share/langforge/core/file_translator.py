@@ -3,9 +3,15 @@
 Supports: .po/.pot, .json, .txt, .md, .srt
 """
 
+import copy
+import errno
+import hashlib
 import json
 import logging
+import os
 import re
+import stat
+import tempfile
 import threading
 from pathlib import Path
 from typing import Callable, Optional
@@ -13,8 +19,8 @@ from typing import Callable, Optional
 import polib
 
 from api.base import TranslationAPI
-from core.languages import FILE_LANG_CODES, get_file_lang_code
-from core.translator import _protect_placeholders, _restore_placeholders
+from core.languages import FILE_LANG_CODES, get_file_lang_code, get_plural_rule
+from core.translator import _finalize_form_translation, _protect_placeholders
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +31,8 @@ _TEXT_EXTS = {".txt", ".md", ".markdown", ".rst"}
 _SRT_EXTS = {".srt"}
 
 SUPPORTED_EXTENSIONS = _PO_EXTS | _JSON_EXTS | _TEXT_EXTS | _SRT_EXTS
+_BLANK_LINE_SEPARATOR = re.compile(r"((?:\r?\n[ \t]*){2,})")
+_MARKDOWN_FENCE = re.compile(r"^[ \t]{0,3}(`{3,}|~{3,})")
 
 
 def is_supported_file(path: Path) -> bool:
@@ -35,19 +43,304 @@ def is_supported_file(path: Path) -> bool:
 def _file_output_path(source: Path, lang: str, ext: str) -> Path:
     """Build output path using 3-letter ISO 639-2 language codes.
 
-    'Sequestro S02E07.eng.srt' + 'pt-BR' → 'Sequestro S02E07.por.srt'
-    'myfile.srt' + 'pt-BR' → 'myfile.por.srt'
+    'Sequestro S02E07.eng.srt' + 'pt-BR' → 'Sequestro S02E07.por-BR.srt'
+    'myfile.srt' + 'pt-BR' → 'myfile.por-BR.srt'
     """
     stem = source.stem
-    target_code = get_file_lang_code(lang)
+    target_code = _safe_output_component(
+        get_file_lang_code(lang),
+        "target language code",
+    )
 
     # Strip known source language suffix (e.g. '.eng' from stem)
     all_codes = {c.lower() for c in FILE_LANG_CODES.values()}
     parts = stem.rsplit(".", 1)
-    if len(parts) == 2 and parts[1].lower() in all_codes:
+    source_code = parts[1].lower() if len(parts) == 2 else ""
+    if source_code in all_codes and source_code != target_code.lower():
         stem = parts[0]
 
-    return source.parent / f"{stem}.{target_code}{ext}"
+    output = source.parent / f"{stem}.{target_code}{ext}"
+    return _ensure_distinct_output(source, output)
+
+
+def _po_output_path(source: Path, lang: str) -> Path:
+    """Build a distinct .po output path for a translated catalog."""
+    safe_lang = _safe_output_component(lang, "target language")
+    output = source.parent / f"{source.stem}.{safe_lang}.po"
+    return _ensure_distinct_output(source, output)
+
+
+def _safe_output_component(value: str, label: str) -> str:
+    """Reject values that could introduce a directory into an output path."""
+    if (
+        not isinstance(value, str)
+        or not value
+        or value in {".", ".."}
+        or "/" in value
+        or "\\" in value
+        or "\0" in value
+    ):
+        raise ValueError(f"Invalid {label}: {value!r}")
+    return value
+
+
+def _ensure_distinct_output(source: Path, output: Path) -> Path:
+    """Reject output paths that alias the source file."""
+    if output.parent != source.parent:
+        raise ValueError(f"Output path escapes source directory: {output}")
+    if source.absolute() == output.absolute():
+        raise ValueError(f"Output path would overwrite source file: {source}")
+    try:
+        if source.samefile(output):
+            raise ValueError(f"Output path would overwrite source file: {source}")
+    except FileNotFoundError:
+        pass
+    return output
+
+
+def _write_atomic(
+    path: Path,
+    serialize: Callable[[], str | bytes],
+    *,
+    encoding: str = "utf-8",
+) -> None:
+    """Serialize and atomically replace a file without following symlinks."""
+    content = serialize()
+    if isinstance(content, str):
+        payload = content.encode(encoding)
+    elif isinstance(content, bytes):
+        payload = content
+    else:
+        raise TypeError("Serializer must return text or bytes")
+
+    try:
+        current = path.lstat()
+    except FileNotFoundError:
+        mode = 0o644
+    else:
+        mode = (
+            stat.S_IMODE(current.st_mode) & 0o777
+            if stat.S_ISREG(current.st_mode)
+            else 0o644
+        )
+
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        dir=path.parent,
+    )
+    temporary_path = Path(temporary_name)
+    try:
+        remaining = memoryview(payload)
+        while remaining:
+            written = os.write(fd, remaining)
+            if written <= 0:
+                raise OSError("Atomic write made no progress")
+            remaining = remaining[written:]
+        os.fchmod(fd, mode)
+        os.fsync(fd)
+        os.close(fd)
+        fd = -1
+        os.replace(temporary_path, path)
+    finally:
+        if fd >= 0:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+        try:
+            temporary_path.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def _read_regular_text(path: Path, *, encoding: str = "utf-8") -> str | None:
+    """Read an existing regular file without following a symlink."""
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(path, flags)
+    except FileNotFoundError:
+        return None
+    except OSError as error:
+        if error.errno == errno.ELOOP:
+            return None
+        raise
+
+    try:
+        opened = os.fstat(fd)
+        try:
+            current = path.lstat()
+        except FileNotFoundError:
+            return None
+        if (
+            not stat.S_ISREG(opened.st_mode)
+            or not stat.S_ISREG(current.st_mode)
+            or (opened.st_dev, opened.st_ino) != (current.st_dev, current.st_ino)
+        ):
+            return None
+
+        chunks: list[bytes] = []
+        while chunk := os.read(fd, 64 * 1024):
+            chunks.append(chunk)
+        return b"".join(chunks).decode(encoding)
+    finally:
+        os.close(fd)
+
+
+def _translate_texts_exact(
+    api: TranslationAPI,
+    texts: list[str],
+    target_lang: str,
+) -> tuple[list[str], bool]:
+    """Translate one batch with exact alignment and placeholder validation."""
+    translations, item_results = _translate_texts_with_status(
+        api,
+        texts,
+        target_lang,
+    )
+    return translations, all(item_results)
+
+
+def _translate_texts_with_status(
+    api: TranslationAPI,
+    texts: list[str],
+    target_lang: str,
+) -> tuple[list[str], list[bool]]:
+    """Translate one batch and retain each item's validation result."""
+    if target_lang == "en":
+        return list(texts), [True] * len(texts)
+
+    protected_texts: list[str] = []
+    token_maps = []
+    for text in texts:
+        protected, tokens = _protect_placeholders(text)
+        protected_texts.append(protected)
+        token_maps.append(tokens)
+
+    try:
+        candidates = api.translate_batch(protected_texts, "en", target_lang)
+        if (
+            not isinstance(candidates, (list, tuple))
+            or len(candidates) != len(protected_texts)
+        ):
+            raise ValueError(
+                "Batch translation cardinality mismatch: "
+                f"expected {len(protected_texts)}, "
+                f"got {len(candidates) if hasattr(candidates, '__len__') else 'unknown'}"
+            )
+    except Exception as error:
+        log.warning("Batch translation failed; retrying individually: %s", error)
+        candidates = [None] * len(protected_texts)
+
+    translations: list[str] = []
+    item_results: list[bool] = []
+    for original, protected, tokens, candidate in zip(
+        texts,
+        protected_texts,
+        token_maps,
+        candidates,
+    ):
+        translated, item_succeeded = _finalize_form_translation(
+            api,
+            original,
+            protected,
+            tokens,
+            candidate,
+            target_lang,
+        )
+        translations.append(translated)
+        item_results.append(item_succeeded)
+    return translations, item_results
+
+
+def _json_string_leaves(value, path=()):
+    """Yield paths and non-empty string leaves from nested JSON data."""
+    if isinstance(value, dict):
+        for key, item in value.items():
+            yield from _json_string_leaves(item, (*path, key))
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            yield from _json_string_leaves(item, (*path, index))
+    elif isinstance(value, str) and value.strip():
+        yield path, value
+
+
+def _set_json_path(value, path, replacement) -> None:
+    """Set one already-validated JSON path."""
+    current = value
+    for component in path[:-1]:
+        current = current[component]
+    current[path[-1]] = replacement
+
+
+def _markdown_fence_ranges(content: str) -> list[tuple[int, int]]:
+    """Return byte-independent character ranges for fenced Markdown code."""
+    ranges: list[tuple[int, int]] = []
+    opening_start: int | None = None
+    opening_char = ""
+    opening_length = 0
+    offset = 0
+
+    for line in content.splitlines(keepends=True):
+        match = _MARKDOWN_FENCE.match(line)
+        if opening_start is None:
+            if match:
+                marker = match.group(1)
+                opening_start = offset
+                opening_char = marker[0]
+                opening_length = len(marker)
+        elif match:
+            marker = match.group(1)
+            remainder = line[match.end(1) :].rstrip("\r\n")
+            is_closing = not remainder.strip(" \t")
+            if (
+                marker[0] == opening_char
+                and len(marker) >= opening_length
+                and is_closing
+            ):
+                ranges.append((opening_start, offset + len(line)))
+                opening_start = None
+        offset += len(line)
+
+    if opening_start is not None:
+        ranges.append((opening_start, len(content)))
+    return ranges
+
+
+def _text_segments(content: str, markdown: bool) -> tuple[list[str], list[tuple[int, str]]]:
+    """Split text without normalizing whitespace and exclude Markdown fences."""
+    segments: list[str] = []
+    tasks: list[tuple[int, str]] = []
+
+    def append_prose(prose: str) -> None:
+        for part in _BLANK_LINE_SEPARATOR.split(prose):
+            if not part:
+                continue
+            if _BLANK_LINE_SEPARATOR.fullmatch(part):
+                segments.append(part)
+                continue
+            leading_length = len(part) - len(part.lstrip())
+            trailing_length = len(part) - len(part.rstrip())
+            end = len(part) - trailing_length if trailing_length else len(part)
+            core = part[leading_length:end]
+            if not core:
+                segments.append(part)
+                continue
+            index = len(segments)
+            segments.append(part[:leading_length] + core + part[end:])
+            tasks.append((index, core))
+
+    if not markdown:
+        append_prose(content)
+        return segments, tasks
+
+    cursor = 0
+    for start, end in _markdown_fence_ranges(content):
+        append_prose(content[cursor:start])
+        segments.append(content[start:end])
+        cursor = end
+    append_prose(content[cursor:])
+    return segments, tasks
 
 
 class FileTranslator:
@@ -97,22 +390,21 @@ class FileTranslator:
     def _translate_po(self, langs, progress_cb, cancel_event, detail_cb):
         pot = polib.pofile(str(self.source_file))
 
-        entries = [e for e in pot if e.msgid]
+        entries = [e for e in pot if e.msgid and not e.obsolete]
         if not entries:
             return {}
 
         context_strings = [e.msgid for e in entries[:20]]
         self.api.set_context(self.source_file.stem, context_strings)
 
-        # Pre-process placeholders
-        originals = [e.msgid for e in entries]
-        protected_texts = []
-        token_maps = []
-        for msgid in originals:
-            protected, tokens = _protect_placeholders(msgid)
-            protected_texts.append(protected)
-            token_maps.append(tokens)
+        # Translate singular and plural source forms independently.
+        translation_tasks: list[tuple[int, str, str]] = []
+        for entry_index, entry in enumerate(entries):
+            translation_tasks.append((entry_index, "singular", entry.msgid))
+            if entry.msgid_plural:
+                translation_tasks.append((entry_index, "plural", entry.msgid_plural))
 
+        originals = [text for _, _, text in translation_tasks]
         results: dict[str, bool] = {}
         total = len(langs)
         batch_size = 15
@@ -121,16 +413,21 @@ class FileTranslator:
             if cancel_event and cancel_event.is_set():
                 break
             try:
-                po = polib.POFile()
+                plural_rule = get_plural_rule(lang)
+                po = copy.deepcopy(pot)
                 po.metadata = {
                     **pot.metadata,
                     "Language": lang,
                     "Content-Type": "text/plain; charset=UTF-8",
+                    "Plural-Forms": plural_rule.header,
                 }
+                po.encoding = "utf-8"
 
                 translated_texts: list[str] = []
+                translation_results: list[bool] = []
+                language_succeeded = True
 
-                for batch_start in range(0, len(protected_texts), batch_size):
+                for batch_start in range(0, len(originals), batch_size):
                     if cancel_event and cancel_event.is_set():
                         break
                     if batch_start > 0 and self.api.batch_delay > 0:
@@ -138,41 +435,32 @@ class FileTranslator:
 
                         _time.sleep(self.api.batch_delay)
 
-                    batch = protected_texts[batch_start : batch_start + batch_size]
-                    try:
-                        batch_results = self.api.translate_batch(batch, "en", lang)
-                    except Exception:
-                        batch_results = []
-                        for text in batch:
-                            try:
-                                batch_results.append(
-                                    self.api.translate(text, "en", lang)
-                                )
-                            except Exception:
-                                batch_results.append(text)
-
-                    # Restore placeholders
-                    for j, translated in enumerate(batch_results):
-                        idx = batch_start + j
-                        if token_maps[idx]:
-                            batch_results[j] = _restore_placeholders(
-                                translated, token_maps[idx]
-                            )
+                    batch = originals[batch_start : batch_start + batch_size]
+                    batch_results, batch_item_results = (
+                        _translate_texts_with_status(
+                            self.api,
+                            batch,
+                            lang,
+                        )
+                    )
+                    batch_succeeded = all(batch_item_results)
+                    language_succeeded = language_succeeded and batch_succeeded
                     translated_texts.extend(batch_results)
+                    translation_results.extend(batch_item_results)
 
                     # Emit detail pairs
                     if detail_cb:
                         pairs = [
-                            (originals[batch_start + j], batch_results[j], "")
+                            (batch[j], batch_results[j], "")
                             for j in range(len(batch_results))
                         ]
                         detail_cb(lang, pairs)
 
                     if progress_cb:
-                        done = min(batch_start + batch_size, len(protected_texts))
+                        done = min(batch_start + batch_size, len(originals))
                         progress_cb(
                             lang,
-                            f"translating: {done}/{len(protected_texts)} entries",
+                            f"translating: {done}/{len(originals)} strings",
                             i + 1,
                             total,
                         )
@@ -180,18 +468,58 @@ class FileTranslator:
                 if cancel_event and cancel_event.is_set():
                     break
 
-                # Build PO entries
-                for entry, translated in zip(entries, translated_texts):
-                    po.append(polib.POEntry(msgid=entry.msgid, msgstr=translated))
+                translated_forms: dict[int, dict[str, str]] = {}
+                entry_results: dict[int, list[bool]] = {}
+                for task, translated, succeeded in zip(
+                    translation_tasks,
+                    translated_texts,
+                    translation_results,
+                ):
+                    entry_index, form, _ = task
+                    translated_forms.setdefault(entry_index, {})[form] = translated
+                    entry_results.setdefault(entry_index, []).append(succeeded)
 
-                out = self.source_file.parent / f"{self.source_file.stem}.{lang}{self.ext}"
-                po.save(str(out))
+                translated_entries = [
+                    entry for entry in po if entry.msgid and not entry.obsolete
+                ]
+                for entry_index, forms in translated_forms.items():
+                    entry = translated_entries[entry_index]
+                    if entry.msgid_plural:
+                        singular = forms.get("singular")
+                        plural = forms.get("plural")
+                        entry.msgstr_plural = {}
+                        for plural_index in range(plural_rule.forms):
+                            source = (
+                                plural
+                                if plural_rule.forms == 1 or plural_index > 0
+                                else singular
+                            )
+                            entry.msgstr_plural[plural_index] = source or (
+                                entry.msgid_plural
+                                if plural_rule.forms == 1 or plural_index > 0
+                                else entry.msgid
+                            )
+                        entry.msgstr = ""
+                    elif "singular" in forms:
+                        entry.msgstr = forms["singular"]
+                    if all(entry_results.get(entry_index, [])):
+                        if "fuzzy" in entry.flags:
+                            entry.flags.remove("fuzzy")
+                    elif "fuzzy" not in entry.flags:
+                        entry.flags.append("fuzzy")
 
-                results[lang] = True
+                po.metadata_is_fuzzy = not language_succeeded
+                out = _po_output_path(self.source_file, lang)
+                _write_atomic(out, po.__unicode__, encoding=po.encoding)
+
+                results[lang] = language_succeeded
                 if progress_cb:
-                    progress_cb(lang, "success", i + 1, total)
+                    status = "success" if language_succeeded else "error: incomplete"
+                    progress_cb(lang, status, i + 1, total)
             except Exception as e:
-                log.warning("Failed translating %s to %s: %s", self.source_file.name, lang, e)
+                log.warning(
+                    "Failed translating %s to %s: %s", self.source_file.name, lang, e
+                )
                 results[lang] = False
                 if progress_cb:
                     progress_cb(lang, f"error: {e}", i + 1, total)
@@ -204,16 +532,15 @@ class FileTranslator:
         with open(self.source_file, "r", encoding="utf-8") as fh:
             data = json.load(fh)
 
-        if not isinstance(data, dict):
-            raise ValueError("JSON must be a flat key-value object")
+        if not isinstance(data, (dict, list)):
+            raise ValueError("JSON root must be an object or array")
 
-        sample_values = [v for v in data.values() if isinstance(v, str)][:20]
+        leaves = list(_json_string_leaves(data))
+        sample_values = [value for _, value in leaves[:20]]
         self.api.set_context(self.source_file.stem, sample_values)
 
-        keys_to_translate = [
-            k for k, v in data.items() if isinstance(v, str) and v.strip()
-        ]
-        texts_to_translate = [data[k] for k in keys_to_translate]
+        paths_to_translate = [path for path, _ in leaves]
+        texts_to_translate = [value for _, value in leaves]
 
         results: dict[str, bool] = {}
         total = len(langs)
@@ -224,6 +551,7 @@ class FileTranslator:
                 break
             try:
                 translated_values: list[str] = []
+                language_succeeded = True
 
                 for batch_start in range(0, len(texts_to_translate), batch_size):
                     if cancel_event and cancel_event.is_set():
@@ -234,28 +562,23 @@ class FileTranslator:
                         _time.sleep(self.api.batch_delay)
 
                     batch = texts_to_translate[batch_start : batch_start + batch_size]
-                    batch_keys = keys_to_translate[
+                    batch_paths = paths_to_translate[
                         batch_start : batch_start + batch_size
                     ]
-                    try:
-                        batch_results = self.api.translate_batch(batch, "en", lang)
-                    except Exception:
-                        batch_results = []
-                        for text in batch:
-                            try:
-                                batch_results.append(
-                                    self.api.translate(text, "en", lang)
-                                )
-                            except Exception:
-                                batch_results.append(text)
+                    batch_results, batch_succeeded = _translate_texts_exact(
+                        self.api,
+                        batch,
+                        lang,
+                    )
+                    language_succeeded = language_succeeded and batch_succeeded
                     translated_values.extend(batch_results)
 
                     # Emit detail pairs for this batch
                     if detail_cb:
                         pairs = [
-                            (orig, trans, key)
-                            for orig, trans, key in zip(
-                                batch, batch_results, batch_keys
+                            (orig, trans, repr(path))
+                            for orig, trans, path in zip(
+                                batch, batch_results, batch_paths
                             )
                         ]
                         detail_cb(lang, pairs)
@@ -272,22 +595,24 @@ class FileTranslator:
                 if cancel_event and cancel_event.is_set():
                     break
 
-                # Rebuild full dict
-                translated = {}
-                val_iter = iter(translated_values)
-                for key, value in data.items():
-                    if key in keys_to_translate:
-                        translated[key] = next(val_iter, value)
-                    else:
-                        translated[key] = value
+                translated = copy.deepcopy(data)
+                for path, value in zip(paths_to_translate, translated_values):
+                    _set_json_path(translated, path, value)
 
                 out = _file_output_path(self.source_file, lang, ".json")
-                with open(out, "w", encoding="utf-8") as fh:
-                    json.dump(translated, fh, ensure_ascii=False, indent=2)
+                _write_atomic(
+                    out,
+                    lambda: json.dumps(
+                        translated,
+                        ensure_ascii=False,
+                        indent=2,
+                    ),
+                )
 
-                results[lang] = True
+                results[lang] = language_succeeded
                 if progress_cb:
-                    progress_cb(lang, "success", i + 1, total)
+                    status = "success" if language_succeeded else "error: incomplete"
+                    progress_cb(lang, status, i + 1, total)
             except Exception as e:
                 log.warning(
                     "Failed translating %s to %s: %s", self.source_file.name, lang, e
@@ -301,13 +626,13 @@ class FileTranslator:
     # ── .txt / .md ──────────────────────────────────────────────
 
     def _translate_text(self, langs, progress_cb, cancel_event, detail_cb):
-        with open(self.source_file, "r", encoding="utf-8") as fh:
+        with open(self.source_file, "r", encoding="utf-8", newline="") as fh:
             content = fh.read()
 
-        paragraphs = re.split(r"\n{2,}", content)
-        translatable = [
-            (idx, p.strip()) for idx, p in enumerate(paragraphs) if p.strip()
-        ]
+        segments, translatable = _text_segments(
+            content,
+            markdown=self.ext in {".md", ".markdown"},
+        )
 
         samples = [text for _, text in translatable[:15]]
         self.api.set_context(self.source_file.stem, samples)
@@ -322,6 +647,7 @@ class FileTranslator:
             try:
                 texts = [text for _, text in translatable]
                 translated_texts: list[str] = []
+                language_succeeded = True
 
                 for batch_start in range(0, len(texts), batch_size):
                     if cancel_event and cancel_event.is_set():
@@ -332,17 +658,12 @@ class FileTranslator:
                         _time.sleep(self.api.batch_delay)
 
                     batch = texts[batch_start : batch_start + batch_size]
-                    try:
-                        batch_results = self.api.translate_batch(batch, "en", lang)
-                    except Exception:
-                        batch_results = []
-                        for text in batch:
-                            try:
-                                batch_results.append(
-                                    self.api.translate(text, "en", lang)
-                                )
-                            except Exception:
-                                batch_results.append(text)
+                    batch_results, batch_succeeded = _translate_texts_exact(
+                        self.api,
+                        batch,
+                        lang,
+                    )
+                    language_succeeded = language_succeeded and batch_succeeded
                     translated_texts.extend(batch_results)
 
                     if detail_cb:
@@ -364,21 +685,34 @@ class FileTranslator:
                 if cancel_event and cancel_event.is_set():
                     break
 
-                # Rebuild paragraphs with translations
-                output_paras = list(paragraphs)
+                output_segments = list(segments)
                 trans_iter = iter(translated_texts)
                 for idx, _ in translatable:
-                    output_paras[idx] = next(trans_iter, output_paras[idx])
+                    original = output_segments[idx]
+                    leading_length = len(original) - len(original.lstrip())
+                    trailing_length = len(original) - len(original.rstrip())
+                    end = (
+                        len(original) - trailing_length
+                        if trailing_length
+                        else len(original)
+                    )
+                    output_segments[idx] = (
+                        original[:leading_length]
+                        + next(trans_iter, original[leading_length:end])
+                        + original[end:]
+                    )
 
                 out = _file_output_path(self.source_file, lang, self.ext)
-                with open(out, "w", encoding="utf-8") as fh:
-                    fh.write("\n\n".join(output_paras))
+                _write_atomic(out, lambda: "".join(output_segments))
 
-                results[lang] = True
+                results[lang] = language_succeeded
                 if progress_cb:
-                    progress_cb(lang, "success", i + 1, total)
+                    status = "success" if language_succeeded else "error: incomplete"
+                    progress_cb(lang, status, i + 1, total)
             except Exception as e:
-                log.warning("Failed translating %s to %s: %s", self.source_file.name, lang, e)
+                log.warning(
+                    "Failed translating %s to %s: %s", self.source_file.name, lang, e
+                )
                 results[lang] = False
                 if progress_cb:
                     progress_cb(lang, f"error: {e}", i + 1, total)
@@ -432,15 +766,46 @@ class FileTranslator:
 
             final_path = _file_output_path(self.source_file, lang, ".srt")
             incomplete_path = final_path.with_suffix(".srt.incomplete")
+            checkpoint_metadata_path = Path(f"{incomplete_path}.json")
+            source_digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
 
             try:
+                language_succeeded = True
                 # Resume: load already translated subtitles
                 translated_texts: list[str] = []
-                if incomplete_path.exists():
-                    partial = self._parse_srt(
-                        incomplete_path.read_text(encoding="utf-8")
+                incomplete_content = _read_regular_text(incomplete_path)
+                checkpoint_metadata_content = _read_regular_text(
+                    checkpoint_metadata_path
+                )
+                if (
+                    incomplete_content is not None
+                    and checkpoint_metadata_content is not None
+                ):
+                    partial = self._parse_srt(incomplete_content)
+                    try:
+                        checkpoint_metadata = json.loads(
+                            checkpoint_metadata_content
+                        )
+                    except (TypeError, ValueError):
+                        checkpoint_metadata = {}
+                    checkpoint_digest = hashlib.sha256(
+                        incomplete_content.encode("utf-8")
+                    ).hexdigest()
+                    resume_matches = (
+                        isinstance(checkpoint_metadata, dict)
+                        and checkpoint_metadata.get("version") == 1
+                        and checkpoint_metadata.get("source_sha256") == source_digest
+                        and checkpoint_metadata.get("checkpoint_sha256")
+                        == checkpoint_digest
+                        and checkpoint_metadata.get("completed") == len(partial)
+                        and 0 < len(partial) <= len(subtitles)
+                        and all(
+                            item["index"] == subtitles[index]["index"]
+                            and item["timecode"] == subtitles[index]["timecode"]
+                            for index, item in enumerate(partial)
+                        )
                     )
-                    if partial:
+                    if resume_matches:
                         translated_texts = [p["text"] for p in partial]
                         log.info(
                             "Resuming SRT %s: %d/%d already done",
@@ -464,18 +829,11 @@ class FileTranslator:
                     batch_indices = [
                         subtitles[batch_start + j]["index"] for j in range(len(batch))
                     ]
-                    try:
-                        batch_results = self.api.translate_batch(batch, "en", lang)
-                    except Exception:
-                        batch_results = []
-                        for text in batch:
-                            try:
-                                batch_results.append(
-                                    self.api.translate(text, "en", lang)
-                                )
-                            except Exception:
-                                batch_results.append(text)
-                    translated_texts.extend(batch_results)
+                    batch_results, batch_succeeded = _translate_texts_exact(
+                        self.api,
+                        batch,
+                        lang,
+                    )
 
                     # Emit detail pairs for this batch
                     if detail_cb:
@@ -487,11 +845,32 @@ class FileTranslator:
                         ]
                         detail_cb(lang, pairs)
 
+                    if not batch_succeeded:
+                        language_succeeded = False
+                        break
+
+                    translated_texts.extend(batch_results)
+
                     # Save progress to .incomplete file after each batch
                     partial_content = self._build_srt_content(
                         subtitles[: len(translated_texts)], translated_texts
                     )
-                    incomplete_path.write_text(partial_content, encoding="utf-8")
+                    _write_atomic(incomplete_path, lambda: partial_content)
+                    checkpoint_metadata = json.dumps(
+                        {
+                            "version": 1,
+                            "source_sha256": source_digest,
+                            "checkpoint_sha256": hashlib.sha256(
+                                partial_content.encode("utf-8")
+                            ).hexdigest(),
+                            "completed": len(translated_texts),
+                        },
+                        sort_keys=True,
+                    )
+                    _write_atomic(
+                        checkpoint_metadata_path,
+                        lambda: checkpoint_metadata,
+                    )
 
                     if progress_cb:
                         done = len(translated_texts)
@@ -506,7 +885,7 @@ class FileTranslator:
                 if cancel_event and cancel_event.is_set():
                     break
 
-                if len(translated_texts) != len(subtitles):
+                if not language_succeeded or len(translated_texts) != len(subtitles):
                     log.warning(
                         "Incomplete SRT for %s: %d/%d",
                         lang,
@@ -520,8 +899,9 @@ class FileTranslator:
 
                 # Complete: write final file and remove .incomplete
                 final_content = self._build_srt_content(subtitles, translated_texts)
-                final_path.write_text(final_content, encoding="utf-8")
+                _write_atomic(final_path, lambda: final_content)
                 incomplete_path.unlink(missing_ok=True)
+                checkpoint_metadata_path.unlink(missing_ok=True)
 
                 results[lang] = True
                 if progress_cb:

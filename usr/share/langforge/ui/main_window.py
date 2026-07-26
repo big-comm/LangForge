@@ -1,5 +1,8 @@
 """Main application window - Modern Adwaita Style."""
 
+# Imports below must follow GI version selection.
+# ruff: noqa: E402
+
 import gi
 
 gi.require_version("Gtk", "4.0")
@@ -130,9 +133,12 @@ class MainWindow(Adw.ApplicationWindow):
         self.selected_file = None
         self._string_count = 0
         self._mode = "project"  # "project" or "file"
+        self._quit_requested = False
+        self._quit_check_scheduled = False
 
         self.set_title("LangForge")
         self.set_default_size(1020, 720)
+        self.connect("close-request", self._on_close_request)
 
         self._load_css()
         self._build_ui()
@@ -548,6 +554,7 @@ class MainWindow(Adw.ApplicationWindow):
     def _on_welcome_settings_closed(self, dialog):
         """After first-run settings close, go to drop page."""
         self.settings = Settings()
+        self.controller.settings = self.settings
         self._refresh_api_dropdowns()
         self.stack.set_visible_child_name("drop")
         return False
@@ -578,15 +585,26 @@ class MainWindow(Adw.ApplicationWindow):
         self.success_page.set_child(btn_box)
         self.stack.add_named(self.success_page, "success")
 
-    def _show_success_page(self, success_count: int, elapsed_secs: float):
-        """Show the success celebration page."""
+    def _show_success_page(
+        self, success_count: int, elapsed_secs: float, failed_count: int = 0
+    ):
+        """Show the final result page."""
         mins, secs = divmod(int(elapsed_secs), 60)
         time_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
+
+        if failed_count:
+            self.success_page.set_icon_name("dialog-warning-symbolic")
+            self.success_page.set_title(_("Error"))
+        else:
+            self.success_page.set_icon_name("emblem-ok-symbolic")
+            self.success_page.set_title(_("Translation Complete!"))
 
         # Build description with optional cost info
         desc = _("{langs} languages translated in {time}").format(
             langs=success_count, time=time_str
         )
+        if failed_count:
+            desc += f"\n{failed_count} {_('error')}"
         usage = getattr(self.controller, "_last_usage", {})
         cost = usage.get("cost_usd", 0)
         if cost > 0:
@@ -676,9 +694,6 @@ class MainWindow(Adw.ApplicationWindow):
         self._configured_free_providers = []  # list of (label, provider_key)
         self._configured_paid_providers = []  # list of (label, provider_key)
 
-        # Providers that do not require an API key
-        _NO_KEY_REQUIRED = {"libretranslate"}
-
         free_provider_labels = {
             "deepl-free": "DeepL Free",
             "groq": "Groq",
@@ -688,11 +703,17 @@ class MainWindow(Adw.ApplicationWindow):
             "libretranslate": "LibreTranslate",
         }
 
-        # Free: show providers with configured key + those that need no key
+        # Free: show providers that can authenticate or use a custom self-host.
         for key, label in free_provider_labels.items():
-            if key in _NO_KEY_REQUIRED:
-                self._configured_free_providers.append((label, key))
-            elif self.settings.get_provider_key("free_api", key):
+            api_key = self.settings.get_provider_key("free_api", key)
+            if key == "libretranslate":
+                url = self.settings.get(
+                    "free_api.libretranslate_url",
+                    "https://libretranslate.com",
+                ).rstrip("/")
+                if api_key or url != "https://libretranslate.com":
+                    self._configured_free_providers.append((label, key))
+            elif api_key:
                 self._configured_free_providers.append((label, key))
 
         # Paid: show ONLY providers with configured key
@@ -707,12 +728,9 @@ class MainWindow(Adw.ApplicationWindow):
             if self.settings.get_provider_key("paid_api", key):
                 self._configured_paid_providers.append((label, key))
 
-        # Always show both API types
-        configured_types = [(_("Free"), "free"), (_("Paid"), "paid")]
-
-        # Ensure at least one free provider (LibreTranslate needs no key)
-        if not self._configured_free_providers:
-            self._configured_free_providers.append(("LibreTranslate", "libretranslate"))
+        configured_types = [(_("Free"), "free")]
+        if self._configured_paid_providers:
+            configured_types.append((_("Paid"), "paid"))
 
         self._configured_types = configured_types
 
@@ -737,6 +755,9 @@ class MainWindow(Adw.ApplicationWindow):
             if key == saved_type:
                 type_idx = i
                 break
+        selected_type = configured_types[type_idx][1]
+        if selected_type != saved_type:
+            self.settings.set_api_type(selected_type)
         self._updating_dropdowns = True
         self.api_type_row.set_selected(type_idx)
         self._update_sidebar_providers()
@@ -800,10 +821,17 @@ class MainWindow(Adw.ApplicationWindow):
             else:
                 saved = self.settings.get("paid_api.provider", "")
 
+            selected_provider = providers[0][1]
+            selected_index = 0
             for i, (_lbl, key) in enumerate(providers):
                 if key == saved:
-                    self.api_provider_row.set_selected(i)
+                    selected_provider = key
+                    selected_index = i
                     break
+            self.api_provider_row.set_selected(selected_index)
+            if selected_provider != saved:
+                section = "free_api" if type_key == "free" else "paid_api"
+                self.settings.set(f"{section}.provider", selected_provider)
         else:
             # No configured providers — show empty dropdown
             self.api_provider_row.set_model(Gtk.StringList.new([]))
@@ -852,6 +880,26 @@ class MainWindow(Adw.ApplicationWindow):
 
     # ── Callbacks ───────────────────────────────────────────────
 
+    def request_quit(self):
+        """Quit the application, waiting for an active worker if necessary."""
+        if self._defer_quit_for_translation():
+            return
+        app = self.get_application()
+        if app:
+            app.quit()
+
+    def _on_close_request(self, *_args):
+        """Keep the window alive until an active translation is finalized."""
+        return self._defer_quit_for_translation()
+
+    def _defer_quit_for_translation(self) -> bool:
+        if not self.controller.is_translating:
+            return False
+        if not self._quit_requested:
+            self._quit_requested = True
+            self._on_cancel_translation(None)
+        return True
+
     def _on_settings_clicked(self, button):
         dialog = SettingsDialog(self, self.settings)
         dialog.connect("close-request", self._on_settings_closed)
@@ -861,6 +909,7 @@ class MainWindow(Adw.ApplicationWindow):
         """Refresh sidebar dropdowns after settings dialog closes."""
         # Reload settings from disk
         self.settings = Settings()
+        self.controller.settings = self.settings
         self._refresh_api_dropdowns()
         return False
 
@@ -875,6 +924,8 @@ class MainWindow(Adw.ApplicationWindow):
         self._build_api_dropdowns(self.api_group)
 
     def _on_select_project(self, button):
+        if self.controller.is_translating:
+            return
         dialog = Gtk.FileDialog()
         dialog.set_modal(True)
         last_dir = self.settings.get("last_project_dir", "")
@@ -885,6 +936,8 @@ class MainWindow(Adw.ApplicationWindow):
         dialog.select_folder(self, None, self._on_folder_selected)
 
     def _on_select_file(self, button):
+        if self.controller.is_translating:
+            return
         dialog = Gtk.FileDialog()
         dialog.set_modal(True)
         last_dir = self.settings.get("last_file_dir", "")
@@ -903,6 +956,8 @@ class MainWindow(Adw.ApplicationWindow):
         dialog.open(self, None, self._on_file_selected)
 
     def _on_folder_selected(self, dialog, result):
+        if self.controller.is_translating:
+            return
         try:
             folder = dialog.select_folder_finish(result)
             if folder:
@@ -914,6 +969,8 @@ class MainWindow(Adw.ApplicationWindow):
             self._show_toast(f"{_('Error')}: {e}")
 
     def _on_file_selected(self, dialog, result):
+        if self.controller.is_translating:
+            return
         try:
             gfile = dialog.open_finish(result)
             if gfile:
@@ -925,6 +982,8 @@ class MainWindow(Adw.ApplicationWindow):
             self._show_toast(f"{_('Error')}: {e}")
 
     def _on_drop(self, target, value, x, y):
+        if self.controller.is_translating:
+            return False
         if isinstance(value, Gio.File):
             path = value.get_path()
             if path:
@@ -937,6 +996,8 @@ class MainWindow(Adw.ApplicationWindow):
         return False
 
     def _validate_and_set_project(self, path: str):
+        if self.controller.is_translating:
+            return
         try:
             textdomain, strings = self.controller.validate_project(path)
             self.selected_project = Path(path)
@@ -965,6 +1026,8 @@ class MainWindow(Adw.ApplicationWindow):
             self._show_toast(f"{_('Error')}: {_humanize_error(e)}")
 
     def _validate_and_set_file(self, path: str):
+        if self.controller.is_translating:
+            return
         try:
             filename, count = self.controller.validate_file(path)
             self.selected_file = Path(path)
@@ -1214,8 +1277,6 @@ class MainWindow(Adw.ApplicationWindow):
         """Handle translation pipeline completion."""
         success = sum(1 for v in results.values() if v)
         failed = sum(1 for v in results.values() if not v)
-        mins, secs = divmod(int(elapsed), 60)
-        elapsed_str = f"{mins}m{secs:02d}s" if mins else f"{secs}s"
 
         if was_cancelled:
             # Cancel UI already shown by _on_cancel_translation; just update
@@ -1230,7 +1291,7 @@ class MainWindow(Adw.ApplicationWindow):
                 self.progress_subtitle.set_label(cancel_msg)
         else:
             self.progress_ring.set_progress(1.0)
-            self._show_success_page(success, elapsed)
+            self._show_success_page(success, elapsed, failed)
         self._finish_translation()
 
     def _on_translation_error(self, error: Exception):
@@ -1266,12 +1327,25 @@ class MainWindow(Adw.ApplicationWindow):
 
         self.progress_subtitle.set_label(cancel_msg)
         self.progress_ring.set_progress(0.0)
-        self._finish_translation()
 
     def _finish_translation(self):
         self.translate_button.set_sensitive(True)
         self.translate_button.set_label(_("Start Translation"))
         self.cancel_button.set_sensitive(False)
+        if self._quit_requested and not self._quit_check_scheduled:
+            self._quit_check_scheduled = True
+            GLib.timeout_add(25, self._quit_when_translation_stops)
+
+    def _quit_when_translation_stops(self):
+        """Finish a deferred quit only after the worker releases its state."""
+        if self.controller.is_translating:
+            return True
+        self._quit_check_scheduled = False
+        self._quit_requested = False
+        app = self.get_application()
+        if app:
+            app.quit()
+        return False
 
     def _on_detail(self, lang: str, pairs: list[tuple[str, str, str]]):
         """Receive translation detail pairs from worker thread (via idle_add)."""

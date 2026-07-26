@@ -11,7 +11,11 @@ from api.factory import APIFactory
 from config.settings import Settings
 from core.compiler import MoCompiler
 from core.extractor import GettextExtractor
-from core.file_translator import FileTranslator, is_supported_file
+from core.file_translator import (
+    SUPPORTED_EXTENSIONS,
+    FileTranslator,
+    is_supported_file,
+)
 from core.scanner import ProjectScanner
 from core.translator import TranslationEngine
 from utils.i18n import _
@@ -29,21 +33,43 @@ class TranslationController:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.is_translating: bool = False
+        self._state_lock = threading.Lock()
         self._cancel_event = threading.Event()
         self._api_client: Optional[TranslationAPI] = None
         self._last_usage: dict = {}
 
+    def _begin_run(self) -> None:
+        """Claim the controller for one translation run."""
+        with self._state_lock:
+            if self.is_translating:
+                raise RuntimeError("Translation already in progress")
+            self.is_translating = True
+            self._cancel_event.clear()
+
+    def _finish_run(self) -> None:
+        """Release the controller after a translation run."""
+        with self._state_lock:
+            self.is_translating = False
+
     def _capture_usage(self) -> None:
         """Snapshot API usage stats into _last_usage and log if paid."""
-        if self._api_client:
+        if not self._api_client:
+            return
+        try:
             self._last_usage = self._api_client.get_usage()
-            u = self._last_usage
-            if u.get("cost_usd", 0) > 0:
-                log.info(
-                    "API usage: $%.4f | %d tokens (%d in + %d out) | %d calls",
-                    u["cost_usd"], u["total_tokens"],
-                    u["input_tokens"], u["output_tokens"], u["api_calls"],
-                )
+        except Exception as error:
+            log.warning("Could not capture API usage: %s", error)
+            return
+        usage = self._last_usage
+        if usage.get("cost_usd", 0) > 0:
+            log.info(
+                "API usage: $%.4f | %d tokens (%d in + %d out) | %d calls",
+                usage["cost_usd"],
+                usage["total_tokens"],
+                usage["input_tokens"],
+                usage["output_tokens"],
+                usage["api_calls"],
+            )
 
     # ── Project validation ──────────────────────────────────────
 
@@ -73,9 +99,12 @@ class TranslationController:
         if not p.is_file():
             raise ValueError(_("Not a file: {}").format(p.name))
         if not is_supported_file(p):
+            supported = ", ".join(sorted(SUPPORTED_EXTENSIONS))
             raise ValueError(
-                _("Unsupported file type: {ext}. "
-                  "Supported: .po, .pot, .json, .txt, .md").format(ext=p.suffix)
+                _("Unsupported file type: {ext}. Supported: {supported}").format(
+                    ext=p.suffix,
+                    supported=supported,
+                )
             )
 
         # Rough item count for the confirmation dialog
@@ -89,7 +118,19 @@ class TranslationController:
         elif ext == ".json":
             with open(p, "r", encoding="utf-8") as fh:
                 data = json.load(fh)
-            count = sum(1 for v in data.values() if isinstance(v, str) and v.strip())
+            if not isinstance(data, (dict, list)):
+                raise ValueError(_("JSON root must be an object or array"))
+
+            def count_strings(value):
+                if isinstance(value, str):
+                    return int(bool(value.strip()))
+                if isinstance(value, dict):
+                    return sum(count_strings(item) for item in value.values())
+                if isinstance(value, list):
+                    return sum(count_strings(item) for item in value)
+                return 0
+
+            count = count_strings(data)
         else:
             with open(p, "r", encoding="utf-8") as fh:
                 content = fh.read()
@@ -126,25 +167,27 @@ class TranslationController:
         Callbacks are invoked **from the worker thread** — the caller
         is responsible for marshalling to the UI thread (GLib.idle_add).
         """
-        self.is_translating = True
-        self._cancel_event.clear()
-
-        thread = threading.Thread(
-            target=self._run,
-            args=(
-                project_path,
-                languages,
-                on_phase,
-                on_lang_progress,
-                on_complete,
-                on_error,
-                compile_mo,
-                force_retranslate,
-                on_detail,
-            ),
-            daemon=True,
-        )
-        thread.start()
+        self._begin_run()
+        try:
+            thread = threading.Thread(
+                target=self._run,
+                args=(
+                    project_path,
+                    languages,
+                    on_phase,
+                    on_lang_progress,
+                    on_complete,
+                    on_error,
+                    compile_mo,
+                    force_retranslate,
+                    on_detail,
+                ),
+                daemon=True,
+            )
+            thread.start()
+        except Exception:
+            self._finish_run()
+            raise
 
     def start_file(
         self,
@@ -158,23 +201,25 @@ class TranslationController:
         on_detail: Optional[Callable[[str, list[tuple[str, str, str]]], None]] = None,
     ) -> None:
         """Run file translation in a background thread."""
-        self.is_translating = True
-        self._cancel_event.clear()
-
-        thread = threading.Thread(
-            target=self._run_file,
-            args=(
-                file_path,
-                languages,
-                on_phase,
-                on_lang_progress,
-                on_complete,
-                on_error,
-                on_detail,
-            ),
-            daemon=True,
-        )
-        thread.start()
+        self._begin_run()
+        try:
+            thread = threading.Thread(
+                target=self._run_file,
+                args=(
+                    file_path,
+                    languages,
+                    on_phase,
+                    on_lang_progress,
+                    on_complete,
+                    on_error,
+                    on_detail,
+                ),
+                daemon=True,
+            )
+            thread.start()
+        except Exception:
+            self._finish_run()
+            raise
 
     def cancel(self) -> None:
         """Signal the worker thread to stop at the next safe point."""
@@ -243,7 +288,40 @@ class TranslationController:
             if compile_mo and not self._cancel_event.is_set():
                 on_phase("compiling")
                 compiler = MoCompiler(project_path, textdomain)
-                compiler.compile_all()
+                compile_statuses: dict[str, str] = {}
+
+                def _capture_compile_status(
+                    lang: str, status: str, _current: int, _total: int
+                ) -> None:
+                    key = lang.replace("-", "_").casefold()
+                    compile_statuses[key] = status
+
+                compile_results = compiler.compile_all(
+                    progress_callback=_capture_compile_status
+                )
+                normalized_compile_results = {
+                    lang.replace("-", "_").casefold(): success
+                    for lang, success in compile_results.items()
+                }
+                total_results = len(results)
+                for current, (lang, translation_succeeded) in enumerate(
+                    list(results.items()), start=1
+                ):
+                    if not translation_succeeded:
+                        continue
+                    key = lang.replace("-", "_").casefold()
+                    if normalized_compile_results.get(key) is True:
+                        continue
+
+                    results[lang] = False
+                    status = compile_statuses.get(
+                        key, "error: MO compilation failed"
+                    )
+                    if "error" not in status.lower():
+                        status = "error: MO compilation failed"
+                    on_lang_progress(
+                        lang, status, current, total_results
+                    )
 
             # Capture usage BEFORE on_complete so the UI callback can read it
             self._capture_usage()
@@ -256,7 +334,7 @@ class TranslationController:
             on_error(e)
 
         finally:
-            self.is_translating = False
+            self._finish_run()
 
     def _run_file(
         self,
@@ -290,4 +368,4 @@ class TranslationController:
             on_error(e)
 
         finally:
-            self.is_translating = False
+            self._finish_run()
