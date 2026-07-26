@@ -5,12 +5,11 @@ import logging
 import requests
 
 from api.base import (
-    BatchAlignmentError,
     TranslationAPI,
     build_batch_prompt,
     build_translation_prompt,
     parse_batch_response,
-    prepare_batch_texts,
+    prepare_batch_request,
     retry_on_rate_limit,
 )
 from api.models import ModelSpec, default_model, get_model, normalize_model
@@ -55,6 +54,9 @@ def _track_model_usage(
 
 class OpenAIAPI(TranslationAPI):
     """OpenAI GPT-5 translation through Chat Completions."""
+
+    supports_item_instructions = True
+    supports_context = True
 
     def __init__(
         self,
@@ -108,6 +110,7 @@ class OpenAIAPI(TranslationAPI):
             target_lang,
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
+            getattr(self, "_item_instruction", ""),
         )
         response = self.client.chat.completions.create(
             model=self.model,
@@ -131,17 +134,7 @@ class OpenAIAPI(TranslationAPI):
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
             chunk = texts[start : start + sub_batch_size]
-            try:
-                results.extend(self._do_batch(chunk, source_lang, target_lang))
-            except BatchAlignmentError as exc:
-                log.warning(
-                    "OpenAI batch alignment failed; retrying the entire chunk "
-                    "individually: %s",
-                    exc,
-                )
-                results.extend(
-                    self.translate(text, source_lang, target_lang) for text in chunk
-                )
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
         return results
 
     @retry_on_rate_limit
@@ -154,7 +147,7 @@ class OpenAIAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
+        user_msg, expected_ids = prepare_batch_request(texts)
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
@@ -165,7 +158,7 @@ class OpenAIAPI(TranslationAPI):
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content or ""
-        return parse_batch_response(content, len(texts))
+        return parse_batch_response(content, expected_ids)
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenAI."""
@@ -189,6 +182,8 @@ class GeminiAPI(TranslationAPI):
     Uses new google-genai SDK (replaces deprecated google-generativeai).
     """
 
+    supports_item_instructions = True
+    supports_context = True
     batch_delay = 0.1  # Paid tier has 2000 RPM; retry handles bursts
 
     def __init__(
@@ -211,9 +206,7 @@ class GeminiAPI(TranslationAPI):
         )
         self._reset_usage()
 
-    def _config(
-        self, max_output_tokens: int, system_instruction: str = ""
-    ) -> dict:
+    def _config(self, max_output_tokens: int, system_instruction: str = "") -> dict:
         """Build Gemini 3 config without deprecated sampling parameters."""
         config: dict = {"max_output_tokens": max_output_tokens}
         if system_instruction:
@@ -247,6 +240,7 @@ class GeminiAPI(TranslationAPI):
             target_lang,
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
+            getattr(self, "_item_instruction", ""),
         )
         response = self.client.models.generate_content(
             model=self.model_name,
@@ -274,17 +268,7 @@ class GeminiAPI(TranslationAPI):
             if start > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            try:
-                results.extend(self._do_batch(chunk, source_lang, target_lang))
-            except BatchAlignmentError as exc:
-                log.warning(
-                    "Gemini batch alignment failed; retrying the entire chunk "
-                    "individually: %s",
-                    exc,
-                )
-                results.extend(
-                    self.translate(text, source_lang, target_lang) for text in chunk
-                )
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
         return results
 
     @retry_on_rate_limit
@@ -297,14 +281,14 @@ class GeminiAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
+        user_msg, expected_ids = prepare_batch_request(texts)
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=user_msg,
             config=self._config(2048, system_prompt),
         )
         self._track_gemini_response(response)
-        return parse_batch_response(response.text, len(texts))
+        return parse_batch_response(response.text, expected_ids)
 
     def test_connection(self) -> bool:
         """Test Gemini connection with actual generation."""
@@ -333,6 +317,9 @@ class GeminiAPI(TranslationAPI):
 
 class GrokAPI(TranslationAPI):
     """xAI Grok 4 translation through Chat Completions."""
+
+    supports_item_instructions = True
+    supports_context = True
 
     def __init__(
         self,
@@ -376,6 +363,7 @@ class GrokAPI(TranslationAPI):
             target_lang,
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
+            getattr(self, "_item_instruction", ""),
         )
         response = self.session.post(
             f"{self.base_url}/chat/completions",
@@ -411,17 +399,7 @@ class GrokAPI(TranslationAPI):
             if start > 0 and self.batch_delay > 0:
                 _time.sleep(self.batch_delay)
             chunk = texts[start : start + sub_batch_size]
-            try:
-                results.extend(self._do_batch(chunk, source_lang, target_lang))
-            except BatchAlignmentError as exc:
-                log.warning(
-                    "Grok batch alignment failed; retrying the entire chunk "
-                    "individually: %s",
-                    exc,
-                )
-                results.extend(
-                    self.translate(text, source_lang, target_lang) for text in chunk
-                )
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
         return results
 
     @retry_on_rate_limit
@@ -434,7 +412,7 @@ class GrokAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
+        user_msg, expected_ids = prepare_batch_request(texts)
         response = self.session.post(
             f"{self.base_url}/chat/completions",
             headers={"Authorization": f"Bearer {self.api_key}"},
@@ -454,7 +432,7 @@ class GrokAPI(TranslationAPI):
         data = response.json()
         self._track_grok_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        return parse_batch_response(content, len(texts))
+        return parse_batch_response(content, expected_ids)
 
     def test_connection(self) -> bool:
         """Testa conexão com Grok."""
@@ -476,6 +454,9 @@ class GrokAPI(TranslationAPI):
 
 class DeepSeekAPI(TranslationAPI):
     """DeepSeek V4 translation through its OpenAI-compatible endpoint."""
+
+    supports_item_instructions = True
+    supports_context = True
 
     def __init__(
         self,
@@ -536,6 +517,7 @@ class DeepSeekAPI(TranslationAPI):
             target_lang,
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
+            getattr(self, "_item_instruction", ""),
         )
         response = self.client.chat.completions.create(
             model=self.model,
@@ -559,17 +541,7 @@ class DeepSeekAPI(TranslationAPI):
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
             chunk = texts[start : start + sub_batch_size]
-            try:
-                results.extend(self._do_batch(chunk, source_lang, target_lang))
-            except BatchAlignmentError as exc:
-                log.warning(
-                    "DeepSeek batch alignment failed; retrying the entire "
-                    "chunk individually: %s",
-                    exc,
-                )
-                results.extend(
-                    self.translate(text, source_lang, target_lang) for text in chunk
-                )
+            results.extend(self._do_batch(chunk, source_lang, target_lang))
         return results
 
     @retry_on_rate_limit
@@ -582,7 +554,7 @@ class DeepSeekAPI(TranslationAPI):
             getattr(self, "_app_name", ""),
             getattr(self, "_context_entries", None),
         )
-        user_msg = "|||NEXT|||".join(prepare_batch_texts(texts))
+        user_msg, expected_ids = prepare_batch_request(texts)
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
@@ -593,7 +565,7 @@ class DeepSeekAPI(TranslationAPI):
         )
         self._track_deepseek_response(response)
         content = response.choices[0].message.content or ""
-        return parse_batch_response(content, len(texts))
+        return parse_batch_response(content, expected_ids)
 
     def test_connection(self) -> bool:
         """Testa conexão com DeepSeek."""

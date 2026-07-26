@@ -59,6 +59,10 @@ _LANG_EXTRA_KEYWORDS: dict[str, list[str]] = {
     ],
 }
 _LOCALE_DIR_NAMES = ("locale", "po", "locales", "translations")
+_POT_METADATA_TO_PRESERVE = (
+    "Project-Id-Version",
+    "Report-Msgid-Bugs-To",
+)
 
 
 def find_locale_directory(project_path: Path, textdomain: str) -> Path:
@@ -100,8 +104,7 @@ def find_locale_directory(project_path: Path, textdomain: str) -> Path:
     catalog_directories = {
         path.parent
         for path in project_files
-        if path.suffix == ".po"
-        and path.parent.name.casefold() in _LOCALE_DIR_NAMES
+        if path.suffix == ".po" and path.parent.name.casefold() in _LOCALE_DIR_NAMES
     }
     if catalog_directories:
         return min(
@@ -167,13 +170,36 @@ class GettextExtractor:
         if not source_files:
             raise ValueError("No source files provided for extraction")
 
+        existing_metadata: dict[str, str] = {}
+        existing_header = ""
+        if self.pot_file.is_file() and not self.pot_file.is_symlink():
+            try:
+                existing_pot = polib.pofile(str(self.pot_file))
+                existing_metadata = dict(existing_pot.metadata)
+                existing_header = existing_pot.header
+            except (OSError, UnicodeError, ValueError):
+                log.warning("Existing POT metadata could not be preserved")
+
         # Group files by xgettext language
         lang_groups: dict[str, list[str]] = {}
-        for f in source_files:
-            lang = _XGETTEXT_LANG_MAP.get(f.suffix)
+        for source_file in source_files:
+            source_path = Path(source_file)
+            if not source_path.is_absolute():
+                source_path = self.project_path / source_path
+            try:
+                resolved_source = source_path.resolve(strict=True)
+                relative_source = resolved_source.relative_to(self.project_path)
+            except (OSError, RuntimeError, ValueError) as error:
+                raise ValueError(
+                    f"Source file is outside the project: {source_file}"
+                ) from error
+            if not resolved_source.is_file():
+                raise ValueError(f"Source path is not a file: {source_file}")
+
+            lang = _XGETTEXT_LANG_MAP.get(resolved_source.suffix)
             if lang is None:
                 continue
-            lang_groups.setdefault(lang, []).append(str(f))
+            lang_groups.setdefault(lang, []).append(relative_source.as_posix())
 
         log.info(
             "Extracting from %d files across %d languages: %s",
@@ -199,7 +225,7 @@ class GettextExtractor:
                 work_dir = Path(temp_dir)
                 temp_pots: list[Path] = []
 
-                for index, (lang, files) in enumerate(lang_groups.items()):
+                for index, (lang, files) in enumerate(sorted(lang_groups.items())):
                     tmp_pot = work_dir / f"{index}.pot"
                     keywords = _BASE_KEYWORDS + _LANG_EXTRA_KEYWORDS.get(lang, [])
                     cmd = [
@@ -211,13 +237,19 @@ class GettextExtractor:
                         "--from-code=UTF-8",
                         "--add-comments",
                         "--force-po",
+                        "--no-wrap",
                         f"--output={tmp_pot}",
                         f"--package-name={self.textdomain}",
                         "--msgid-bugs-address=",
-                    ] + files
+                        "--",
+                    ] + sorted(files)
 
                     result = subprocess.run(
-                        cmd, check=True, capture_output=True, text=True
+                        cmd,
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                        cwd=self.project_path,
                     )
                     if result.stderr:
                         log.debug("xgettext (%s) stderr: %s", lang, result.stderr)
@@ -239,7 +271,13 @@ class GettextExtractor:
                     generated_pot = work_dir / "merged.pot"
                     cmd = ["msgcat", "--use-first", f"--output={generated_pot}"]
                     cmd.extend(str(p) for p in temp_pots)
-                    subprocess.run(cmd, check=True, capture_output=True, text=True)
+                    subprocess.run(
+                        cmd,
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                        cwd=self.project_path,
+                    )
 
                 if not generated_pot.exists():
                     return False
@@ -250,9 +288,19 @@ class GettextExtractor:
                     if not any(entry.msgid for entry in pot):
                         raise RuntimeError(
                             "No translatable strings found. Make sure your "
-                            "source files use gettext markers like _(\"text\") "
-                            "or gettext(\"text\")."
+                            'source files use gettext markers like _("text") '
+                            'or gettext("text").'
                         )
+                    for metadata_key in _POT_METADATA_TO_PRESERVE:
+                        if metadata_key in existing_metadata:
+                            pot.metadata[metadata_key] = existing_metadata[metadata_key]
+                    pot.metadata["Content-Type"] = "text/plain; charset=UTF-8"
+                    pot.metadata["Content-Transfer-Encoding"] = "8bit"
+                    if existing_header:
+                        pot.header = existing_header
+                    pot.encoding = "utf-8"
+                    pot.wrapwidth = 0
+                    pot.save(str(generated_pot))
                 except RuntimeError:
                     raise
                 except Exception as e:

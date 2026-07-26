@@ -16,11 +16,11 @@ from core.translator import (
     _protect_placeholders,
     _restore_placeholders,
     _validate_placeholders,
-    _fix_placeholders,
     _is_translation_plausible,
-    _match_newlines,
+    _match_boundary_whitespace,
+    _validate_translation_integrity,
 )
-from api.base import build_translation_prompt, TranslationAPI, clean_batch_parts, prepare_batch_texts, restore_batch_texts
+from api.base import build_translation_prompt, TranslationAPI
 
 
 class TestProtectPlaceholders:
@@ -70,9 +70,7 @@ class TestProtectPlaceholders:
         assert _restore_placeholders(protected, tokens) == text
 
     def test_escaped_curly_braces_are_not_placeholders(self):
-        protected, tokens = _protect_placeholders(
-            "{{literal}} and {value:{width}.2f}"
-        )
+        protected, tokens = _protect_placeholders("{{literal}} and {value:{width}.2f}")
 
         assert tokens == [("<x1/>", "{value:{width}.2f}")]
         assert protected == "{{literal}} and <x1/>"
@@ -139,32 +137,27 @@ class TestValidatePlaceholders:
         assert not _validate_placeholders("Hello", "Olá %s")
 
 
-class TestFixPlaceholders:
-    def test_adds_missing_placeholder(self):
-        result = _fix_placeholders("Hello %s", "Olá")
-        assert "%s" in result
-
-    def test_preserves_correct_translation(self):
-        result = _fix_placeholders("Hello %s", "Olá %s")
-        assert result == "Olá %s"
-
-    def test_repairs_unsafe_unnumbered_reordering_without_cascade(self):
-        result = _fix_placeholders("%s has %d items", "%d itens de %s")
-
-        assert result == "%s itens de %d"
-        assert _validate_placeholders("%s has %d items", result)
-
-
 class TestBuildTranslationPrompt:
     def test_includes_app_name(self):
         prompt = build_translation_prompt("en", "pt-BR", app_name="ashy-term")
-        assert "Ashy Term" in prompt
+        assert "ashy-term" in prompt
 
     def test_app_name_in_do_not_translate_rule(self):
         prompt = build_translation_prompt("en", "pt-BR", app_name="ashy-term")
-        assert "NEVER translate the application name" in prompt
-        # App name must appear at least twice (intro + rule)
-        assert prompt.count("Ashy Term") >= 2
+        assert "gettext textdomain is 'ashy-term'" in prompt
+        assert "not automatically a display name" in prompt
+
+    def test_trusted_item_instruction_is_separate_from_ui_samples(self):
+        prompt = build_translation_prompt(
+            "en",
+            "ru",
+            context_entries=["Open", "Close"],
+            item_instruction="Use gettext plural form 2 for example count 5.",
+        )
+
+        assert "other UI strings" in prompt
+        assert "Additional requirement for this item" in prompt
+        assert "plural form 2" in prompt
 
     def test_includes_source_and_target(self):
         prompt = build_translation_prompt("en", "pt-BR")
@@ -199,7 +192,7 @@ class TestBuildTranslationPrompt:
 
     def test_textdomain_with_underscores(self):
         prompt = build_translation_prompt("en", "de", app_name="my_cool_app")
-        assert "My Cool App" in prompt
+        assert "my_cool_app" in prompt
 
 
 class TestSetContext:
@@ -207,8 +200,10 @@ class TestSetContext:
         class DummyAPI(TranslationAPI):
             def translate(self, text, source_lang, target_lang):
                 return text
+
             def test_connection(self):
                 return True
+
             def get_name(self):
                 return "Dummy"
 
@@ -221,8 +216,10 @@ class TestSetContext:
         class DummyAPI(TranslationAPI):
             def translate(self, text, source_lang, target_lang):
                 return text
+
             def test_connection(self):
                 return True
+
             def get_name(self):
                 return "Dummy"
 
@@ -232,105 +229,130 @@ class TestSetContext:
         assert api._context_entries == []
 
 
-class TestBatchNewlineNormalization:
-    def test_prepare_replaces_newlines(self):
-        texts = ["Line1\nLine2", "Single"]
-        safe = prepare_batch_texts(texts)
-        assert "\n" not in safe[0]
-        assert "<NL>" in safe[0]
-        # prepare now adds [N] numbering prefix for batch alignment
-        assert safe[1] == "[2] Single"
+class TestTranslationIntegrity:
+    def test_restores_exact_boundary_whitespace(self):
+        assert _match_boundary_whitespace(" \nHello\t", "  Olá  ") == " \nOlá\t"
 
-    def test_restore_reverts_placeholder(self):
-        parts = ["Linha1 <NL> Linha2", "Simples"]
-        restored = restore_batch_texts(parts)
-        assert restored[0] == "Linha1\nLinha2"
-        assert restored[1] == "Simples"
+    @pytest.mark.parametrize(
+        ("source", "translation"),
+        [
+            ("First line\nSecond line", "Première ligne<br>Deuxième ligne"),
+            ("Open GitHub README.md", "Ouvrir GitLab LISEZ-MOI.md"),
+            ("Run git commit --amend", "Exécuter git confirmer --modifier"),
+            ("Retry in 30 seconds", "Réessayer dans 3 secondes"),
+            ("Retry in 30 seconds", "Réessayer dans 300 secondes"),
+            ("Wait 30s", "Attendre 3s"),
+            ("gtk4", "gtk5"),
+            ("Value -10", "Valeur 10"),
+            ("Progress 30%", "Progression 30"),
+            ("30 files/10 seconds", "10 fichiers/30 secondes"),
+            ("Choose one of 2 options", "Choisir parmi 2 options, numéro 1"),
+            ("less than 1 min", "moins de 2 min"),
+            ("3. Name", "4. Nom"),
+            ("Use https://example.com", "Utiliser https://example.com.evil"),
+            ("Use /usr/bin/git", "Utiliser /usr/bin/gitte"),
+            ("Run git commit", "Exécuter git commit git commit"),
+            ("Run git credential reject", "Exécuter git credential rejeter"),
+            ("Run sudo pacman -Syu", "Exécuter pacman -Syu"),
+            ("Run git add -A", "Exécuter git add -Afoo"),
+            ("Open settings", "Ouvrir {param"),
+            ("Hello {name}", "Bonjour {name} {broken"),
+            ("Select %1", "Sélectionnez %2"),
+            ("Use $1 and $HOME", "Utiliser $2 et $ACCUEIL"),
+            ("Value ${HOME}", "Valeur {HOME}"),
+            ("Value %s", "Valeur %s %BROKEN"),
+            ("Tom &amp; Jerry", "Tom et Jerry"),
+            ("Use &lt;name&gt;", "Utiliser nom"),
+            ("[{0}/{1}] {2}", "[13] {0}/{1} {2}"),
+            ("Open settings", "Ouvrir\x00 paramètres"),
+            ("Open settings", "Ouvrir\x01 paramètres"),
+            ("Open settings", "Ouvrir\tparamètres"),
+            ("Open settings", "Ouvrir\rparamètres"),
+            ("Safe source", "Traduction |||NEXT||"),
+            ("Safe source", "Traduction <x2>"),
+            ("Safe source", "Traduction [13]"),
+        ],
+    )
+    def test_rejects_structural_corruption(self, source, translation):
+        assert not _validate_translation_integrity(source, translation)
 
-    def test_restore_strips_stray_separator(self):
-        parts = ["- Fala A|||NEXT|||– Fala B"]
-        restored = restore_batch_texts(parts)
-        assert "|||NEXT|||" not in restored[0]
-        assert restored[0] == "- Fala A– Fala B"
+    def test_accepts_localized_grammar_around_protected_terms(self):
+        assert _validate_translation_integrity(
+            "Commit reached origin with GitHub cache",
+            "Commit saavutti origin-haaran GitHub-välimuistin",
+        )
 
-    def test_roundtrip(self):
-        originals = ["First\nSecond\nThird", "No newlines", "A\nB"]
-        safe = prepare_batch_texts(originals)
-        restored = restore_batch_texts(safe)
-        assert restored == originals
+    def test_accepts_localized_number_separators_and_sentence_punctuation(self):
+        assert _validate_translation_integrity(
+            "Visit https://example.com. Version 1.5, total 1,000.",
+            "https://example.com を参照。バージョン 1,5、合計 1.000。",
+        )
 
-    def test_empty_list(self):
-        assert prepare_batch_texts([]) == []
-        assert restore_batch_texts([]) == []
+    def test_accepts_source_number_word_rendered_as_a_digit(self):
+        assert _validate_translation_integrity(
+            "Container must produce exactly one ISO file",
+            "Le conteneur doit produire exactement 1 fichier ISO",
+        )
 
-    def test_clean_batch_parts_basic(self):
-        raw = "One|||NEXT|||Two|||NEXT|||Three"
-        assert clean_batch_parts(raw) == ["One", "Two", "Three"]
+    def test_literal_boundaries_do_not_match_inside_words(self):
+        assert _validate_translation_integrity(
+            "SUBMIT PROFILE MESSAGES",
+            "ENVIAR PERFIL MENSAGENS",
+        )
 
-    def test_clean_batch_parts_strips_leading_separator(self):
-        raw = "|||NEXT|||One|||NEXT|||Two"
-        assert clean_batch_parts(raw) == ["One", "Two"]
+    def test_brand_identity_is_case_insensitive_but_not_interchangeable(self):
+        assert not _validate_translation_integrity(
+            "Open github",
+            "Ouvrir gitlab",
+        )
 
-    def test_clean_batch_parts_strips_trailing_empty(self):
-        raw = "One|||NEXT|||Two|||NEXT|||"
-        assert clean_batch_parts(raw) == ["One", "Two"]
+    def test_brand_prefix_does_not_accept_camel_case_extension(self):
+        assert not _validate_translation_integrity(
+            "Open GitHub",
+            "Ouvrir GitHubEvil",
+        )
 
-    def test_clean_batch_parts_strips_numbering(self):
-        raw = "[1] First|||NEXT|||[2] Second|||NEXT|||[3] Third"
-        assert clean_batch_parts(raw) == ["First", "Second", "Third"]
+    def test_brand_root_allows_grammatical_suffix(self):
+        assert _validate_translation_integrity(
+            "Open GitHub",
+            "Otevřít GitHubu",
+        )
 
-    def test_clean_batch_parts_mixed_numbering(self):
-        """LLM echoes numbering on some parts but not all."""
-        raw = "[1] First|||NEXT|||Second|||NEXT|||[3] Third"
-        assert clean_batch_parts(raw) == ["First", "Second", "Third"]
+    def test_indexed_qt_placeholders_may_reorder(self):
+        assert _validate_translation_integrity(
+            "Copy %1. Then %L2.",
+            "Dann %L2 kopieren. Danach %1.",
+        )
 
-    def test_prepare_batch_adds_numbering(self):
-        texts = ["Alpha", "Beta", "Gamma"]
-        safe = prepare_batch_texts(texts)
-        assert safe == ["[1] Alpha", "[2] Beta", "[3] Gamma"]
+    @pytest.mark.parametrize(
+        ("source", "translation"),
+        [
+            ("_File", "F_ichier"),
+            ("&Open", "O&uvrir"),
+        ],
+    )
+    def test_accelerators_may_move(self, source, translation):
+        assert _validate_translation_integrity(source, translation)
 
-    def test_restore_batch_strips_numbering(self):
-        parts = ["[1] Alpha", "[2] Beta"]
-        restored = restore_batch_texts(parts)
-        assert restored == ["Alpha", "Beta"]
+    def test_internal_accelerator_cannot_disappear(self):
+        assert not _validate_translation_integrity("E_xit", "Quitter")
+        assert _validate_translation_integrity("E_xit", "Q_uitter")
 
-    def test_restore_nl_without_trailing_space(self):
-        """LLM drops trailing space from <NL> at end of string."""
-        parts = ["Copyright Team <NL>  <NL>"]
-        restored = restore_batch_texts(parts)
-        assert restored[0] == "Copyright Team\n\n"
+    def test_unconfigured_textdomain_is_not_treated_as_a_brand(self):
+        assert _validate_translation_integrity(
+            "Open the app",
+            "Ouvrir l’application",
+        )
 
-    def test_restore_nl_preserves_trailing_newlines(self):
-        """Trailing newlines must not be stripped."""
-        safe = prepare_batch_texts(["Line1\n\n"])
-        restored = restore_batch_texts(safe)
-        assert restored == ["Line1\n\n"]
-
-    def test_restore_nl_no_false_positive(self):
-        """Text without <NL> should not be altered."""
-        parts = ["Simple text"]
-        restored = restore_batch_texts(parts)
-        assert restored == ["Simple text"]
+    def test_explicit_display_name_is_preserved(self):
+        assert not _validate_translation_integrity(
+            "Open my-app",
+            "Ouvrir Mon Appli",
+            "my-app",
+        )
 
 
-class TestMatchNewlines:
-    def test_trailing_newlines_added(self):
-        assert _match_newlines("Hello\n\n", "Olá") == "Olá\n\n"
-
-    def test_trailing_newlines_removed(self):
-        assert _match_newlines("Hello", "Olá\n\n") == "Olá"
-
-    def test_leading_newlines_added(self):
-        assert _match_newlines("\nHello", "Olá") == "\nOlá"
-
-    def test_matching_newlines_unchanged(self):
-        assert _match_newlines("Hello\n", "Olá\n") == "Olá\n"
-
-    def test_empty_msgstr(self):
-        assert _match_newlines("Hello\n", "") == ""
-
-    def test_no_newlines(self):
-        assert _match_newlines("Hello", "Olá") == "Olá"
+class TestTranslationPlausibility:
     def test_normal_translation(self):
         assert _is_translation_plausible("Hello world", "Olá mundo") is True
 
@@ -400,16 +422,14 @@ class TestRestorePlaceholdersCorruption:
         tokens = [("<x1/>", "%s")]
         assert _restore_placeholders(text, tokens) == "Olá %s mundo"
 
-    def test_stripped_tags(self):
+    def test_stripped_tags_are_not_guessed(self):
         text = "Olá x1 mundo"
         tokens = [("<x1/>", "%s")]
-        assert _restore_placeholders(text, tokens) == "Olá %s mundo"
+        assert _restore_placeholders(text, tokens) == text
 
-    def test_residual_xml_cleanup(self):
-        """Unknown residual XML tokens should be removed."""
+    def test_unknown_residual_xml_is_preserved_for_validation(self):
         text = "Olá <x99/> mundo"
-        tokens = []  # No tokens to restore, but residual should be cleaned
-        assert _restore_placeholders(text, tokens) == "Olá  mundo"
+        assert _restore_placeholders(text, []) == text
 
     def test_multiple_corruptions(self):
         text = "A <X1/> B <x2 /> C"
@@ -417,48 +437,17 @@ class TestRestorePlaceholdersCorruption:
         result = _restore_placeholders(text, tokens)
         assert result == "A %s B %d C"
 
+    def test_overlapping_qt_and_printf_tokens_round_trip(self):
+        text = "Value %1.2f, Qt %1 and %L2, named %(value)s"
+        protected, tokens = _protect_placeholders(text)
 
-class TestFixPlaceholdersAdvanced:
-    """Tests for improved _fix_placeholders with spurious/extra removal."""
-
-    def test_removes_spurious_placeholders(self):
-        """If original has no placeholders, remove any LLM added."""
-        original = "Hello world"
-        translated = "Olá %s mundo"
-        result = _fix_placeholders(original, translated)
-        assert "%s" not in result
-
-    def test_removes_extra_curly_placeholders(self):
-        original = "Hello world"
-        translated = "Hola {mundo} world"
-        result = _fix_placeholders(original, translated)
-        assert "{mundo}" not in result
-
-    def test_fixes_renamed_placeholder(self):
-        original = "Found {count} items"
-        translated = "Encontrado {contagem} itens"
-        result = _fix_placeholders(original, translated)
-        assert "{count}" in result
-        assert "{contagem}" not in result
-
-    def test_removes_extra_when_more_than_original(self):
-        original = "Hello %s"
-        translated = "Olá %s %d"
-        result = _fix_placeholders(original, translated)
-        assert "%d" not in result
-        assert "%s" in result
-
-    def test_preserves_correct_translation(self):
-        original = "{name} has {count} items"
-        translated = "{name} tem {count} itens"
-        result = _fix_placeholders(original, translated)
-        assert result == "{name} tem {count} itens"
-
-    def test_appends_missing(self):
-        original = "Hello %s and %d"
-        translated = "Olá %s e"
-        result = _fix_placeholders(original, translated)
-        assert "%d" in result
+        assert _restore_placeholders(protected, tokens) == text
+        assert [placeholder for _token, placeholder in tokens] == [
+            "%1.2f",
+            "%1",
+            "%L2",
+            "%(value)s",
+        ]
 
 
 class TestCatalogWrites:
@@ -498,9 +487,7 @@ class TestCatalogWrites:
             0: "{count} file",
             1: "{count} files",
         }
-        assert translated.metadata["Plural-Forms"] == (
-            "nplurals=2; plural=(n != 1);"
-        )
+        assert translated.metadata["Plural-Forms"] == ("nplurals=2; plural=(n != 1);")
 
     def test_failed_atomic_save_preserves_existing_catalog(self, tmp_path):
         destination = tmp_path / "app.po"
@@ -549,10 +536,136 @@ class TestCatalogWrites:
         assert polib.pofile(str(output))[0].msgstr == "fr:Open"
         assert victim.read_text(encoding="utf-8") == "do not change"
 
+    def test_project_merge_removes_obsolete_entries(self, tmp_path):
+        class NoCallAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, *_args, **_kwargs):
+                pytest.fail("No translation should be needed")
+
+            def translate_batch(self, *_args, **_kwargs):
+                pytest.fail("No translation should be needed")
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.metadata = {"Project-Id-Version": "Example 1.0"}
+        pot.append(polib.POEntry(msgid="Open"))
+        pot.save(str(pot_path))
+        existing = polib.POFile()
+        existing.append(polib.POEntry(msgid="Open", msgstr="Ouvrir"))
+        existing.append(polib.POEntry(msgid="Removed", msgstr="Ancien", obsolete=True))
+        existing.save(str(tmp_path / "fr.po"))
+
+        TranslationEngine(NoCallAPI(), "app").translate_language(
+            pot_path, "fr", tmp_path
+        )
+
+        translated = polib.pofile(str(tmp_path / "fr.po"))
+        assert not translated.obsolete_entries()
+        assert translated.metadata["Project-Id-Version"] == "Example 1.0"
+        assert translated.metadata["X-Generator"] == "LangForge"
+
+    def test_project_merge_copies_empty_template_metadata(self, tmp_path):
+        class NoCallAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, *_args, **_kwargs):
+                pytest.fail("No translation should be needed")
+
+            def translate_batch(self, *_args, **_kwargs):
+                pytest.fail("No translation should be needed")
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.metadata = {"Report-Msgid-Bugs-To": ""}
+        pot.append(polib.POEntry(msgid="Open"))
+        pot.save(str(pot_path))
+        existing = polib.POFile()
+        existing.metadata = {"Report-Msgid-Bugs-To": "old@example.test"}
+        existing.append(polib.POEntry(msgid="Open", msgstr="Ouvrir"))
+        existing.save(str(tmp_path / "fr.po"))
+
+        TranslationEngine(NoCallAPI(), "app").translate_language(
+            pot_path, "fr", tmp_path
+        )
+
+        translated = polib.pofile(str(tmp_path / "fr.po"))
+        assert translated.metadata["Report-Msgid-Bugs-To"] == ""
+
+    def test_existing_corrupt_translation_is_rejected_without_force(self, tmp_path):
+        class NoCallAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, *_args, **_kwargs):
+                pytest.fail("Existing non-fuzzy entries are audited, not translated")
+
+            def translate_batch(self, *_args, **_kwargs):
+                pytest.fail("Existing non-fuzzy entries are audited, not translated")
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.append(polib.POEntry(msgid="Open settings"))
+        pot.save(str(pot_path))
+        existing = polib.POFile()
+        existing.append(
+            polib.POEntry(msgid="Open settings", msgstr="Ouvrir <br> paramètres")
+        )
+        existing.save(str(tmp_path / "fr.po"))
+        engine = TranslationEngine(NoCallAPI(), "app")
+
+        count = engine.translate_language(pot_path, "fr", tmp_path)
+
+        entry = polib.pofile(str(tmp_path / "fr.po"))[0]
+        assert count == 0
+        assert entry.msgstr == entry.msgid
+        assert "fuzzy" in entry.flags
+        assert engine.last_language_complete is False
+
+    def test_textdomain_name_is_audited_only_as_project_context(self, tmp_path):
+        class NoCallAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, *_args, **_kwargs):
+                pytest.fail("Existing entry should not call the API")
+
+            def translate_batch(self, *_args, **_kwargs):
+                pytest.fail("Existing entry should not call the API")
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.append(polib.POEntry(msgid="Open the app"))
+        pot.save(str(pot_path))
+        existing = polib.POFile()
+        existing.append(
+            polib.POEntry(msgid="Open the app", msgstr="Ouvrir l’application")
+        )
+        existing.save(str(tmp_path / "fr.po"))
+        engine = TranslationEngine(NoCallAPI(), "app")
+
+        engine.translate_language(pot_path, "fr", tmp_path)
+
+        entry = polib.pofile(str(tmp_path / "fr.po"))[0]
+        assert entry.msgstr == "Ouvrir l’application"
+        assert "fuzzy" not in entry.flags
+        assert engine.last_language_complete is True
+
 
 class TestContextCache:
     class SequencedAPI:
         batch_delay = 0
+        supports_context = True
 
         def __init__(self, outputs=None, fail=False):
             self.outputs = outputs or []
@@ -581,6 +694,18 @@ class TestContextCache:
         for entry in entries:
             catalog.append(entry)
         catalog.save(str(path))
+
+    def test_fix_context_requires_explicit_provider_capability(self, tmp_path):
+        api = self.SequencedAPI(["New"])
+        api.supports_context = False
+
+        with pytest.raises(RuntimeError, match="does not support"):
+            TranslationEngine(api, "app").fix_context(
+                tmp_path / "app.pot",
+                tmp_path,
+                reference_lang="fr",
+                languages=["fr"],
+            )
 
     def test_duplicate_msgids_with_distinct_contexts_are_checked(self, tmp_path):
         pot_path = tmp_path / "app.pot"
@@ -612,6 +737,101 @@ class TestContextCache:
             "Menu new",
             "Verb new",
         ]
+
+    def test_reference_catalog_is_merged_and_canonicalized(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.metadata = {
+            "Project-Id-Version": "Example 2.0",
+            "Report-Msgid-Bugs-To": "",
+        }
+        pot.append(polib.POEntry(msgid="Open"))
+        pot.append(polib.POEntry(msgid="Added"))
+        pot.save(str(pot_path))
+        reference = polib.POFile()
+        reference.metadata = {
+            "Project-Id-Version": "Example 1.0",
+            "Report-Msgid-Bugs-To": "old@example.test",
+        }
+        reference.append(polib.POEntry(msgid="Open", msgstr="Ouvrir"))
+        reference.append(polib.POEntry(msgid="Removed", msgstr="Ancien", obsolete=True))
+        reference.save(str(tmp_path / "fr.po"))
+
+        result = TranslationEngine(
+            self.SequencedAPI(["Ouvrir", "Ajouté"]),
+            "app",
+        ).fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        translated = polib.pofile(str(tmp_path / "fr.po"))
+        assert result == {"fr": True}
+        assert translated.find("Added").msgstr == "Ajouté"
+        assert not translated.obsolete_entries()
+        assert translated.metadata["Project-Id-Version"] == "Example 2.0"
+        assert translated.metadata["Report-Msgid-Bugs-To"] == ""
+        assert translated.metadata["X-Generator"] == "LangForge"
+
+    def test_reference_context_fix_restores_exact_boundary_whitespace(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid=" Open ")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid=" Open ", msgstr="Ouvrir")],
+        )
+
+        result = TranslationEngine(
+            self.SequencedAPI(["Ouvrir"]),
+            "app",
+        ).fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        entry = polib.pofile(str(tmp_path / "fr.po"))[0]
+        assert result == {"fr": True}
+        assert entry.msgstr == " Ouvrir "
+
+    def test_reference_language_is_included_in_workflow_progress(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Ancien")],
+        )
+        self._write_catalog(
+            tmp_path / "de.po",
+            [polib.POEntry(msgid="Open", msgstr="Alt")],
+        )
+        progress = []
+
+        result = TranslationEngine(
+            self.SequencedAPI(["Nouveau"]),
+            "app",
+        ).fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["de"],
+            progress_callback=lambda lang, status, current, total: progress.append(
+                (lang, status, current, total)
+            ),
+        )
+
+        assert result == {"fr": True, "de": True}
+        assert {item[0] for item in progress} == {"fr", "de"}
+        language_progress = [
+            (lang, current, total)
+            for lang, status, current, total in progress
+            if status == "success: reference language"
+            or status.startswith("success: fixed")
+        ]
+        assert language_progress == [("fr", 1, 2), ("de", 2, 2)]
 
     def test_failed_reference_check_is_reported_and_cached(self, tmp_path):
         pot_path = tmp_path / "app.pot"
@@ -684,7 +904,7 @@ class TestContextCache:
         cache_path.write_text(
             json.dumps(
                 {
-                    "version": 2,
+                    "version": 3,
                     "fingerprint": "stale",
                     "checked": ['["","Open",""]'],
                     "changed": [],
@@ -693,6 +913,39 @@ class TestContextCache:
             ),
             encoding="utf-8",
         )
+        api = self.SequencedAPI(["New"])
+
+        result = TranslationEngine(api, "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+        )
+
+        assert result == {"fr": True}
+        assert api.batch_calls == 1
+
+    def test_legacy_policy_cache_is_ignored(self, tmp_path):
+        pot_path = tmp_path / "app.pot"
+        self._write_catalog(pot_path, [polib.POEntry(msgid="Open")])
+        self._write_catalog(
+            tmp_path / "fr.po",
+            [polib.POEntry(msgid="Open", msgstr="Old")],
+        )
+        cancel_event = threading.Event()
+        cancel_event.set()
+        TranslationEngine(self.SequencedAPI(["New"]), "app").fix_context(
+            pot_path,
+            tmp_path,
+            reference_lang="fr",
+            languages=["fr"],
+            cancel_event=cancel_event,
+        )
+        cache_path = tmp_path / ".langforge_context_cache.json"
+        cache = json.loads(cache_path.read_text(encoding="utf-8"))
+        cache["version"] = 2
+        cache["checked"] = ['["","Open",""]']
+        cache_path.write_text(json.dumps(cache), encoding="utf-8")
         api = self.SequencedAPI(["New"])
 
         result = TranslationEngine(api, "app").fix_context(
@@ -728,7 +981,7 @@ class TestContextCache:
         )
 
         assert not cache_path.is_symlink()
-        assert json.loads(cache_path.read_text(encoding="utf-8"))["version"] == 2
+        assert json.loads(cache_path.read_text(encoding="utf-8"))["version"] == 3
         assert victim.read_text(encoding="utf-8") == "keep"
 
     @pytest.mark.parametrize("method", ["translate_language", "fix_context"])

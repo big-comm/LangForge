@@ -1,10 +1,12 @@
 """Interface abstrata para APIs de tradução."""
 
 import functools
+import json
 import logging
 import math
 import random
 import re
+import secrets
 import time
 from abc import ABC, abstractmethod
 from datetime import timezone
@@ -60,11 +62,12 @@ def _resolve_lang(code: str) -> str:
 
 _TRANSLATION_PROMPT = (
     "You are a professional translator specializing in software localization. "
-    "You are translating UI strings for the application '{app_name}'. "
+    "The project's gettext textdomain is '{app_name}'. "
     "Translate the following text from {source} to {target}.\n\n"
     "CRITICAL RULES:\n"
-    "1. NEVER translate the application name '{app_name}' or any variation of it — "
-    "it is a proper noun and must remain exactly as written.\n"
+    "1. Use the textdomain only as project context. Preserve it when it appears as "
+    "a technical identifier or proper project name, but translate ordinary words "
+    "normally; a textdomain is not automatically a display name.\n"
     "2. NEVER translate brand names, product names, project names, or proper nouns.\n"
     "3. Use natural, contextual translation appropriate for a software UI — "
     "do NOT translate word-by-word or literally.\n"
@@ -73,7 +76,15 @@ _TRANSLATION_PROMPT = (
     "{{}}, %s, %d, and formatting codes EXACTLY as they are. "
     "Do NOT translate, rename, or modify ANY text inside curly braces {{}} or XML tags. "
     "For example, {{total}} must stay as {{total}}, NOT be translated.\n"
-    "6. Return ONLY the translated text, nothing else.\n"
+    "6. Preserve commands, paths, URLs, references, flags, environment variables, "
+    "and software identifiers byte-for-byte.\n"
+    "7. Preserve the exact newline count and leading/trailing whitespace.\n"
+    "8. Preserve numeric values, signs, percentages, order, negation, tense, and "
+    "the role of every placeholder. Decimal and thousands separators may follow "
+    "the target locale. "
+    "Silently verify these constraints before answering.\n"
+    "9. Return ONLY the translated text. Never emit protocol markers, labels, "
+    "explanations, or Markdown fences.\n"
     "{context_section}"
 )
 
@@ -95,6 +106,7 @@ def build_translation_prompt(
     target: str,
     app_name: str = "",
     context_entries: Optional[list[str]] = None,
+    item_instruction: str = "",
 ) -> str:
     """Build the translation system prompt with application context.
 
@@ -103,11 +115,9 @@ def build_translation_prompt(
         target: Target language name or code.
         app_name: Application textdomain / identifier (e.g. 'ashy-term').
         context_entries: Sample msgid strings for disambiguation.
+        item_instruction: Trusted per-item grammatical constraint.
     """
-    # Derive a human-readable display name from the textdomain
-    display_name = (
-        app_name.replace("-", " ").replace("_", " ").title() if app_name else "unknown"
-    )
+    display_name = app_name or "unknown"
 
     context_section = ""
     if context_entries:
@@ -115,6 +125,10 @@ def build_translation_prompt(
         context_section = (
             f"\nFor context, other UI strings from this application include:\n"
             f"{samples}\n"
+        )
+    if item_instruction:
+        context_section += (
+            f"\nAdditional requirement for this item:\n  - {item_instruction}\n"
         )
 
     return _TRANSLATION_PROMPT.format(
@@ -127,19 +141,25 @@ def build_translation_prompt(
 
 _BATCH_PROMPT = (
     "You are a professional translator specializing in software localization. "
-    "You are translating UI strings for the application '{app_name}'. "
+    "The project's gettext textdomain is '{app_name}'. "
     "Translate ALL the following texts from {source} to {target}.\n\n"
     "CRITICAL RULES:\n"
-    "1. NEVER translate the application name '{app_name}' — it is a proper noun.\n"
+    "1. Use the textdomain only as project context. Preserve it when it appears as "
+    "a technical identifier or proper project name, but translate ordinary words "
+    "normally.\n"
     "2. NEVER translate brand names, product names, or proper nouns.\n"
     "3. Use natural, contextual translation for a software UI.\n"
-    "4. Preserve XML tags (<x1/>, <x2/>), placeholders ({{}}, %s, %d) EXACTLY as-is. "
-    "Do NOT translate, rename, or modify ANY text inside curly braces {{}} or XML tags.\n"
-    "5. The input texts are numbered [1], [2], etc. Return translations in the EXACT same order "
-    "with the SAME numbering.\n"
-    "6. Use the separator |||NEXT||| between each translation.\n"
-    "7. Do NOT add bullet points or any extra text beyond the numbers.\n"
-    "8. Preserve the token <NL> exactly as-is — it represents a line break.\n"
+    "4. Preserve XML tags (<x1/>, <x2/>), placeholders ({{}}, %s, %d), commands, "
+    "paths, URLs, references, flags, environment variables, and software identifiers "
+    "EXACTLY as-is.\n"
+    "5. Preserve exact newlines, leading/trailing whitespace, numeric values, signs, "
+    "percentages, order, negation, tense, and the role of every placeholder. Decimal "
+    "and thousands separators may follow the target locale.\n"
+    "6. The user message is a JSON array of objects with 'id' and 'text'. Return a JSON "
+    "array of objects containing exactly 'id' and 'translation'. Copy every id "
+    "byte-for-byte. Include every id exactly once; response order does not matter.\n"
+    "7. Return JSON only. Never add Markdown fences, explanations, labels, protocol "
+    "markers, or extra keys. Silently verify the complete response before answering.\n"
     "{context_section}"
 )
 
@@ -151,9 +171,7 @@ def build_batch_prompt(
     context_entries: Optional[list[str]] = None,
 ) -> str:
     """Build a batch translation system prompt."""
-    display_name = (
-        app_name.replace("-", " ").replace("_", " ").title() if app_name else "unknown"
-    )
+    display_name = app_name or "unknown"
     context_section = ""
     if context_entries:
         samples = "\n".join(f"  - {entry}" for entry in context_entries[:15])
@@ -169,121 +187,93 @@ def build_batch_prompt(
     )
 
 
-def clean_batch_parts(raw: str) -> list[str]:
-    """Split batch response and strip empty parts from leading/trailing separators.
-
-    LLMs sometimes return '|||NEXT|||Trans1|||NEXT|||Trans2' which produces
-    an empty first element after split, shifting all translations by one.
-    Also strips numbering prefixes like '[1] ' that the LLM may echo back.
-    """
-    parts = [p.strip() for p in raw.split("|||NEXT|||")]
-    while parts and not parts[0]:
-        parts.pop(0)
-    while parts and not parts[-1]:
-        parts.pop()
-    # Strip LLM-echoed numbering prefixes: [1] , [2] , etc.
-    import re as _re
-
-    parts = [_re.sub(r"^\[\d+\]\s*", "", p) for p in parts]
-    return parts
-
-
-# Newline placeholder for batch input — prevents multi-line texts from
-# confusing the |||NEXT||| separator boundary.
-_NL_PLACEHOLDER = " <NL> "
-_BATCH_SEPARATOR = "|||NEXT|||"
-_BATCH_ID_PATTERN = re.compile(r"^\s*\[\s*(-?\d+)\s*\]\s*(.*)\Z", re.DOTALL)
-
-
 class BatchAlignmentError(ValueError):
     """Raised when a batch response cannot be aligned safely."""
 
 
-def _restore_batch_payload(text: str) -> str:
-    """Restore control tokens without removing payload text."""
-    text = text.replace(_BATCH_SEPARATOR, "")
-    text = text.replace(" <NL> ", "\n")
-    text = text.replace(" <NL>", "\n")
-    text = text.replace("<NL> ", "\n")
-    text = text.replace("<NL>", "\n")
-    return text.strip(" \t")
+def prepare_batch_request(
+    texts: list[str],
+    request_id: Optional[str] = None,
+) -> tuple[str, list[str]]:
+    """Build a JSON batch with request-scoped opaque item IDs."""
+    if not isinstance(texts, list) or any(not isinstance(text, str) for text in texts):
+        raise TypeError("Batch texts must be a list of strings")
+    if request_id is None:
+        request_id = secrets.token_hex(12)
+    if not isinstance(request_id, str) or not re.fullmatch(
+        r"[A-Za-z0-9_-]{8,64}", request_id
+    ):
+        raise ValueError("Invalid batch request ID")
+
+    item_ids = [f"lf-{request_id}-{index}" for index in range(1, len(texts) + 1)]
+    payload = [{"id": item_id, "text": text} for item_id, text in zip(item_ids, texts)]
+    return json.dumps(payload, ensure_ascii=False, separators=(",", ":")), item_ids
 
 
-def parse_batch_response(raw: str, expected_count: int) -> list[str]:
-    """Parse and strictly align a delimited batch response.
-
-    Numbered responses are reordered by their ``[N]`` IDs. Duplicate,
-    missing, out-of-range, or mixed numbered/unnumbered parts are rejected.
-    Unnumbered responses are accepted only when their cardinality is exact.
-    """
+def parse_batch_response(raw: str, expected_ids: list[str]) -> list[str]:
+    """Parse a strict JSON response and align translations by opaque ID."""
     if not isinstance(raw, str):
         raise BatchAlignmentError("Batch response must be text")
-    if not isinstance(expected_count, int) or expected_count < 0:
-        raise ValueError("expected_count must be a non-negative integer")
+    if not isinstance(expected_ids, list) or any(
+        not isinstance(item_id, str) or not item_id for item_id in expected_ids
+    ):
+        raise ValueError("expected_ids must be a list of non-empty strings")
+    if len(set(expected_ids)) != len(expected_ids):
+        raise ValueError("expected_ids contains duplicates")
 
-    parts = [part.strip() for part in raw.split(_BATCH_SEPARATOR)]
-    while parts and not parts[0]:
-        parts.pop(0)
-    while parts and not parts[-1]:
-        parts.pop()
-
-    numbered: list[tuple[int, str]] = []
-    unnumbered: list[str] = []
-    for part in parts:
-        match = _BATCH_ID_PATTERN.match(part)
-        if match:
-            numbered.append((int(match.group(1)), match.group(2)))
-        else:
-            unnumbered.append(part)
-
-    if numbered and unnumbered:
-        raise BatchAlignmentError("Batch response mixes numbered and unnumbered parts")
-
-    if numbered:
-        by_id: dict[int, str] = {}
-        for item_id, payload in numbered:
-            if not 1 <= item_id <= expected_count:
+    def strict_object(pairs):
+        parsed = {}
+        for key, value in pairs:
+            if key in parsed:
                 raise BatchAlignmentError(
-                    f"Batch response ID {item_id} is outside 1..{expected_count}"
+                    f"Batch response contains duplicate key {key!r}"
                 )
-            if item_id in by_id:
-                raise BatchAlignmentError(
-                    f"Batch response contains duplicate ID {item_id}"
-                )
-            by_id[item_id] = payload
+            parsed[key] = value
+        return parsed
 
-        missing = [
-            item_id for item_id in range(1, expected_count + 1) if item_id not in by_id
-        ]
-        if missing:
-            missing_ids = ", ".join(str(item_id) for item_id in missing)
-            raise BatchAlignmentError(f"Batch response is missing IDs: {missing_ids}")
-        ordered = [by_id[item_id] for item_id in range(1, expected_count + 1)]
-    else:
-        if len(parts) != expected_count:
+    try:
+        response = json.loads(raw, object_pairs_hook=strict_object)
+    except json.JSONDecodeError as error:
+        raise BatchAlignmentError("Batch response is not valid JSON") from error
+    if not isinstance(response, list):
+        raise BatchAlignmentError("Batch response must be a JSON array")
+    if len(response) != len(expected_ids):
+        raise BatchAlignmentError(
+            "Batch response cardinality mismatch: "
+            f"expected {len(expected_ids)}, got {len(response)}"
+        )
+
+    expected = set(expected_ids)
+    by_id: dict[str, str] = {}
+    for index, item in enumerate(response):
+        if not isinstance(item, dict) or set(item) != {"id", "translation"}:
             raise BatchAlignmentError(
-                "Batch response cardinality mismatch: "
-                f"expected {expected_count}, got {len(parts)}"
+                f"Batch response item {index + 1} has an invalid schema"
             )
-        ordered = parts
+        item_id = item["id"]
+        translation = item["translation"]
+        if not isinstance(item_id, str) or not isinstance(translation, str):
+            raise BatchAlignmentError(
+                f"Batch response item {index + 1} must contain strings"
+            )
+        if item_id not in expected:
+            raise BatchAlignmentError(f"Batch response contains unknown ID {item_id!r}")
+        if item_id in by_id:
+            raise BatchAlignmentError(
+                f"Batch response contains duplicate ID {item_id!r}"
+            )
+        if not translation:
+            raise BatchAlignmentError(
+                f"Batch response contains an empty translation for {item_id!r}"
+            )
+        by_id[item_id] = translation
 
-    return [_restore_batch_payload(part) for part in ordered]
-
-
-def prepare_batch_texts(texts: list[str]) -> list[str]:
-    """Replace newlines with placeholder and add numbering for batch alignment."""
-    return [
-        f"[{i + 1}] {t.replace(chr(10), _NL_PLACEHOLDER)}" for i, t in enumerate(texts)
-    ]
-
-
-def restore_batch_texts(parts: list[str]) -> list[str]:
-    """Restore newlines from placeholder, strip numbering prefixes and stray separators."""
-    restored = []
-    for p in parts:
-        p = re.sub(r"^\[\d+\]\s*", "", p)
-        restored.append(_restore_batch_payload(p))
-    return restored
+    missing = [item_id for item_id in expected_ids if item_id not in by_id]
+    if missing:
+        raise BatchAlignmentError(
+            f"Batch response is missing IDs: {', '.join(missing)}"
+        )
+    return [by_id[item_id] for item_id in expected_ids]
 
 
 class TranslationAPI(ABC):
@@ -292,6 +282,8 @@ class TranslationAPI(ABC):
     # Seconds to wait between outer batch calls in translate_language().
     # Override in subclasses with strict RPM limits (e.g. Gemini).
     batch_delay: float = 0.0
+    supports_item_instructions: bool = False
+    supports_context: bool = False
 
     # Cost per million tokens (USD). Override in paid subclasses.
     # Format: (input_cost_per_1M, output_cost_per_1M)
@@ -345,6 +337,29 @@ class TranslationAPI(ABC):
         """
         self._app_name = app_name
         self._context_entries = context_entries or []
+
+    def translate_with_instruction(
+        self,
+        text: str,
+        source_lang: str,
+        target_lang: str,
+        instruction: str,
+    ) -> str:
+        """Translate one item with a trusted temporary system instruction."""
+        if not self.supports_item_instructions:
+            raise NotImplementedError(
+                f"{type(self).__name__} does not support item instructions"
+            )
+        sentinel = object()
+        previous = getattr(self, "_item_instruction", sentinel)
+        self._item_instruction = instruction
+        try:
+            return self.translate(text, source_lang, target_lang)
+        finally:
+            if previous is sentinel:
+                del self._item_instruction
+            else:
+                self._item_instruction = previous
 
     @abstractmethod
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:

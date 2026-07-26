@@ -1,5 +1,7 @@
 """Focused tests for structural gettext plural translation."""
 
+import re
+
 import polib
 import pytest
 
@@ -8,14 +10,21 @@ from core.languages import (
     SUPPORTED_LANGUAGES,
     get_plural_rule,
 )
-from core.translator import TranslationEngine
+from core.translator import (
+    TranslationEngine,
+    _plural_form_instruction,
+    _plural_source,
+)
 
 
 class EchoAPI:
     batch_delay = 0
+    supports_item_instructions = True
+    supports_context = True
 
     def __init__(self):
         self.batch_calls = []
+        self.instruction_calls = []
 
     def set_context(self, *_args):
         pass
@@ -26,6 +35,19 @@ class EchoAPI:
 
     def translate(self, text, source_lang, target_lang):
         return f"{target_lang}:{text}"
+
+    def translate_with_instruction(self, text, source_lang, target_lang, instruction):
+        self.instruction_calls.append(instruction)
+        example = re.search(r"example count (\d+)", instruction).group(1)
+        category = {
+            "0": "zero",
+            "1": "one",
+            "2": "few",
+            "3": "three",
+            "5": "many",
+            "20": "other",
+        }[example]
+        return f"{target_lang}-{category}:{text}"
 
 
 def _write_plural_catalog(path, forms=None):
@@ -85,14 +107,14 @@ def test_every_supported_language_has_plural_metadata():
 @pytest.mark.parametrize(
     ("lang", "expected_forms"),
     [
-        ("ja", ["ja:{count} files"]),
-        ("de", ["de:{count} file", "de:{count} files"]),
+        ("ja", ["ja-one:{count} file"]),
+        ("de", ["de-one:{count} file", "de-few:{count} files"]),
         (
             "ru",
             [
-                "ru:{count} file",
-                "ru:{count} files",
-                "ru:{count} files",
+                "ru-one:{count} file",
+                "ru-few:{count} files",
+                "ru-many:{count} files",
             ],
         ),
     ],
@@ -119,6 +141,27 @@ def test_translate_language_populates_target_plural_forms(
     assert translated.metadata["Plural-Forms"] == get_plural_rule(lang).header
 
 
+def test_plural_source_matches_special_category_examples():
+    entry = polib.POEntry(
+        msgid="{count} file",
+        msgid_plural="{count} files",
+    )
+
+    assert [_plural_source(entry, index, 4, "sl") for index in range(4)] == [
+        "{count} files",
+        "{count} file",
+        "{count} files",
+        "{count} files",
+    ]
+    assert [
+        re.search(
+            r"example count (\d+)",
+            _plural_form_instruction("sl", index, 4),
+        ).group(1)
+        for index in range(4)
+    ] == ["5", "1", "2", "3"]
+
+
 def test_partial_plural_preserves_existing_indexes_and_fills_missing(tmp_path):
     pot_path = tmp_path / "app.pot"
     _write_plural_catalog(pot_path)
@@ -143,15 +186,17 @@ def test_partial_plural_preserves_existing_indexes_and_fills_missing(tmp_path):
     assert count == 1
     assert entry.msgstr_plural == {
         0: "keep-zero {count}",
-        1: "ru:{count} files",
+        1: "ru-few:{count} files",
         2: "keep-two {count}",
     }
-    assert api.batch_calls == [["<x1/> files"]]
+    assert api.batch_calls == []
+    assert "example count 2" in api.instruction_calls[0]
 
 
 def test_failed_plural_form_uses_source_stays_fuzzy_and_is_not_counted(tmp_path):
     class PluralFailureAPI:
         batch_delay = 0
+        supports_item_instructions = True
 
         def set_context(self, *_args):
             pass
@@ -163,6 +208,11 @@ def test_failed_plural_form_uses_source_stays_fuzzy_and_is_not_counted(tmp_path)
             if "files" in text:
                 raise RuntimeError("plural unavailable")
             return f"translated:{text}"
+
+        def translate_with_instruction(
+            self, text, source_lang, target_lang, instruction
+        ):
+            return self.translate(text, source_lang, target_lang)
 
     pot_path = tmp_path / "app.pot"
     _write_plural_catalog(pot_path)
@@ -184,6 +234,65 @@ def test_failed_plural_form_uses_source_stays_fuzzy_and_is_not_counted(tmp_path)
     assert all(entry.msgstr_plural.values())
     assert "fuzzy" in entry.flags
     assert engine.last_language_complete is False
+
+
+def test_plain_machine_translation_refuses_ambiguous_plural_categories(tmp_path):
+    class PlainMachineTranslationAPI:
+        batch_delay = 0
+
+        def set_context(self, *_args):
+            pass
+
+        def translate_batch(self, texts, source_lang, target_lang):
+            return [f"{target_lang}:{text}" for text in texts]
+
+        def translate(self, text, source_lang, target_lang):
+            return f"{target_lang}:{text}"
+
+    pot_path = tmp_path / "app.pot"
+    _write_plural_catalog(pot_path)
+    engine = TranslationEngine(PlainMachineTranslationAPI(), "app")
+
+    count = engine.translate_language(pot_path, "ru", tmp_path)
+
+    entry = polib.pofile(str(tmp_path / "ru.po"))[0]
+    assert count == 0
+    assert entry.msgstr_plural == {
+        0: "{count} file",
+        1: "{count} files",
+        2: "{count} files",
+    }
+    assert "fuzzy" in entry.flags
+    assert engine.last_language_complete is False
+
+
+def test_plain_machine_translation_still_handles_two_source_forms(tmp_path):
+    class PlainMachineTranslationAPI:
+        batch_delay = 0
+
+        def set_context(self, *_args):
+            pass
+
+        def translate_batch(self, texts, source_lang, target_lang):
+            return [f"{target_lang}:{text}" for text in texts]
+
+        def translate(self, text, source_lang, target_lang):
+            return f"{target_lang}:{text}"
+
+    pot_path = tmp_path / "app.pot"
+    _write_plural_catalog(pot_path)
+    engine = TranslationEngine(PlainMachineTranslationAPI(), "app")
+
+    count = engine.translate_language(pot_path, "de", tmp_path)
+
+    entry = polib.pofile(str(tmp_path / "de.po"))[0]
+    assert count == 1
+    assert entry.msgstr_plural == {
+        0: "de:{count} file",
+        1: "de:{count} files",
+    }
+    assert "fuzzy" not in entry.flags
+    assert engine.last_language_complete is True
 
 
 def test_project_result_reports_incomplete_language_as_failed(tmp_path):
@@ -235,8 +344,8 @@ def test_fix_context_updates_plural_forms_without_using_msgstr(tmp_path):
     assert result == {"de": True}
     assert entry.msgstr == ""
     assert entry.msgstr_plural == {
-        0: "de:{count} file",
-        1: "de:{count} files",
+        0: "de-one:{count} file",
+        1: "de-few:{count} files",
     }
     assert translated.metadata["Plural-Forms"] == get_plural_rule("de").header
 
@@ -260,11 +369,11 @@ def test_fix_context_does_not_save_empty_plural_forms(tmp_path):
     )
 
     entry = polib.pofile(str(reference_path))[0]
-    assert result == {}
+    assert result == {"ru": True}
     assert entry.msgstr_plural == {
-        0: "existing singular {count}",
-        1: "{count} files",
-        2: "{count} files",
+        0: "ru-one:{count} file",
+        1: "ru-few:{count} files",
+        2: "ru-many:{count} files",
     }
     assert all(entry.msgstr_plural.values())
-    assert "fuzzy" in entry.flags
+    assert "fuzzy" not in entry.flags

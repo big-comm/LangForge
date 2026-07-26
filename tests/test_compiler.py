@@ -94,3 +94,18 @@ def test_vendored_catalog_does_not_select_dependency_directory(tmp_path):
     compiler = MoCompiler(tmp_path, "app")
 
     assert compiler.locale_dir == tmp_path / "locale"
+
+
+def test_compile_rejects_normalized_locale_collision(tmp_path):
+    locale_dir = tmp_path / "locale"
+    locale_dir.mkdir()
+    (locale_dir / "app.pot").write_text("", encoding="utf-8")
+    for name in ("pt-BR.po", "pt_BR.po"):
+        catalog = polib.POFile()
+        catalog.append(polib.POEntry(msgid="Open", msgstr="Abrir"))
+        catalog.save(str(locale_dir / name))
+
+    with pytest.raises(RuntimeError, match="collide after locale normalization"):
+        MoCompiler(tmp_path, "app").compile_all()
+
+    assert not (tmp_path / "usr/share/locale/pt_BR").exists()

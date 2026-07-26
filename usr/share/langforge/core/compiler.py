@@ -35,7 +35,22 @@ class MoCompiler:
             Dict com resultado de cada idioma {lang: success}
         """
         results = {}
-        po_files = list(self.locale_dir.glob("*.po"))
+        po_files = sorted(self.locale_dir.glob("*.po"))
+        normalized: dict[str, Path] = {}
+        for po_file in po_files:
+            locale_code = po_file.stem.replace("-", "_")
+            previous = normalized.get(locale_code)
+            if previous is not None:
+                raise RuntimeError(
+                    _(
+                        "Catalog names collide after locale normalization: "
+                        "{first}, {second}"
+                    ).format(
+                        first=previous.name,
+                        second=po_file.name,
+                    )
+                )
+            normalized[locale_code] = po_file
         total = len(po_files)
         current = 0
 
@@ -66,12 +81,21 @@ class MoCompiler:
         # Caminhos
         po_file = self.locale_dir / f"{lang}.po"
         if not po_file.exists():
-            raise FileNotFoundError(
-                _("Catalog not found: {path}").format(path=po_file)
-            )
+            raise FileNotFoundError(_("Catalog not found: {path}").format(path=po_file))
 
         # Converte código do idioma para formato locale (pt-BR → pt_BR)
         locale_code = lang.replace("-", "_")
+        collisions = sorted(
+            candidate.name
+            for candidate in self.locale_dir.glob("*.po")
+            if candidate.stem.replace("-", "_") == locale_code
+        )
+        if len(collisions) > 1:
+            raise RuntimeError(
+                _("Catalog names collide after locale normalization: {names}").format(
+                    names=", ".join(collisions)
+                )
+            )
 
         # Estrutura: usr/share/locale/{locale_code}/LC_MESSAGES/{textdomain}.mo
         mo_dir = (
@@ -92,7 +116,14 @@ class MoCompiler:
         os.close(fd)
         try:
             subprocess.run(
-                ["msgfmt", "--check", str(po_file), "-o", temporary_name],
+                [
+                    "msgfmt",
+                    "--check",
+                    "--check-format",
+                    str(po_file),
+                    "-o",
+                    temporary_name,
+                ],
                 check=True,
                 capture_output=True,
                 text=True,
@@ -109,9 +140,7 @@ class MoCompiler:
                 )
             )
         except FileNotFoundError:
-            raise RuntimeError(
-                _("msgfmt was not found. Install the gettext package.")
-            )
+            raise RuntimeError(_("msgfmt was not found. Install the gettext package."))
         finally:
             try:
                 os.unlink(temporary_name)

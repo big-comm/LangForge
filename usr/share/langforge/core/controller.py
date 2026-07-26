@@ -135,6 +135,7 @@ class TranslationController:
             with open(p, "r", encoding="utf-8") as fh:
                 content = fh.read()
             import re
+
             count = len([pg for pg in re.split(r"\n{2,}", content) if pg.strip()])
         return p.name, count
 
@@ -244,6 +245,14 @@ class TranslationController:
         on_detail: Optional[Callable] = None,
     ) -> None:
         try:
+            if force_retranslate and not getattr(
+                self._api_client,
+                "supports_context",
+                False,
+            ):
+                raise RuntimeError(
+                    "Fix context requires an LLM provider with context support"
+                )
             on_phase("extracting")
 
             scanner = ProjectScanner(str(project_path))
@@ -314,14 +323,10 @@ class TranslationController:
                         continue
 
                     results[lang] = False
-                    status = compile_statuses.get(
-                        key, "error: MO compilation failed"
-                    )
+                    status = compile_statuses.get(key, "error: MO compilation failed")
                     if "error" not in status.lower():
                         status = "error: MO compilation failed"
-                    on_lang_progress(
-                        lang, status, current, total_results
-                    )
+                    on_lang_progress(lang, status, current, total_results)
 
             # Capture usage BEFORE on_complete so the UI callback can read it
             self._capture_usage()

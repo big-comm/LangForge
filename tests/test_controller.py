@@ -179,9 +179,7 @@ def test_thread_start_failure_releases_controller(monkeypatch):
 def test_compile_failures_override_translation_success(monkeypatch, tmp_path):
     monkeypatch.setattr(controller_module, "ProjectScanner", FakeScanner)
     monkeypatch.setattr(controller_module, "GettextExtractor", FakeExtractor)
-    monkeypatch.setattr(
-        controller_module, "TranslationEngine", FakeTranslationEngine
-    )
+    monkeypatch.setattr(controller_module, "TranslationEngine", FakeTranslationEngine)
     monkeypatch.setattr(controller_module, "MoCompiler", FakeCompiler)
     controller = TranslationController(settings=None)
     controller._api_client = UsageAPI()
@@ -219,6 +217,38 @@ def test_compile_failures_override_translation_success(monkeypatch, tmp_path):
         ("de", "error: invalid catalog", 2, 4),
         ("pt-BR", "error: plural mismatch", 3, 4),
     ]
+
+
+def test_fix_context_rejects_provider_without_context_before_extraction(
+    monkeypatch,
+    tmp_path,
+):
+    monkeypatch.setattr(
+        controller_module,
+        "ProjectScanner",
+        lambda _path: pytest.fail("project must not be scanned"),
+    )
+    controller = TranslationController(settings=None)
+    controller._api_client = UsageAPI()
+    phases = []
+    completed = []
+    errors = []
+
+    controller._run(
+        tmp_path,
+        ["fr"],
+        phases.append,
+        lambda *_args: None,
+        lambda *args: completed.append(args),
+        errors.append,
+        False,
+        True,
+    )
+
+    assert phases == []
+    assert completed == []
+    assert len(errors) == 1
+    assert "requires an LLM provider" in str(errors[0])
 
 
 def test_usage_failure_does_not_mask_success(monkeypatch, tmp_path):

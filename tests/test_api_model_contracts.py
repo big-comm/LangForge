@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import pytest
 import requests
 
+from api.base import BatchAlignmentError
 from api.free_apis import (
     DeepLFreeAPI,
     GeminiFreeAPI,
@@ -352,6 +353,67 @@ def test_grok_uses_supported_reasoning_effort(model, effort):
         DeepSeekAPI,
     ],
 )
+def test_item_instruction_reaches_every_provider_system_prompt(
+    fake_openai,
+    fake_gemini,
+    api_class,
+):
+    api = api_class("key")
+    assert api.supports_item_instructions is True
+    assert api.supports_context is True
+    if isinstance(api, (GroqAPI, OpenRouterAPI, MistralFreeAPI, GrokAPI)):
+        api.session = StubSession()
+
+    instruction = "Use gettext plural form 2 for example count 5."
+    assert api.translate_with_instruction("Files", "en", "ru", instruction) == "Olá"
+
+    if isinstance(api, (GeminiFreeAPI, GeminiAPI)):
+        prompt = fake_gemini.instances[-1].models.calls[-1]["config"][
+            "system_instruction"
+        ]
+    elif isinstance(api, (OpenAIAPI, DeepSeekAPI)):
+        prompt = fake_openai.instances[-1].calls[-1]["messages"][0]["content"]
+    else:
+        _url, request = api.session.calls[-1]
+        prompt = request["json"]["messages"][0]["content"]
+
+    assert instruction in prompt
+    assert not hasattr(api, "_item_instruction")
+
+
+@pytest.mark.parametrize(
+    "api",
+    [
+        LibreTranslateAPI("https://example.test", "key"),
+        DeepLFreeAPI("key:fx"),
+    ],
+)
+def test_plain_machine_translation_declares_no_context_or_instruction_support(api):
+    assert api.supports_item_instructions is False
+    assert api.supports_context is False
+
+    with pytest.raises(NotImplementedError, match="does not support"):
+        api.translate_with_instruction(
+            "Files",
+            "en",
+            "ru",
+            "Use plural form 2",
+        )
+
+
+@pytest.mark.parametrize(
+    "api_class",
+    [
+        GroqAPI,
+        GeminiFreeAPI,
+        OpenRouterAPI,
+        MistralFreeAPI,
+        OpenAIAPI,
+        GeminiAPI,
+        GrokAPI,
+        DeepSeekAPI,
+    ],
+)
 @pytest.mark.parametrize(
     "malformed_response",
     [
@@ -360,7 +422,7 @@ def test_grok_uses_supported_reasoning_effort(model, effort):
     ],
     ids=["truncated", "duplicate"],
 )
-def test_batch_alignment_failure_retries_entire_chunk(
+def test_batch_alignment_failure_is_delegated_to_the_engine(
     fake_openai,
     fake_gemini,
     api_class,
@@ -377,7 +439,7 @@ def test_batch_alignment_failure_retries_entire_chunk(
         api.client.models.response_text = malformed_response
         calls = api.client.models.calls
 
-    result = api.translate_batch(["First", "Second"], "en", "pt")
+    with pytest.raises(BatchAlignmentError):
+        api.translate_batch(["First", "Second"], "en", "pt")
 
-    assert result == [malformed_response, malformed_response]
-    assert len(calls) == 3
+    assert len(calls) == 1
