@@ -15,312 +15,150 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 414
+# File: usr/share/langforge/ui/main_window.py, line: 451
+# File: usr/share/langforge/ui/main_window.py, line: 562
+# File: usr/share/langforge/ui/main_window.py, line: 568
+# File: usr/share/langforge/ui/main_window.py, line: 571
+# File: usr/share/langforge/ui/settings_dialog.py, line: 243
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
+msgid "Error"
+msgstr "Hata"
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
+msgid "error"
+msgstr "hata"
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
+msgid "Translation Complete!"
+msgstr "Çeviri Tamamlandı!"
 # File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
 msgid "Automatic translator for gettext projects"
 msgstr "gettext projeleri için otomatik çevirmen"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 59
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
-msgid "Translation API"
-msgstr "Çeviri API"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 144
-# File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
-#. API Type row
-msgid "API Type"
-msgstr "API Türü"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 67
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
-msgid "Select type"
-msgstr "Tür Seç"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Free API"
-msgstr "Ücretsiz API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Paid API"
-msgstr "Ücretli API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
-msgid "Free Tier APIs"
-msgstr "Ücretsiz Katman API'leri"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 171
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
-msgid "Select your preferred translation provider"
-msgstr "Tercih ettiğiniz çeviri sağlayıcısını seçin"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
-msgid "500k chars/month — Best translation quality"
-msgstr "500k karakter/ay — En iyi çeviri kalitesi"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 184
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:197
-msgid "14.4k req/day — Fastest, excellent quality"
-msgstr "Günde 14,4 bin istek — En hızlı, mükemmel kalite"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 190
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:203
-msgid "1,000 req/day — Google AI"
-msgstr "Günde 1.000 istek — Google AI"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 196
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:209
-msgid "18 free models available"
-msgstr "18 ücretsiz model mevcut"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 202
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:215
-msgid "Free tier — Quality models"
-msgstr "Ücretsiz katman — Kalite modelleri"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 208
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:221
-msgid "Open source — No API key needed"
-msgstr "Açık kaynak — API anahtarı gerekmez"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 236
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
-msgid "More providers"
-msgstr "Daha fazla sağlayıcı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 237
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
-msgid "4 additional free options"
-msgstr "4 ek ücretsiz seçenek"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 97
-# File: usr/share/langforge/ui/settings_dialog.py, line: 121
-# File: usr/share/langforge/ui/settings_dialog.py, line: 212
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
-msgid "API Key"
-msgstr "API Anahtarı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 263
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
-msgid "Usage"
-msgstr "Kullanım"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 264
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
-msgid "Click 'Test Connection' to check"
-msgstr "'Bağlantıyı Test Et' butonuna tıklayın."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
-msgid "Model"
-msgstr "Model"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 103
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
-msgid "LibreTranslate URL"
-msgstr "LibreTranslate URL'si"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 112
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
-msgid "Paid API Settings"
-msgstr "Ücretli API Ayarları"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 321
-#: NEEDS WORK
-msgid "GPT-5, GPT-4.1 — Industry standard"
-msgstr "GPT-5, GPT-4.1 — Endüstri standardı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
-msgid "Gemini 2.5 Flash/Pro — Fast and capable"
-msgstr "Gemini 2.5 Flash/Pro — Hızlı ve yetenekli"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 303
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
-msgid "$25 free credits — 2M context window"
-msgstr "25 $ ücretsiz kredi — 2M bağlam penceresi"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: NEEDS WORK
-msgid "Very low cost — Good for high-volume translation"
-msgstr "Çok düşük maliyet — Yüksek hacimli çeviri için iyi"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
-#. Provider row
-msgid "Provider"
-msgstr "Sağlayıcı"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 359
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
-msgid "Fix Context"
-msgstr "Bağlamı Düzelt"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 362
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
 msgid ""
-"Reference language used to detect context-sensitive translations. Romance languages work best "
-"because they reveal English ambiguities through gender and conjugation."
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
 msgstr ""
-"Bağlama duyarlı çevirileri algılamak için kullanılan referans dil. Roman dilleri, İngilizce "
-"belirsizliklerini cinsiyet ve çekim yoluyla ortaya çıkardıkları için en iyi sonucu verir."
+"Çevrilebilir kaynak kodu içeren bir proje klasörü seçin.\n"
+"gettext kalıplarını kullanarak çevrilebilir dizeleri tarar\n"
+"ve her hedef dil için .po dosyaları oluşturur.\n"
+"Desteklenen proje türleri:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"ve gettext kullanan tüm projeler"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Doğrudan çevirmek için tek bir dosya seçin.\n"
+"Desteklenen biçimler:\n"
+".po / .pot — Gettext çeviri dosyaları\n"
+".json — Anahtar-değer çeviri dosyaları\n"
+".srt — SubRip altyazı dosyaları\n"
+".txt / .md — Düz metin ve Markdown"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr "Mevcut çevirileri bağlama duyarlı yapay zeka kullanarak yeniden kontrol"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 369
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
-msgid "Reference language"
-msgstr "Referans dil"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 371
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
-msgid "★ = recommended"
-msgstr "★ = önerilen"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 374
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
 #: NEEDS WORK
-msgid "★ French"
-msgstr "★ Fransızca"
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Çeviriler için API kategorisini seçin.\n"
+"\n"
+"Ücretsiz — Ücretsiz katman veya maliyeti olmayan API'ler:\n"
+"Groq, Gemini Ücretsiz, DeepL Ücretsiz, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Ücretli — Faturalama planı gerektiren API'ler:\n"
+"OpenAI, Gemini Pro, Grok"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
 #: NEEDS WORK
-msgid "★ Portuguese (Brazil)"
-msgstr "★ Portekizce (Brezilya)"
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Kullanılacak çeviri sağlayıcısı.\n"
+"\n"
+"Yalnızca yapılandırılmış bir API anahtarına sahip sağlayıcılar burada gösterilmektedir. Anahtarları "
+"API Ayarları'na ekleyin.\n"
+"\n"
+"Anahtar gerektirmeyen sağlayıcılar\n"
+"(örn. LibreTranslate) her zaman mevcuttur."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
 #: NEEDS WORK
-msgid "★ Spanish"
-msgstr "★ İspanyolca"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 140
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
-msgid "How to get API Keys"
-msgstr "API Anahtarları Nasıl Alınır"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 144
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
-msgid "Test Connection"
-msgstr "Bağlantıyı Test Et"
+msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+".po dosyalarını .mo ikili formatına derle.\n"
+"\n"
+".mo dosyaları, gettext tarafından çalışma zamanında kullanılan optimize edilmiş ikili formattır. "
+"Çeviriden sonra otomatik olarak oluşturulmalarını sağlamak için bunu etkinleştirin."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 617
-# File: usr/share/langforge/ui/settings_dialog.py, line: 618
-# File: usr/share/langforge/ui/settings_dialog.py, line: 619
-# File: usr/share/langforge/ui/settings_dialog.py, line: 620
-# File: usr/share/langforge/ui/settings_dialog.py, line: 621
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
-#, python-brace-format
-msgid "{provider} API Key"
-msgstr "{provider} API Anahtarı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 559
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
-msgid "Testing..."
-msgstr "Test Ediliyor..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 560
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
-msgid "Testing connection..."
-msgstr "Bağlantı sınanıyor..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 598
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
-msgid "Connection successful"
-msgstr "Bağlantı başarılı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 615
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
-msgid "Connection failed"
-msgstr "Bağlantı başarısız oldu"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 248
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
-msgid "✓ Settings saved!"
-msgstr "✓ Ayarlar kaydedildi!"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 276
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
-msgid "Available Free APIs"
-msgstr "Kullanılabilir Ücretsiz API'ler"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 280
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
-msgid "Click the links to create your account and get your key"
-msgstr "Hesabınızı oluşturmak ve anahtarınızı almak için bağlantılara tıklayın"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 289
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
-msgid "Recommended"
-msgstr "Tavsiye edilir"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 290
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
-msgid "500k characters/month"
-msgstr "500 bin karakter/ay"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 291
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
-msgid "Best translation quality"
-msgstr "En iyi çeviri kalitesi"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 293
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
-msgid "Create account → Free Plan → API Keys"
-msgstr "Hesap oluştur → Ücretsiz Plan → API Anahtarları"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
-msgid "Fastest"
-msgstr "En hızlı"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 299
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:774
-msgid "14,400 requests/day"
-msgstr "14.400 istek/gün"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 300
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:775
-msgid "LLaMA 3 - Excellent value"
-msgstr "LLaMA 3 - Mükemmel değer"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 302
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
-msgid "Create account → API Keys → Create"
-msgstr "Hesap oluştur → API Anahtarları → Oluştur"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 308
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:783
-msgid "1,000 requests/day"
-msgstr "1.000 istek/gün"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 309
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:784
-msgid "Google AI - Good quality"
-msgstr "Google AI - İyi kalite"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 311
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
-msgid "Google Login → Get API Key"
-msgstr "Google Girişi → API Anahtarı Al"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 317
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:792
-msgid "18 free models"
-msgstr "18 ücretsiz model"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 318
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:793
-msgid "Multiple models available"
-msgstr "Birden fazla model mevcuttur"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 320
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
-msgid "Create account → Keys → Create Key"
-msgstr "Hesap oluştur → Anahtarlar → Anahtar Oluştur"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 326
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
-msgid "Free tier available"
-msgstr "Ücretsiz katman mevcut"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 327
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
-msgid "Quality Mistral models"
-msgstr "Kaliteli Mistral modelleri"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 329
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
-msgid "Create account → API Keys → Generate"
-msgstr "Hesap oluştur → API Anahtarları → Oluştur"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 334
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:809
-msgid "No API Key"
-msgstr "API Anahtarı Yok"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 335
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
-msgid "Unlimited (self-hosted)"
-msgstr "Sınırsız (kendi kendine barındırılan)"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
-msgid "Open source - Basic quality"
-msgstr "Açık kaynak - Temel kalite"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 338
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:813
-msgid "Use default URL or your own server"
-msgstr "Varsayılan URL'yi veya kendi sunucunuzu kullanın"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 398
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
-msgid "Open"
-msgstr "Aç"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Çevirilerin ilerlemesini canlı olarak görüntüleyin.\n"
+"\n"
+"Her dil işlenirken orijinal metni ve çevirisini gerçek zamanlı olarak gösterir."
 # File: usr/share/langforge/ui/main_window.py, line: 25
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
 msgid "Could not connect to the translation service. Check your internet connection."
@@ -491,10 +329,6 @@ msgstr "Ayarları Aç"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
 msgid "Skip"
 msgstr "Atla"
-# File: usr/share/langforge/ui/main_window.py, line: 533
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
-msgid "Translation Complete!"
-msgstr "Çeviri Tamamlandı!"
 # File: usr/share/langforge/ui/main_window.py, line: 539
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
 msgid "Translate Again"
@@ -523,10 +357,6 @@ msgstr "Çeviri"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
 msgid "completed"
 msgstr "tamamlandı"
-# File: usr/share/langforge/ui/main_window.py, line: 623
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
-msgid "error"
-msgstr "hata"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 639
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
@@ -541,6 +371,25 @@ msgstr "Ücretsiz"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
 msgid "Paid"
 msgstr "Ücretli"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 144
+# File: usr/share/langforge/ui/settings_dialog.py, line: 64
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
+#. API Type row
+msgid "API Type"
+msgstr "API Türü"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
+#. Provider row
+msgid "Provider"
+msgstr "Sağlayıcı"
 # File: usr/share/langforge/ui/main_window.py, line: 747
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
 #, python-brace-format
@@ -550,23 +399,6 @@ msgstr "{count} / {total} dil seçildi"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
 msgid "Translatable files (.po, .json, .txt, .md, .srt)"
 msgstr "Çevirilebilir dosyalar (.po, .json, .txt, .md, .srt)"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 414
-# File: usr/share/langforge/ui/main_window.py, line: 451
-# File: usr/share/langforge/ui/main_window.py, line: 562
-# File: usr/share/langforge/ui/main_window.py, line: 568
-# File: usr/share/langforge/ui/main_window.py, line: 571
-# File: usr/share/langforge/ui/settings_dialog.py, line: 243
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
-msgid "Error"
-msgstr "Hata"
 # File: usr/share/langforge/ui/main_window.py, line: 867
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
 #, python-brace-format
@@ -680,121 +512,281 @@ msgstr "Temizle"
 #: NEEDS WORK
 msgid "Live translation diff view"
 msgstr "Canlı çeviri fark görünümü"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
-msgid ""
-"Select a project folder with translatable source code.\n"
-"\n"
-"Scans for translatable strings using gettext patterns\n"
-"and generates .po files for each target language.\n"
-"\n"
-"Supported project types:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"and any project using gettext"
-msgstr ""
-"Çevrilebilir kaynak kodu içeren bir proje klasörü seçin.\n"
-"gettext kalıplarını kullanarak çevrilebilir dizeleri tarar\n"
-"ve her hedef dil için .po dosyaları oluşturur.\n"
-"Desteklenen proje türleri:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"ve gettext kullanan tüm projeler"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
-msgid ""
-"Select a single file to translate directly.\n"
-"\n"
-"Supported formats:\n"
-".po / .pot — Gettext translation files\n"
-".json — Key-value translation files\n"
-".srt — SubRip subtitle files\n"
-".txt / .md — Plain text and Markdown"
-msgstr ""
-"Doğrudan çevirmek için tek bir dosya seçin.\n"
-"Desteklenen biçimler:\n"
-".po / .pot — Gettext çeviri dosyaları\n"
-".json — Anahtar-değer çeviri dosyaları\n"
-".srt — SubRip altyazı dosyaları\n"
-".txt / .md — Düz metin ve Markdown"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
-msgid ""
-"Re-check existing translations using context-aware AI.\n"
-"\n"
-"Detects entries translated without app name/context\n"
-"and fixes only those. Requires an LLM-based API.\n"
-"\n"
-"Compatible APIs:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Not compatible:\n"
-"DeepL, LibreTranslate (no context support)"
-msgstr "Mevcut çevirileri bağlama duyarlı yapay zeka kullanarak yeniden kontrol"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 59
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
+msgid "Translation API"
+msgstr "Çeviri API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 67
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
+msgid "Select type"
+msgstr "Tür Seç"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Free API"
+msgstr "Ücretsiz API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Paid API"
+msgstr "Ücretli API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 77
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
+msgid "Free Tier APIs"
+msgstr "Ücretsiz Katman API'leri"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
+msgid "Select your preferred translation provider"
+msgstr "Tercih ettiğiniz çeviri sağlayıcısını seçin"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
+msgid "500k chars/month — Best translation quality"
+msgstr "500k karakter/ay — En iyi çeviri kalitesi"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+# File: usr/share/langforge/ui/settings_dialog.py, line: 174
 #: NEEDS WORK
-msgid ""
-"Select the API category for translations.\n"
-"\n"
-"Free — APIs with free tier or no cost:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Paid — APIs that require a billing plan:\n"
-"OpenAI, Gemini Pro, Grok"
-msgstr ""
-"Çeviriler için API kategorisini seçin.\n"
-"\n"
-"Ücretsiz — Ücretsiz katman veya maliyeti olmayan API'ler:\n"
-"Groq, Gemini Ücretsiz, DeepL Ücretsiz, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Ücretli — Faturalama planı gerektiren API'ler:\n"
-"OpenAI, Gemini Pro, Grok"
+msgid "Open source — Key optional when self-hosted"
+msgstr "Açık kaynak — Kendin barındırıldığında anahtar isteğe bağlı"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
+msgid "More providers"
+msgstr "Daha fazla sağlayıcı"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
+msgid "4 additional free options"
+msgstr "4 ek ücretsiz seçenek"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 97
+# File: usr/share/langforge/ui/settings_dialog.py, line: 121
+# File: usr/share/langforge/ui/settings_dialog.py, line: 212
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
+msgid "API Key"
+msgstr "API Anahtarı"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
+msgid "Usage"
+msgstr "Kullanım"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
+msgid "Click 'Test Connection' to check"
+msgstr "'Bağlantıyı Test Et' butonuna tıklayın."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
+msgid "Model"
+msgstr "Model"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 103
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
+msgid "LibreTranslate URL"
+msgstr "LibreTranslate URL'si"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 112
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
+msgid "Paid API Settings"
+msgstr "Ücretli API Ayarları"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
-#: NEEDS WORK
-msgid ""
-"Translation provider to use.\n"
-"\n"
-"Only providers with a configured API key\n"
-"are shown here. Add keys in API Settings.\n"
-"\n"
-"Providers that don't require a key\n"
-"(e.g. LibreTranslate) are always available."
-msgstr ""
-"Kullanılacak çeviri sağlayıcısı.\n"
-"\n"
-"Yalnızca yapılandırılmış bir API anahtarına sahip sağlayıcılar burada gösterilmektedir. Anahtarları "
-"API Ayarları'na ekleyin.\n"
-"\n"
-"Anahtar gerektirmeyen sağlayıcılar\n"
-"(örn. LibreTranslate) her zaman mevcuttur."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 359
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
+msgid "Fix Context"
+msgstr "Bağlamı Düzelt"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
-#: NEEDS WORK
+# File: usr/share/langforge/ui/settings_dialog.py, line: 362
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
 msgid ""
-"Compile .po files into .mo binary format.\n"
-"\n"
-"The .mo files are the optimized binary format\n"
-"used by gettext at runtime. Enable this to\n"
-"automatically generate them after translation."
+"Reference language used to detect context-sensitive translations. Romance languages work best "
+"because they reveal English ambiguities through gender and conjugation."
 msgstr ""
-".po dosyalarını .mo ikili formatına derle.\n"
-"\n"
-".mo dosyaları, gettext tarafından çalışma zamanında kullanılan optimize edilmiş ikili formattır. "
-"Çeviriden sonra otomatik olarak oluşturulmalarını sağlamak için bunu etkinleştirin."
+"Bağlama duyarlı çevirileri algılamak için kullanılan referans dil. Roman dilleri, İngilizce "
+"belirsizliklerini cinsiyet ve çekim yoluyla ortaya çıkardıkları için en iyi sonucu verir."
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+# File: usr/share/langforge/ui/settings_dialog.py, line: 369
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
+msgid "Reference language"
+msgstr "Referans dil"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 371
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
+msgid "★ = recommended"
+msgstr "★ = önerilen"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 374
 #: NEEDS WORK
-msgid ""
-"Open a live view of translations in progress.\n"
-"\n"
-"Shows the original text and its translation\n"
-"in real time as each language is processed."
-msgstr ""
-"Çevirilerin ilerlemesini canlı olarak görüntüleyin.\n"
-"\n"
-"Her dil işlenirken orijinal metni ve çevirisini gerçek zamanlı olarak gösterir."
+msgid "★ French"
+msgstr "★ Fransızca"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+#: NEEDS WORK
+msgid "★ Portuguese (Brazil)"
+msgstr "★ Portekizce (Brezilya)"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+#: NEEDS WORK
+msgid "★ Spanish"
+msgstr "★ İspanyolca"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 140
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
+msgid "How to get API Keys"
+msgstr "API Anahtarları Nasıl Alınır"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 144
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
+msgid "Test Connection"
+msgstr "Bağlantıyı Test Et"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 617
+# File: usr/share/langforge/ui/settings_dialog.py, line: 618
+# File: usr/share/langforge/ui/settings_dialog.py, line: 619
+# File: usr/share/langforge/ui/settings_dialog.py, line: 620
+# File: usr/share/langforge/ui/settings_dialog.py, line: 621
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
+#, python-brace-format
+msgid "{provider} API Key"
+msgstr "{provider} API Anahtarı"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 624
+#: NEEDS WORK
+msgid "API Key (optional when self-hosted)"
+msgstr "API Anahtarı (kendinize ait sunucuda isteğe bağlı)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
+msgid "Testing..."
+msgstr "Test Ediliyor..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
+msgid "Testing connection..."
+msgstr "Bağlantı sınanıyor..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
+msgid "Connection successful"
+msgstr "Bağlantı başarılı"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
+msgid "Connection failed"
+msgstr "Bağlantı başarısız oldu"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 248
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
+msgid "✓ Settings saved!"
+msgstr "✓ Ayarlar kaydedildi!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 276
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
+msgid "Available Free APIs"
+msgstr "Kullanılabilir Ücretsiz API'ler"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 280
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
+msgid "Click the links to create your account and get your key"
+msgstr "Hesabınızı oluşturmak ve anahtarınızı almak için bağlantılara tıklayın"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 289
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
+msgid "Recommended"
+msgstr "Tavsiye edilir"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 290
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
+msgid "500k characters/month"
+msgstr "500 bin karakter/ay"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 291
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
+msgid "Best translation quality"
+msgstr "En iyi çeviri kalitesi"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
+msgid "Create account → Free Plan → API Keys"
+msgstr "Hesap oluştur → Ücretsiz Plan → API Anahtarları"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
+msgid "Fastest"
+msgstr "En hızlı"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 326
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
+msgid "Free tier available"
+msgstr "Ücretsiz katman mevcut"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 786
+#: NEEDS WORK
+msgid "GPT-OSS - Excellent value"
+msgstr "GPT-OSS - Mükemmel değer"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 302
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
+msgid "Create account → API Keys → Create"
+msgstr "Hesap oluştur → API Anahtarları → Oluştur"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 795
+#: NEEDS WORK
+msgid "Flash-Lite - Optimized for translation"
+msgstr "Flash-Lite - Çeviri için Optimize Edilmiş"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 311
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
+msgid "Google Login → Get API Key"
+msgstr "Google Girişi → API Anahtarı Al"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 803
+#: NEEDS WORK
+msgid "Free models available"
+msgstr "Ücretsiz modeller mevcut"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 804
+#: NEEDS WORK
+msgid "GPT-OSS and availability-aware routing"
+msgstr "GPT-OSS ve kullanılabilirlik farkındalığına sahip yönlendirme"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 320
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
+msgid "Create account → Keys → Create Key"
+msgstr "Hesap oluştur → Anahtarlar → Anahtar Oluştur"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 327
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
+msgid "Quality Mistral models"
+msgstr "Kaliteli Mistral modelleri"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 329
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
+msgid "Create account → API Keys → Generate"
+msgstr "Hesap oluştur → API Anahtarları → Oluştur"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 820
+#: NEEDS WORK
+msgid "Self-hostable"
+msgstr "Kendi barındırılabilir"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 335
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
+msgid "Unlimited (self-hosted)"
+msgstr "Sınırsız (kendi kendine barındırılan)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 336
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
+msgid "Open source - Basic quality"
+msgstr "Açık kaynak - Temel kalite"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 824
+#: NEEDS WORK
+msgid "Add a key for the public service or use your own server"
+msgstr "Kamu hizmeti için bir anahtar ekleyin veya kendi sunucunuzu kullanın."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 398
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
+msgid "Open"
+msgstr "Aç"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 70
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog not found: {path}"
+msgstr "Katalog bulunamadı: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 86
+#: NEEDS WORK
+msgid "MO output directory contains a symlink"
+msgstr "MO çıktı dizini bir sembolik bağlantı içerir."
+# 
+# File: usr/share/langforge/core/compiler.py, line: 106
+#: NEEDS WORK
+#, python-brace-format
+msgid "Could not compile {lang}: {error}"
+msgstr "{lang} derlenemedi: {error}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 113
+#: NEEDS WORK
+msgid "msgfmt was not found. Install the gettext package."
+msgstr "msgfmt bulunamadı. gettext paketini yükleyin."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
@@ -807,8 +799,13 @@ msgstr "Proje gettext kullanmıyor"
 msgid "Not a file: {}"
 msgstr "Dosya değil: {}"
 # 
-# File: usr/share/langforge/core/controller.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:77
+# File: usr/share/langforge/core/controller.py, line: 104
+#: NEEDS WORK
 #, python-brace-format
-msgid "Unsupported file type: {ext}. Supported: .po, .pot, .json, .txt, .md"
-msgstr "Desteklenmeyen dosya türü: {ext}. Desteklenenler: .po, .pot, .json, .txt, .md"
+msgid "Unsupported file type: {ext}. Supported: {supported}"
+msgstr "Desteklenmeyen dosya türü: {ext}. Desteklenen: {supported}"
+# 
+# File: usr/share/langforge/core/controller.py, line: 122
+#: NEEDS WORK
+msgid "JSON root must be an object or array"
+msgstr "JSON kökü bir nesne veya dizi olmalıdır."

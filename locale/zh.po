@@ -15,326 +15,142 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 414
+# File: usr/share/langforge/ui/main_window.py, line: 451
+# File: usr/share/langforge/ui/main_window.py, line: 562
+# File: usr/share/langforge/ui/main_window.py, line: 568
+# File: usr/share/langforge/ui/main_window.py, line: 571
+# File: usr/share/langforge/ui/settings_dialog.py, line: 243
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
+msgid "Error"
+msgstr "错误"
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
+msgid "error"
+msgstr "错误"
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
+msgid "Translation Complete!"
+msgstr "翻译完成！"
 # File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
 msgid "Automatic translator for gettext projects"
 msgstr "gettext 项目自动翻译器"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 59
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
-msgid "Translation API"
-msgstr "翻译 API"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 144
-# File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
-#. API Type row
-msgid "API Type"
-msgstr "API 类型"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 67
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
-msgid "Select type"
-msgstr "选择类型"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Free API"
-msgstr "免费 API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Paid API"
-msgstr "付费 API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
-msgid "Free Tier APIs"
-msgstr "免费套餐 API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 171
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
-msgid "Select your preferred translation provider"
-msgstr "选择您首选的翻译提供商"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
-msgid "500k chars/month — Best translation quality"
-msgstr "每月500k字符 — 最佳翻译质量"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 184
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:197
-msgid "14.4k req/day — Fastest, excellent quality"
-msgstr "每天 14.4k 请求 — 最快，卓越品质"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 190
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:203
-msgid "1,000 req/day — Google AI"
-msgstr "每天 1,000 请求 — Google AI"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 196
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:209
-msgid "18 free models available"
-msgstr "18个免费模型可用"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 202
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:215
-msgid "Free tier — Quality models"
-msgstr "免费套餐 — 高质量模型"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 208
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:221
-msgid "Open source — No API key needed"
-msgstr "开源 — 无需 API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 236
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
-msgid "More providers"
-msgstr "更多提供商"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 237
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
-msgid "4 additional free options"
-msgstr "额外 4 个免费选项"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 97
-# File: usr/share/langforge/ui/settings_dialog.py, line: 121
-# File: usr/share/langforge/ui/settings_dialog.py, line: 212
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
-msgid "API Key"
-msgstr "API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 263
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
-msgid "Usage"
-msgstr "使用情况"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 264
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
-msgid "Click 'Test Connection' to check"
-msgstr "点击“测试连接”进行检查"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
-msgid "Model"
-msgstr "模型"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 103
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
-msgid "LibreTranslate URL"
-msgstr "LibreTranslate URL"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 112
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
-msgid "Paid API Settings"
-msgstr "付费 API 设置"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 321
-#: NEEDS WORK
-msgid "GPT-5, GPT-4.1 — Industry standard"
-msgstr "GPT-5，GPT-4.1 — 行业标准"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
-msgid "Gemini 2.5 Flash/Pro — Fast and capable"
-msgstr "双子座 2.5 Flash/Pro — 快速且强大"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 303
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
-msgid "$25 free credits — 2M context window"
-msgstr "25 美元免费额度 — 2M 上下文窗口"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: NEEDS WORK
-msgid "Very low cost — Good for high-volume translation"
-msgstr "非常低的成本 — 适合大规模翻译"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 359
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
-msgid "Fix Context"
-msgstr "修复上下文"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 362
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
 msgid ""
-"Reference language used to detect context-sensitive translations. Romance languages work best "
-"because they reveal English ambiguities through gender and conjugation."
-msgstr "参考语言用于检测上下文敏感的翻译。Romance languages 效果最佳，因为它们通过性别和变位揭示 English 的歧义。"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 369
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
-msgid "Reference language"
-msgstr "参考语言"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 371
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
-msgid "★ = recommended"
-msgstr "★ = 推荐"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 374
-#: NEEDS WORK
-msgid "★ French"
-msgstr "★ 法语"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 375
-#: NEEDS WORK
-msgid "★ Portuguese (Brazil)"
-msgstr "★ 葡萄牙语（巴西）"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 376
-#: NEEDS WORK
-msgid "★ Spanish"
-msgstr "★ 西班牙语"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 140
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
-msgid "How to get API Keys"
-msgstr "如何获取 API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 144
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
-msgid "Test Connection"
-msgstr "测试连接"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 617
-# File: usr/share/langforge/ui/settings_dialog.py, line: 618
-# File: usr/share/langforge/ui/settings_dialog.py, line: 619
-# File: usr/share/langforge/ui/settings_dialog.py, line: 620
-# File: usr/share/langforge/ui/settings_dialog.py, line: 621
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
-#, python-brace-format
-msgid "{provider} API Key"
-msgstr "{provider} API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 559
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
-msgid "Testing..."
-msgstr "测试中..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 560
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
-msgid "Testing connection..."
-msgstr "测试连接..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 598
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
-msgid "Connection successful"
-msgstr "连接成功"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 615
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
-msgid "Connection failed"
-msgstr "连接失败"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 248
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
-msgid "✓ Settings saved!"
-msgstr "✓ 设置已保存！"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 276
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
-msgid "Available Free APIs"
-msgstr "可用免费 API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 280
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
-msgid "Click the links to create your account and get your key"
-msgstr "点击链接创建账户并获取密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 289
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
-msgid "Recommended"
-msgstr "推荐"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 290
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
-msgid "500k characters/month"
-msgstr "每月 500k 字符"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 291
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
-msgid "Best translation quality"
-msgstr "最佳翻译质量"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 293
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
-msgid "Create account → Free Plan → API Keys"
-msgstr "创建账户 → 免费套餐 → API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
-msgid "Fastest"
-msgstr "最快"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 299
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:774
-msgid "14,400 requests/day"
-msgstr "14,400 次请求/天"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 300
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:775
-msgid "LLaMA 3 - Excellent value"
-msgstr "LLaMA 3 - 性价比极高"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 302
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
-msgid "Create account → API Keys → Create"
-msgstr "创建账户 → API 密钥 → 创建"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 308
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:783
-msgid "1,000 requests/day"
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
 msgstr ""
-"1,000 次请求/天\n"
-"|||NEXT|选择包含可翻译源代码的项目文件夹。\n"
+"选择包含可翻译源代码的项目文件夹。\n"
 "\n"
-"使用 gettext 模式扫描可翻译字符串\n"
-"并为每种目标语言生成 .po 文件。\n"
+"扫描使用 gettext 模式的可翻译字符串，并为"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
+msgid ""
+"Select a single file to translate directly.\n"
 "\n"
-"支持的项目类型：\n"
-"Python、C/C++、JavaScript、Shell、Vala\n"
-"以及任何使用 gettext 的项目\n"
-"|||NEXT|选择单个文件直接翻译。\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr "选择单个文件直接翻译。"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
 "\n"
-"支持的格式：\n"
-".po / .pot — Gettext 翻译文件\n"
-".json — 键值对翻译文件\n"
-".srt — SubRip 字幕文件\n"
-".txt / .md — 纯文本和 Markdown\n"
-"|||NEXT|使用上下文感知 AI 重新检查现有翻译。\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
 "\n"
-"检测未包含应用名称/上下文的翻译条目\n"
-"并仅修复这些条目。需要基于 LLM 的 API。\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
 "\n"
-"兼容的 API：\n"
-"OpenAI、Gemini、Groq、Mistral、OpenRouter、Grok\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"使用上下文感知的AI重新检查现有翻译。\n"
 "\n"
-"不兼容：\n"
-"DeepL、LibreTranslate（不支持上下文）\n"
-"|||NEXT|正在恢复… 已完成 <x1/>/<x2/> 种语言"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 309
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:784
-msgid "Google AI - Good quality"
-msgstr "谷歌人工智能 - 质量上乘"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 311
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
-msgid "Google Login → Get API Key"
-msgstr "Google 登录 → 获取 API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 317
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:792
-msgid "18 free models"
-msgstr "18 个免费模型"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 318
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:793
-msgid "Multiple models available"
-msgstr "多种型号可供选择"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 320
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
-msgid "Create account → Keys → Create Key"
-msgstr "创建账户 → 密钥 → 创建密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 326
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
-msgid "Free tier available"
-msgstr "免费套餐可用"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 327
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
-msgid "Quality Mistral models"
-msgstr "优质 Mistral 型号"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 329
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
-msgid "Create account → API Keys → Generate"
-msgstr "创建账户 → API 密钥 → 生成"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 334
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:809
-msgid "No API Key"
-msgstr "无 API 密钥"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 335
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
-msgid "Unlimited (self-hosted)"
-msgstr "无限制（自行托管）"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
-msgid "Open source - Basic quality"
-msgstr "开放源代码 - 基本质量"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 338
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:813
-msgid "Use default URL or your own server"
-msgstr "使用默认 URL 或您自己的服务器"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 398
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
-msgid "Open"
-msgstr "打开"
+"检测未包含应用名称/上下文"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+#: NEEDS WORK
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"选择翻译的API类别。\n"
+"\n"
+"免费 — 具有免费层或无成本的API：\n"
+"Groq，Gemini Free，DeepL Free，OpenRouter，\n"
+"Mistral，LibreTranslate\n"
+"\n"
+"付费 — 需要计费计划的API：\n"
+"OpenAI，Gemini Pro，Grok"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+#: NEEDS WORK
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"要使用的翻译提供者。\n"
+"\n"
+"这里只显示配置了 API 密钥的提供者。请在 API 设置中添加密钥。\n"
+"\n"
+"不需要密钥的提供者（例如 LibreTranslate）始终可用。"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+"将 .po 文件编译为 .mo 二进制格式。\n"
+"\n"
+".mo 文件是 gettext 在运行时使用的优化二进制格式。启用此选项以在翻译后自动生成它们。"
+# 
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"打开翻译进度的实时视图。\n"
+"\n"
+"实时显示原始文本及其翻译\n"
+"随着每种语言的处理。"
 # File: usr/share/langforge/ui/main_window.py, line: 25
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
 msgid "Could not connect to the translation service. Check your internet connection."
@@ -501,10 +317,6 @@ msgstr "打开设置"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
 msgid "Skip"
 msgstr "跳过"
-# File: usr/share/langforge/ui/main_window.py, line: 533
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
-msgid "Translation Complete!"
-msgstr "翻译完成！"
 # File: usr/share/langforge/ui/main_window.py, line: 539
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
 msgid "Translate Again"
@@ -533,10 +345,6 @@ msgstr "翻译中"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
 msgid "completed"
 msgstr "已完成"
-# File: usr/share/langforge/ui/main_window.py, line: 623
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
-msgid "error"
-msgstr "错误"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 639
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
@@ -551,6 +359,23 @@ msgstr "免费"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
 msgid "Paid"
 msgstr "付费"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 144
+# File: usr/share/langforge/ui/settings_dialog.py, line: 64
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
+#. API Type row
+msgid "API Type"
+msgstr "API 类型"
+# 
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 746
+# File: usr/share/langforge/ui/settings_dialog.py, line: 280
+#: NEEDS WORK
+msgid "Provider"
+msgstr "提供者"
 # File: usr/share/langforge/ui/main_window.py, line: 747
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
 #, python-brace-format
@@ -560,23 +385,6 @@ msgstr "已选择 {count} 个 {total} 语言"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
 msgid "Translatable files (.po, .json, .txt, .md, .srt)"
 msgstr "可翻译文件（.po，.json，.txt，.md，.srt）"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 414
-# File: usr/share/langforge/ui/main_window.py, line: 451
-# File: usr/share/langforge/ui/main_window.py, line: 562
-# File: usr/share/langforge/ui/main_window.py, line: 568
-# File: usr/share/langforge/ui/main_window.py, line: 571
-# File: usr/share/langforge/ui/settings_dialog.py, line: 243
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
-msgid "Error"
-msgstr "错误"
 # File: usr/share/langforge/ui/main_window.py, line: 867
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
 #, python-brace-format
@@ -686,113 +494,278 @@ msgstr "清除"
 #: NEEDS WORK
 msgid "Live translation diff view"
 msgstr "实时翻译差异视图"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
-msgid ""
-"Select a project folder with translatable source code.\n"
-"\n"
-"Scans for translatable strings using gettext patterns\n"
-"and generates .po files for each target language.\n"
-"\n"
-"Supported project types:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"and any project using gettext"
-msgstr ""
-"选择包含可翻译源代码的项目文件夹。\n"
-"\n"
-"扫描使用 gettext 模式的可翻译字符串，并为"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
-msgid ""
-"Select a single file to translate directly.\n"
-"\n"
-"Supported formats:\n"
-".po / .pot — Gettext translation files\n"
-".json — Key-value translation files\n"
-".srt — SubRip subtitle files\n"
-".txt / .md — Plain text and Markdown"
-msgstr "选择单个文件直接翻译。"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
-msgid ""
-"Re-check existing translations using context-aware AI.\n"
-"\n"
-"Detects entries translated without app name/context\n"
-"and fixes only those. Requires an LLM-based API.\n"
-"\n"
-"Compatible APIs:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Not compatible:\n"
-"DeepL, LibreTranslate (no context support)"
-msgstr ""
-"使用上下文感知的AI重新检查现有翻译。\n"
-"\n"
-"检测未包含应用名称/上下文"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 59
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
+msgid "Translation API"
+msgstr "翻译 API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 67
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
+msgid "Select type"
+msgstr "选择类型"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Free API"
+msgstr "免费 API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Paid API"
+msgstr "付费 API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 77
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
+msgid "Free Tier APIs"
+msgstr "免费套餐 API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
+msgid "Select your preferred translation provider"
+msgstr "选择您首选的翻译提供商"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
+msgid "500k chars/month — Best translation quality"
+msgstr "每月500k字符 — 最佳翻译质量"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+# File: usr/share/langforge/ui/settings_dialog.py, line: 174
 #: NEEDS WORK
-msgid ""
-"Select the API category for translations.\n"
-"\n"
-"Free — APIs with free tier or no cost:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Paid — APIs that require a billing plan:\n"
-"OpenAI, Gemini Pro, Grok"
-msgstr ""
-"选择翻译的API类别。\n"
-"\n"
-"免费 — 具有免费层或无成本的API：\n"
-"Groq，Gemini Free，DeepL Free，OpenRouter，\n"
-"Mistral，LibreTranslate\n"
-"\n"
-"付费 — 需要计费计划的API：\n"
-"OpenAI，Gemini Pro，Grok"
+msgid "Open source — Key optional when self-hosted"
+msgstr "开源 — 自托管时可选密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
+msgid "More providers"
+msgstr "更多提供商"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
+msgid "4 additional free options"
+msgstr "额外 4 个免费选项"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 97
+# File: usr/share/langforge/ui/settings_dialog.py, line: 121
+# File: usr/share/langforge/ui/settings_dialog.py, line: 212
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
+msgid "API Key"
+msgstr "API 密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
+msgid "Usage"
+msgstr "使用情况"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
+msgid "Click 'Test Connection' to check"
+msgstr "点击“测试连接”进行检查"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
+msgid "Model"
+msgstr "模型"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 103
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
+msgid "LibreTranslate URL"
+msgstr "LibreTranslate URL"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 112
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
+msgid "Paid API Settings"
+msgstr "付费 API 设置"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 359
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
+msgid "Fix Context"
+msgstr "修复上下文"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
-#: NEEDS WORK
+# File: usr/share/langforge/ui/settings_dialog.py, line: 362
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
 msgid ""
-"Translation provider to use.\n"
-"\n"
-"Only providers with a configured API key\n"
-"are shown here. Add keys in API Settings.\n"
-"\n"
-"Providers that don't require a key\n"
-"(e.g. LibreTranslate) are always available."
-msgstr ""
-"要使用的翻译提供者。\n"
-"\n"
-"这里只显示配置了 API 密钥的提供者。请在 API 设置中添加密钥。\n"
-"\n"
-"不需要密钥的提供者（例如 LibreTranslate）始终可用。"
+"Reference language used to detect context-sensitive translations. Romance languages work best "
+"because they reveal English ambiguities through gender and conjugation."
+msgstr "参考语言用于检测上下文敏感的翻译。Romance languages 效果最佳，因为它们通过性别和变位揭示 English 的歧义。"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
-#: NEEDS WORK
-msgid ""
-"Compile .po files into .mo binary format.\n"
-"\n"
-"The .mo files are the optimized binary format\n"
-"used by gettext at runtime. Enable this to\n"
-"automatically generate them after translation."
-msgstr ""
-"将 .po 文件编译为 .mo 二进制格式。\n"
-"\n"
-".mo 文件是 gettext 在运行时使用的优化二进制格式。启用此选项以在翻译后自动生成它们。"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 369
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
+msgid "Reference language"
+msgstr "参考语言"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+# File: usr/share/langforge/ui/settings_dialog.py, line: 371
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
+msgid "★ = recommended"
+msgstr "★ = 推荐"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 374
 #: NEEDS WORK
-msgid ""
-"Open a live view of translations in progress.\n"
-"\n"
-"Shows the original text and its translation\n"
-"in real time as each language is processed."
-msgstr ""
-"打开翻译进度的实时视图。\n"
-"\n"
-"实时显示原始文本及其翻译\n"
-"随着每种语言的处理。"
+msgid "★ French"
+msgstr "★ 法语"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+#: NEEDS WORK
+msgid "★ Portuguese (Brazil)"
+msgstr "★ 葡萄牙语（巴西）"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+#: NEEDS WORK
+msgid "★ Spanish"
+msgstr "★ 西班牙语"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 140
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
+msgid "How to get API Keys"
+msgstr "如何获取 API 密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 144
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
+msgid "Test Connection"
+msgstr "测试连接"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 617
+# File: usr/share/langforge/ui/settings_dialog.py, line: 618
+# File: usr/share/langforge/ui/settings_dialog.py, line: 619
+# File: usr/share/langforge/ui/settings_dialog.py, line: 620
+# File: usr/share/langforge/ui/settings_dialog.py, line: 621
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
+#, python-brace-format
+msgid "{provider} API Key"
+msgstr "{provider} API 密钥"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 624
+#: NEEDS WORK
+msgid "API Key (optional when self-hosted)"
+msgstr "API 密钥（自托管时可选）"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
+msgid "Testing..."
+msgstr "测试中..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
+msgid "Testing connection..."
+msgstr "测试连接..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
+msgid "Connection successful"
+msgstr "连接成功"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
+msgid "Connection failed"
+msgstr "连接失败"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 248
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
+msgid "✓ Settings saved!"
+msgstr "✓ 设置已保存！"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 276
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
+msgid "Available Free APIs"
+msgstr "可用免费 API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 280
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
+msgid "Click the links to create your account and get your key"
+msgstr "点击链接创建账户并获取密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 289
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
+msgid "Recommended"
+msgstr "推荐"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 290
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
+msgid "500k characters/month"
+msgstr "每月 500k 字符"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 291
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
+msgid "Best translation quality"
+msgstr "最佳翻译质量"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
+msgid "Create account → Free Plan → API Keys"
+msgstr "创建账户 → 免费套餐 → API 密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
+msgid "Fastest"
+msgstr "最快"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 326
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
+msgid "Free tier available"
+msgstr "免费套餐可用"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 786
+#: NEEDS WORK
+msgid "GPT-OSS - Excellent value"
+msgstr "GPT-OSS - 优秀的价值"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 302
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
+msgid "Create account → API Keys → Create"
+msgstr "创建账户 → API 密钥 → 创建"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 795
+#: NEEDS WORK
+msgid "Flash-Lite - Optimized for translation"
+msgstr "Flash-Lite - 优化翻译"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 311
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
+msgid "Google Login → Get API Key"
+msgstr "Google 登录 → 获取 API 密钥"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 803
+#: NEEDS WORK
+msgid "Free models available"
+msgstr "可用免费模型"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 804
+#: NEEDS WORK
+msgid "GPT-OSS and availability-aware routing"
+msgstr "GPT-OSS 和可用性感知路由"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 320
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
+msgid "Create account → Keys → Create Key"
+msgstr "创建账户 → 密钥 → 创建密钥"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 327
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
+msgid "Quality Mistral models"
+msgstr "优质 Mistral 型号"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 329
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
+msgid "Create account → API Keys → Generate"
+msgstr "创建账户 → API 密钥 → 生成"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 820
+#: NEEDS WORK
+msgid "Self-hostable"
+msgstr "自托管"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 335
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
+msgid "Unlimited (self-hosted)"
+msgstr "无限制（自行托管）"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 336
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
+msgid "Open source - Basic quality"
+msgstr "开放源代码 - 基本质量"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 824
+#: NEEDS WORK
+msgid "Add a key for the public service or use your own server"
+msgstr "为公共服务添加密钥或使用您自己的服务器"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 398
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
+msgid "Open"
+msgstr "打开"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 70
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog not found: {path}"
+msgstr "未找到目录：{path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 86
+#: NEEDS WORK
+msgid "MO output directory contains a symlink"
+msgstr "MO输出目录包含符号链接"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 106
+#: NEEDS WORK
+#, python-brace-format
+msgid "Could not compile {lang}: {error}"
+msgstr "无法编译 {lang}: {error}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 113
+#: NEEDS WORK
+msgid "msgfmt was not found. Install the gettext package."
+msgstr "未找到 msgfmt。请安装 gettext 包。"
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
@@ -805,8 +778,13 @@ msgstr "项目不使用 gettext"
 msgid "Not a file: {}"
 msgstr "不是文件：{}"
 # 
-# File: usr/share/langforge/core/controller.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:77
+# File: usr/share/langforge/core/controller.py, line: 104
+#: NEEDS WORK
 #, python-brace-format
-msgid "Unsupported file type: {ext}. Supported: .po, .pot, .json, .txt, .md"
-msgstr "不支持的文件类型：{ext}。支持：.po, .pot, .json, .txt, .md"
+msgid "Unsupported file type: {ext}. Supported: {supported}"
+msgstr "不支持的文件类型：{ext}。支持的类型：{supported}"
+# 
+# File: usr/share/langforge/core/controller.py, line: 122
+#: NEEDS WORK
+msgid "JSON root must be an object or array"
+msgstr "JSON根必须是对象或数组"

@@ -15,312 +15,165 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 414
+# File: usr/share/langforge/ui/main_window.py, line: 451
+# File: usr/share/langforge/ui/main_window.py, line: 562
+# File: usr/share/langforge/ui/main_window.py, line: 568
+# File: usr/share/langforge/ui/main_window.py, line: 571
+# File: usr/share/langforge/ui/settings_dialog.py, line: 243
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
+msgid "Error"
+msgstr "Chyba"
+# File: usr/share/langforge/ui/main_window.py, line: 623
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
+msgid "error"
+msgstr "chyba"
+# File: usr/share/langforge/ui/main_window.py, line: 533
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
+msgid "Translation Complete!"
+msgstr "Preklad dokončený!"
 # File: usr/share/langforge/main.py, line: 67
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/main.py:113
 msgid "Automatic translator for gettext projects"
 msgstr "Automatický prekladač pre gettext projekty"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 59
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
-msgid "Translation API"
-msgstr "Prekladové API"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 144
-# File: usr/share/langforge/ui/settings_dialog.py, line: 64
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
-#. API Type row
-msgid "API Type"
-msgstr "Typ API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 67
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
-msgid "Select type"
-msgstr "Vybrať typ"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Free API"
-msgstr "Bezplatné API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 68
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
-msgid "Paid API"
-msgstr "Platené API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
-msgid "Free Tier APIs"
-msgstr "API vo voľnej vrstve"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 171
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
-msgid "Select your preferred translation provider"
-msgstr "Vyberte si preferovaného poskytovateľa prekladov"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 178
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
-msgid "500k chars/month — Best translation quality"
-msgstr "500k znakov/mesiac — Najlepšia kvalita prekladu"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 184
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:197
-msgid "14.4k req/day — Fastest, excellent quality"
-msgstr "14,4 tis. požiadaviek/deň — Najrýchlejšie, vynikajúca kvalita"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 190
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:203
-msgid "1,000 req/day — Google AI"
-msgstr "1 000 požiadaviek/deň — Google AI"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 196
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:209
-msgid "18 free models available"
-msgstr "18 voľných modelov k dispozícii"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 202
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:215
-msgid "Free tier — Quality models"
-msgstr "Bezplatná úroveň — Kvalitné modely"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 208
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:221
-msgid "Open source — No API key needed"
-msgstr "Open source — Nie je potrebný žiadny API kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 236
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
-msgid "More providers"
-msgstr "Viac poskytovateľov"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 237
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
-msgid "4 additional free options"
-msgstr "4 ďalšie bezplatné možnosti"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 97
-# File: usr/share/langforge/ui/settings_dialog.py, line: 121
-# File: usr/share/langforge/ui/settings_dialog.py, line: 212
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
-msgid "API Key"
-msgstr "Kľúč API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 263
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
-msgid "Usage"
-msgstr "Použitie"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 264
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
-msgid "Click 'Test Connection' to check"
-msgstr "Kliknite na 'Testovať pripojenie' na kontrolu"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 125
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
-msgid "Model"
-msgstr "Model"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 103
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
-msgid "LibreTranslate URL"
-msgstr "URL adresa LibreTranslate"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 112
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
-msgid "Paid API Settings"
-msgstr "Nastavenia plateného API"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 321
-#: NEEDS WORK
-msgid "GPT-5, GPT-4.1 — Industry standard"
-msgstr "GPT-5, GPT-4.1 — Priemyselný štandard"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:311
-msgid "Gemini 2.5 Flash/Pro — Fast and capable"
-msgstr "Gemini 2.5 Flash/Pro — Rýchly a schopný"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 303
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:316
-msgid "$25 free credits — 2M context window"
-msgstr "25 $ bezplatných kreditov — 2M kontextové okno"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: NEEDS WORK
-msgid "Very low cost — Good for high-volume translation"
-msgstr "Veľmi nízke náklady — Dobré pre vysoký objem prekladu"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 150
-# File: usr/share/langforge/ui/settings_dialog.py, line: 81
-# File: usr/share/langforge/ui/settings_dialog.py, line: 115
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
-#. Provider row
-msgid "Provider"
-msgstr "Poskytovateľ"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 359
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
-msgid "Fix Context"
-msgstr "Opraviť kontext"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 362
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
 msgid ""
-"Reference language used to detect context-sensitive translations. Romance languages work best "
-"because they reveal English ambiguities through gender and conjugation."
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
 msgstr ""
-"Referenčný jazyk používaný na detekciu prekladov citlivých na kontext. Románske jazyky fungujú "
-"najlepšie, pretože odhaľujú anglické nejednoznačnosti prostredníctvom rodu a časovania."
+"Vyberte priečinok projektu s preložiteľným zdrojovým kódom.\n"
+"\n"
+"Skenuje preložiteľné reťazce pomocou vzorov gettext\n"
+"a generuje súbory .po pre každý cieľový jazyk.\n"
+"\n"
+"Podporované typy projektov:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"a akýkoľvek projekt používajúci gettext"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Vyberte jeden súbor na priamy preklad.\n"
+"\n"
+"Podporované formáty:\n"
+".po / .pot — Prekladové súbory Gettext\n"
+".json — Prekladové súbory kľúč-hodnota\n"
+".srt — Súbory titulkov SubRip\n"
+".txt / .md — Obyčajný text a Markdown"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Znova skontrolujte existujúce preklady pomocou AI s vedomím kontextu.\n"
+"\n"
+"Detekuje položky preložené bez názvu aplikácie/kontextu\n"
+"a opravuje iba tie. Vyžaduje API založené na LLM.\n"
+"\n"
+"Kompatibilné API:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Nekompatibilné:\n"
+"DeepL, LibreTranslate (bez podpory kontextu)"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 369
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
-msgid "Reference language"
-msgstr "Referenčný jazyk"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 371
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
-msgid "★ = recommended"
-msgstr "★ = odporúčané"
-# 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 374
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
 #: NEEDS WORK
-msgid "★ French"
-msgstr "★ Francúzsky"
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Vyberte kategóriu API pre preklady.\n"
+"\n"
+"Bezplatné — API s bezplatnou úrovňou alebo bez nákladov:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Platené — API, ktoré vyžadujú fakturačný plán:\n"
+"OpenAI, Gemini Pro, Grok"
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
 #: NEEDS WORK
-msgid "★ Portuguese (Brazil)"
-msgstr "★ Portugal"
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Poskytovateľ prekladu na použitie.\n"
+"\n"
+"Tu sú zobrazené iba poskytovatelia s nakonfigurovaným API kľúčom. Pridajte kľúče v nastaveniach "
+"API.\n"
+"\n"
+"Poskytovatelia, ktorí nevyžadujú kľúč\n"
+"(napr. LibreTranslate), sú vždy k dispozícii."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
 #: NEEDS WORK
-msgid "★ Spanish"
-msgstr "★ Španielčina"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 140
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
-msgid "How to get API Keys"
-msgstr "Ako získať API kľúče"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 144
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
-msgid "Test Connection"
-msgstr "Testovať pripojenie"
+msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+"Preložiť .po súbory do binárneho formátu .mo.\n"
+"\n"
+"Súbory .mo sú optimalizovaný binárny formát\n"
+"používaný gettext pri behu. Aktivujte to, aby sa\n"
+"automaticky generovali po preklade."
 # 
-# File: usr/share/langforge/ui/settings_dialog.py, line: 617
-# File: usr/share/langforge/ui/settings_dialog.py, line: 618
-# File: usr/share/langforge/ui/settings_dialog.py, line: 619
-# File: usr/share/langforge/ui/settings_dialog.py, line: 620
-# File: usr/share/langforge/ui/settings_dialog.py, line: 621
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
-#, python-brace-format
-msgid "{provider} API Key"
-msgstr "{provider} API kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 559
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
-msgid "Testing..."
-msgstr "Testovanie..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 560
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
-msgid "Testing connection..."
-msgstr "Testuje sa pripojenie..."
-# File: usr/share/langforge/ui/settings_dialog.py, line: 598
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
-msgid "Connection successful"
-msgstr "Pripojenie úspešné"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 615
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
-msgid "Connection failed"
-msgstr "Pripojenie zlyhalo"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 248
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
-msgid "✓ Settings saved!"
-msgstr "Nastavenia uložené!"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 276
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
-msgid "Available Free APIs"
-msgstr "Dostupné bezplatné API"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 280
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
-msgid "Click the links to create your account and get your key"
-msgstr "Kliknutím na odkazy si vytvorte konto a získajte kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 289
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
-msgid "Recommended"
-msgstr "Odporúčané stránky"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 290
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
-msgid "500k characters/month"
-msgstr "500 tisíc znakov/mesiac"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 291
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
-msgid "Best translation quality"
-msgstr "Najlepšia kvalita prekladu"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 293
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
-msgid "Create account → Free Plan → API Keys"
-msgstr "Vytvoriť účet → Bezplatný plán → API kľúče"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 298
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
-msgid "Fastest"
-msgstr "Najrýchlejšie"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 299
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:774
-msgid "14,400 requests/day"
-msgstr "14 400 požiadaviek/deň"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 300
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:775
-msgid "LLaMA 3 - Excellent value"
-msgstr "LLaMA 3 - Skvelá hodnota"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 302
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
-msgid "Create account → API Keys → Create"
-msgstr "Vytvoriť účet → Kľúče API → Vytvoriť"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 308
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:783
-msgid "1,000 requests/day"
-msgstr "1 000 požiadaviek/deň"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 309
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:784
-msgid "Google AI - Good quality"
-msgstr "Google AI - Dobrá kvalita"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 311
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
-msgid "Google Login → Get API Key"
-msgstr "Prihlásenie cez Google → Získať API kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 317
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:792
-msgid "18 free models"
-msgstr "18 bezplatných modelov"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 318
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:793
-msgid "Multiple models available"
-msgstr "K dispozícii je viacero modelov"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 320
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
-msgid "Create account → Keys → Create Key"
-msgstr "Vytvoriť účet → Kľúče → Vytvoriť kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 326
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
-msgid "Free tier available"
-msgstr "Bezplatná úroveň dostupná"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 327
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
-msgid "Quality Mistral models"
-msgstr "Kvalitné modely Mistral"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 329
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
-msgid "Create account → API Keys → Generate"
-msgstr "Vytvoriť účet → Kľúče API → Generovať"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 334
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:809
-msgid "No API Key"
-msgstr "Žiadny API kľúč"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 335
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
-msgid "Unlimited (self-hosted)"
-msgstr "Neobmedzené (samohostiteľské)"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 336
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
-msgid "Open source - Basic quality"
-msgstr "Open source - Základná kvalita"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 338
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:813
-msgid "Use default URL or your own server"
-msgstr "Použiť predvolenú URL alebo vlastný server"
-# File: usr/share/langforge/ui/settings_dialog.py, line: 398
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
-msgid "Open"
-msgstr "Otvoriť"
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+#: NEEDS WORK
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Otvorenie živého náhľadu prebiehajúcich prekladov.\n"
+"\n"
+"Zobrazuje pôvodný text a jeho preklad\n"
+"v reálnom čase, keď sa spracováva každý jazyk."
 # File: usr/share/langforge/ui/main_window.py, line: 25
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:25
 msgid "Could not connect to the translation service. Check your internet connection."
@@ -491,10 +344,6 @@ msgstr "Otvoriť nastavenia"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:502
 msgid "Skip"
 msgstr "Preskočiť"
-# File: usr/share/langforge/ui/main_window.py, line: 533
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:533
-msgid "Translation Complete!"
-msgstr "Preklad dokončený!"
 # File: usr/share/langforge/ui/main_window.py, line: 539
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:539
 msgid "Translate Again"
@@ -523,10 +372,6 @@ msgstr "Prekladám"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:637
 msgid "completed"
 msgstr "dokončené"
-# File: usr/share/langforge/ui/main_window.py, line: 623
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:638
-msgid "error"
-msgstr "chyba"
 # 
 # File: usr/share/langforge/ui/main_window.py, line: 639
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:639
@@ -541,6 +386,25 @@ msgstr "Bezplatné"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:686
 msgid "Paid"
 msgstr "Platené"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 144
+# File: usr/share/langforge/ui/settings_dialog.py, line: 64
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:700
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:170
+#. API Type row
+msgid "API Type"
+msgstr "Typ API"
+# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 150
+# File: usr/share/langforge/ui/settings_dialog.py, line: 81
+# File: usr/share/langforge/ui/settings_dialog.py, line: 115
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:707
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:321
+#. Provider row
+msgid "Provider"
+msgstr "Poskytovateľ"
 # File: usr/share/langforge/ui/main_window.py, line: 747
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:757
 #, python-brace-format
@@ -550,23 +414,6 @@ msgstr "{count} z {total} vybraných jazykov"
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:823
 msgid "Translatable files (.po, .json, .txt, .md, .srt)"
 msgstr "Preložiteľné súbory (.po, .json, .txt, .md, .srt)"
-# #-#-#-#-#  LangForge.pot (LangForge)  #-#-#-#-#
-# 
-# File: usr/share/langforge/ui/main_window.py, line: 414
-# File: usr/share/langforge/ui/main_window.py, line: 451
-# File: usr/share/langforge/ui/main_window.py, line: 562
-# File: usr/share/langforge/ui/main_window.py, line: 568
-# File: usr/share/langforge/ui/main_window.py, line: 571
-# File: usr/share/langforge/ui/settings_dialog.py, line: 243
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:840
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:851
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:891
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:919
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:983
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1137
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:1139
-msgid "Error"
-msgstr "Chyba"
 # File: usr/share/langforge/ui/main_window.py, line: 867
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:877
 #, python-brace-format
@@ -676,136 +523,281 @@ msgstr "Vymazať"
 #: NEEDS WORK
 msgid "Live translation diff view"
 msgstr "Zobrazenie rozdielu živého prekladu"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:28
-msgid ""
-"Select a project folder with translatable source code.\n"
-"\n"
-"Scans for translatable strings using gettext patterns\n"
-"and generates .po files for each target language.\n"
-"\n"
-"Supported project types:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"and any project using gettext"
-msgstr ""
-"Vyberte priečinok projektu s preložiteľným zdrojovým kódom.\n"
-"\n"
-"Skenuje preložiteľné reťazce pomocou vzorov gettext\n"
-"a generuje súbory .po pre každý cieľový jazyk.\n"
-"\n"
-"Podporované typy projektov:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"a akýkoľvek projekt používajúci gettext"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:36
-msgid ""
-"Select a single file to translate directly.\n"
-"\n"
-"Supported formats:\n"
-".po / .pot — Gettext translation files\n"
-".json — Key-value translation files\n"
-".srt — SubRip subtitle files\n"
-".txt / .md — Plain text and Markdown"
-msgstr ""
-"Vyberte jeden súbor na priamy preklad.\n"
-"\n"
-"Podporované formáty:\n"
-".po / .pot — Prekladové súbory Gettext\n"
-".json — Prekladové súbory kľúč-hodnota\n"
-".srt — Súbory titulkov SubRip\n"
-".txt / .md — Obyčajný text a Markdown"
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/utils/tooltip_helper.py:44
-msgid ""
-"Re-check existing translations using context-aware AI.\n"
-"\n"
-"Detects entries translated without app name/context\n"
-"and fixes only those. Requires an LLM-based API.\n"
-"\n"
-"Compatible APIs:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Not compatible:\n"
-"DeepL, LibreTranslate (no context support)"
-msgstr ""
-"Znova skontrolujte existujúce preklady pomocou AI s vedomím kontextu.\n"
-"\n"
-"Detekuje položky preložené bez názvu aplikácie/kontextu\n"
-"a opravuje iba tie. Vyžaduje API založené na LLM.\n"
-"\n"
-"Kompatibilné API:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Nekompatibilné:\n"
-"DeepL, LibreTranslate (bez podpory kontextu)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 59
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:165
+msgid "Translation API"
+msgstr "Prekladové API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 67
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:173
+msgid "Select type"
+msgstr "Vybrať typ"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Free API"
+msgstr "Bezplatné API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 68
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:174
+msgid "Paid API"
+msgstr "Platené API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 77
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:183
+msgid "Free Tier APIs"
+msgstr "API vo voľnej vrstve"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 171
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:184
+msgid "Select your preferred translation provider"
+msgstr "Vyberte si preferovaného poskytovateľa prekladov"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 178
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:191
+msgid "500k chars/month — Best translation quality"
+msgstr "500k znakov/mesiac — Najlepšia kvalita prekladu"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+# File: usr/share/langforge/ui/settings_dialog.py, line: 174
 #: NEEDS WORK
-msgid ""
-"Select the API category for translations.\n"
-"\n"
-"Free — APIs with free tier or no cost:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Paid — APIs that require a billing plan:\n"
-"OpenAI, Gemini Pro, Grok"
-msgstr ""
-"Vyberte kategóriu API pre preklady.\n"
-"\n"
-"Bezplatné — API s bezplatnou úrovňou alebo bez nákladov:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Platené — API, ktoré vyžadujú fakturačný plán:\n"
-"OpenAI, Gemini Pro, Grok"
+msgid "Open source — Key optional when self-hosted"
+msgstr "Open source — Kľúč voliteľný pri vlastnom hostovaní"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 236
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:249
+msgid "More providers"
+msgstr "Viac poskytovateľov"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 237
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:250
+msgid "4 additional free options"
+msgstr "4 ďalšie bezplatné možnosti"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 97
+# File: usr/share/langforge/ui/settings_dialog.py, line: 121
+# File: usr/share/langforge/ui/settings_dialog.py, line: 212
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:270
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:345
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:624
+msgid "API Key"
+msgstr "Kľúč API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 263
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:276
+msgid "Usage"
+msgstr "Použitie"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 264
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:277
+msgid "Click 'Test Connection' to check"
+msgstr "Kliknite na 'Testovať pripojenie' na kontrolu"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 125
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:284
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:350
+msgid "Model"
+msgstr "Model"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 103
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:290
+msgid "LibreTranslate URL"
+msgstr "URL adresa LibreTranslate"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 112
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:299
+msgid "Paid API Settings"
+msgstr "Nastavenia plateného API"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
-#: NEEDS WORK
-msgid ""
-"Translation provider to use.\n"
-"\n"
-"Only providers with a configured API key\n"
-"are shown here. Add keys in API Settings.\n"
-"\n"
-"Providers that don't require a key\n"
-"(e.g. LibreTranslate) are always available."
-msgstr ""
-"Poskytovateľ prekladu na použitie.\n"
-"\n"
-"Tu sú zobrazené iba poskytovatelia s nakonfigurovaným API kľúčom. Pridajte kľúče v nastaveniach "
-"API.\n"
-"\n"
-"Poskytovatelia, ktorí nevyžadujú kľúč\n"
-"(napr. LibreTranslate), sú vždy k dispozícii."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 359
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:359
+msgid "Fix Context"
+msgstr "Opraviť kontext"
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
-#: NEEDS WORK
+# File: usr/share/langforge/ui/settings_dialog.py, line: 362
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:362
 msgid ""
-"Compile .po files into .mo binary format.\n"
-"\n"
-"The .mo files are the optimized binary format\n"
-"used by gettext at runtime. Enable this to\n"
-"automatically generate them after translation."
+"Reference language used to detect context-sensitive translations. Romance languages work best "
+"because they reveal English ambiguities through gender and conjugation."
 msgstr ""
-"Preložiť .po súbory do binárneho formátu .mo.\n"
-"\n"
-"Súbory .mo sú optimalizovaný binárny formát\n"
-"používaný gettext pri behu. Aktivujte to, aby sa\n"
-"automaticky generovali po preklade."
+"Referenčný jazyk používaný na detekciu prekladov citlivých na kontext. Románske jazyky fungujú "
+"najlepšie, pretože odhaľujú anglické nejednoznačnosti prostredníctvom rodu a časovania."
 # 
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+# File: usr/share/langforge/ui/settings_dialog.py, line: 369
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:369
+msgid "Reference language"
+msgstr "Referenčný jazyk"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 371
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:371
+msgid "★ = recommended"
+msgstr "★ = odporúčané"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 374
 #: NEEDS WORK
-msgid ""
-"Open a live view of translations in progress.\n"
-"\n"
-"Shows the original text and its translation\n"
-"in real time as each language is processed."
-msgstr ""
-"Otvorenie živého náhľadu prebiehajúcich prekladov.\n"
-"\n"
-"Zobrazuje pôvodný text a jeho preklad\n"
-"v reálnom čase, keď sa spracováva každý jazyk."
+msgid "★ French"
+msgstr "★ Francúzsky"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 375
+#: NEEDS WORK
+msgid "★ Portuguese (Brazil)"
+msgstr "★ Portugal"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 376
+#: NEEDS WORK
+msgid "★ Spanish"
+msgstr "★ Španielčina"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 140
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:396
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:399
+msgid "How to get API Keys"
+msgstr "Ako získať API kľúče"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 144
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:404
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:716
+msgid "Test Connection"
+msgstr "Testovať pripojenie"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 617
+# File: usr/share/langforge/ui/settings_dialog.py, line: 618
+# File: usr/share/langforge/ui/settings_dialog.py, line: 619
+# File: usr/share/langforge/ui/settings_dialog.py, line: 620
+# File: usr/share/langforge/ui/settings_dialog.py, line: 621
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:617
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:618
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:619
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:620
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:621
+#, python-brace-format
+msgid "{provider} API Key"
+msgstr "{provider} API kľúč"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 624
+#: NEEDS WORK
+msgid "API Key (optional when self-hosted)"
+msgstr "API kľúč (voliteľné pri vlastnom hostovaní)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 559
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:632
+msgid "Testing..."
+msgstr "Testovanie..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 560
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:633
+msgid "Testing connection..."
+msgstr "Testuje sa pripojenie..."
+# File: usr/share/langforge/ui/settings_dialog.py, line: 598
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:671
+msgid "Connection successful"
+msgstr "Pripojenie úspešné"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 615
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:688
+msgid "Connection failed"
+msgstr "Pripojenie zlyhalo"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 248
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:721
+msgid "✓ Settings saved!"
+msgstr "Nastavenia uložené!"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 276
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:729
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:749
+msgid "Available Free APIs"
+msgstr "Dostupné bezplatné API"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 280
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:754
+msgid "Click the links to create your account and get your key"
+msgstr "Kliknutím na odkazy si vytvorte konto a získajte kľúč"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 289
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:764
+msgid "Recommended"
+msgstr "Odporúčané stránky"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 290
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:765
+msgid "500k characters/month"
+msgstr "500 tisíc znakov/mesiac"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 291
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:766
+msgid "Best translation quality"
+msgstr "Najlepšia kvalita prekladu"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 293
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:768
+msgid "Create account → Free Plan → API Keys"
+msgstr "Vytvoriť účet → Bezplatný plán → API kľúče"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 298
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:773
+msgid "Fastest"
+msgstr "Najrýchlejšie"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 326
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:801
+msgid "Free tier available"
+msgstr "Bezplatná úroveň dostupná"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 786
+#: NEEDS WORK
+msgid "GPT-OSS - Excellent value"
+msgstr "GPT-OSS - Vynikajúca hodnota"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 302
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:777
+msgid "Create account → API Keys → Create"
+msgstr "Vytvoriť účet → Kľúče API → Vytvoriť"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 795
+#: NEEDS WORK
+msgid "Flash-Lite - Optimized for translation"
+msgstr "Flash-Lite - Optimalizované pre preklad"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 311
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:786
+msgid "Google Login → Get API Key"
+msgstr "Prihlásenie cez Google → Získať API kľúč"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 803
+#: NEEDS WORK
+msgid "Free models available"
+msgstr "Dostupné bezplatné modely"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 804
+#: NEEDS WORK
+msgid "GPT-OSS and availability-aware routing"
+msgstr "GPT-OSS a smerovanie s ohľadom na dostupnosť"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 320
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:795
+msgid "Create account → Keys → Create Key"
+msgstr "Vytvoriť účet → Kľúče → Vytvoriť kľúč"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 327
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:802
+msgid "Quality Mistral models"
+msgstr "Kvalitné modely Mistral"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 329
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:804
+msgid "Create account → API Keys → Generate"
+msgstr "Vytvoriť účet → Kľúče API → Generovať"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 820
+#: NEEDS WORK
+msgid "Self-hostable"
+msgstr "Samo-hostovateľný"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 335
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:810
+msgid "Unlimited (self-hosted)"
+msgstr "Neobmedzené (samohostiteľské)"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 336
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:811
+msgid "Open source - Basic quality"
+msgstr "Open source - Základná kvalita"
+# 
+# File: usr/share/langforge/ui/settings_dialog.py, line: 824
+#: NEEDS WORK
+msgid "Add a key for the public service or use your own server"
+msgstr "Pridajte kľúč pre verejnú službu alebo použite svoj vlastný server"
+# File: usr/share/langforge/ui/settings_dialog.py, line: 398
+#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/settings_dialog.py:874
+msgid "Open"
+msgstr "Otvoriť"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 70
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog not found: {path}"
+msgstr "Katalóg nenájdený: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 86
+#: NEEDS WORK
+msgid "MO output directory contains a symlink"
+msgstr "Výstupný adresár MO obsahuje symbolický odkaz."
+# 
+# File: usr/share/langforge/core/compiler.py, line: 106
+#: NEEDS WORK
+#, python-brace-format
+msgid "Could not compile {lang}: {error}"
+msgstr "Nepodarilo sa skompilovať {lang}: {error}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 113
+#: NEEDS WORK
+msgid "msgfmt was not found. Install the gettext package."
+msgstr "msgfmt nebol nájdený. Nainštalujte balík gettext."
 # 
 # File: usr/share/langforge/core/controller.py, line: 57
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:57
@@ -818,8 +810,13 @@ msgstr "Projekt nepoužíva gettext"
 msgid "Not a file: {}"
 msgstr "Nie je súbor: {}"
 # 
-# File: usr/share/langforge/core/controller.py, line: 77
-#: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/core/controller.py:77
+# File: usr/share/langforge/core/controller.py, line: 104
+#: NEEDS WORK
 #, python-brace-format
-msgid "Unsupported file type: {ext}. Supported: .po, .pot, .json, .txt, .md"
-msgstr "Nepodporovaný typ súboru: {ext}. Podporované: .po, .pot, .json, .txt, .md"
+msgid "Unsupported file type: {ext}. Supported: {supported}"
+msgstr "Nepodporovaný typ súboru: {ext}. Podporované: {supported}"
+# 
+# File: usr/share/langforge/core/controller.py, line: 122
+#: NEEDS WORK
+msgid "JSON root must be an object or array"
+msgstr "Koreň JSON musí byť objekt alebo pole"
