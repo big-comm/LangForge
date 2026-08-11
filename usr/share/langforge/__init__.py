@@ -1,3 +1,8 @@
 """Translation Automator - Aplicativo de tradução automática para projetos gettext."""
 
-__version__ = "1.1.3"
+# Single source of truth for the version. APP_VERSION_OWNER tells gitrepo which
+# constant belongs to this repository, so the build can bump it automatically.
+APP_VERSION_OWNER = "langforge"
+APP_VERSION = "1.1.4"
+
+__version__ = APP_VERSION

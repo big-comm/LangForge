@@ -39,7 +39,9 @@ from utils.i18n import _
 try:
     from __init__ import __version__ as APP_VERSION
 except ImportError:
-    APP_VERSION = "1.1.3"
+    # No hardcoded number here: a second version literal would go stale and
+    # would compete with the owned constant during the automated bump.
+    APP_VERSION = "unknown"
 
 
 class LangForgeApp(Adw.Application):
