@@ -745,11 +745,23 @@ msgstr "为公共服务添加密钥或使用您自己的服务器"
 msgid "Open"
 msgstr "打开"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "目录名称在区域设置规范化后发生冲突：{first}，{second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "未找到目录：{path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "目录名称在区域设置规范化后发生冲突：{names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

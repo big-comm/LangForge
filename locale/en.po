@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LangForge\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-11 21:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -883,24 +885,36 @@ msgid "Open"
 msgstr "Open"
 
 #
-# File: usr/share/langforge/core/compiler.py, line: 70
+# File: usr/share/langforge/core/compiler.py, line: 46
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Catalog names collide after locale normalization: {first}, {second}"
+
+#
+# File: usr/share/langforge/core/compiler.py, line: 84
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Catalog not found: {path}"
 
 #
-# File: usr/share/langforge/core/compiler.py, line: 86
+# File: usr/share/langforge/core/compiler.py, line: 95
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Catalog names collide after locale normalization: {names}"
+
+#
+# File: usr/share/langforge/core/compiler.py, line: 110
 msgid "MO output directory contains a symlink"
 msgstr "MO output directory contains a symlink"
 
 #
-# File: usr/share/langforge/core/compiler.py, line: 106
+# File: usr/share/langforge/core/compiler.py, line: 137
 #, python-brace-format
 msgid "Could not compile {lang}: {error}"
 msgstr "Could not compile {lang}: {error}"
 
 #
-# File: usr/share/langforge/core/compiler.py, line: 113
+# File: usr/share/langforge/core/compiler.py, line: 143
 msgid "msgfmt was not found. Install the gettext package."
 msgstr "msgfmt was not found. Install the gettext package."
 

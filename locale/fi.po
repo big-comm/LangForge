@@ -770,11 +770,23 @@ msgstr "Lisää avain julkiselle palvelulle tai käytä omaa palvelintasi"
 msgid "Open"
 msgstr "Avaa"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Katalogin nimet törmäävät paikallisen normalisoinnin jälkeen: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Katalogia ei löytynyt: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Katalogin nimet törmäävät paikallisen normalisoinnin jälkeen: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

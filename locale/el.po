@@ -782,11 +782,23 @@ msgstr "Προσθέστε ένα κλειδί για την δημόσια υπ
 msgid "Open"
 msgstr "Άνοιγμα"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Τα ονόματα καταλόγων συγκρούονται μετά την κανονικοποίηση τοπικών ρυθμίσεων: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Κατάλογος δεν βρέθηκε: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Τα ονόματα καταλόγων συγκρούονται μετά την κανονικοποίηση τοπικών ρυθμίσεων: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

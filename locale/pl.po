@@ -774,11 +774,23 @@ msgstr "Dodaj klucz do usługi publicznej lub użyj własnego serwera"
 msgid "Open"
 msgstr "Otwórz"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Nazwy katalogów kolidują po normalizacji lokalizacji: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Katalog nie został znaleziony: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Nazwy katalogów kolidują po normalizacji lokalizacji: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

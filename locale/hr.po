@@ -766,11 +766,23 @@ msgstr "Dodajte ključ za javnu uslugu ili upotrijebite svoj vlastiti poslužite
 msgid "Open"
 msgstr "Otvori"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Imena kataloga se sukobljavaju nakon normalizacije lokalizacije: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Katalog nije pronađen: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Imena kataloga se sukobljavaju nakon normalizacije lokalizacije: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

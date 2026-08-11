@@ -781,11 +781,23 @@ msgstr "Fügen Sie einen Schlüssel für den öffentlichen Dienst hinzu oder ver
 msgid "Open"
 msgstr "Öffnen"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "Katalognamen kollidieren nach der Lokalisierungsnormalisierung: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "Katalog nicht gefunden: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "Katalognamen kollidieren nach der Lokalisierungsnormalisierung: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK

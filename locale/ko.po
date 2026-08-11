@@ -772,11 +772,23 @@ msgstr "공공 서비스에 대한 키를 추가하거나 자신의 서버를 �
 msgid "Open"
 msgstr "열기"
 # 
+# File: usr/share/langforge/core/compiler.py, line: 46
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {first}, {second}"
+msgstr "로케일 정규화 후 카탈로그 이름이 충돌합니다: {first}, {second}"
+# 
 # File: usr/share/langforge/core/compiler.py, line: 70
 #: NEEDS WORK
 #, python-brace-format
 msgid "Catalog not found: {path}"
 msgstr "카탈로그를 찾을 수 없습니다: {path}"
+# 
+# File: usr/share/langforge/core/compiler.py, line: 95
+#: NEEDS WORK
+#, python-brace-format
+msgid "Catalog names collide after locale normalization: {names}"
+msgstr "로케일 정규화 후 카탈로그 이름이 충돌합니다: {names}"
 # 
 # File: usr/share/langforge/core/compiler.py, line: 86
 #: NEEDS WORK
