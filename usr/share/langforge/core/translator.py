@@ -37,17 +37,21 @@ _PRINTF_PATTERN = re.compile(
 )
 _BRACE_PATTERN = re.compile(r"(?<!\{)\{(?!\{)(?:[^{}]|\{[^{}]*\})*\}(?!\})")
 _QT_PATTERN = re.compile(r"%(?:L)?[1-9]\d*(?![\d$A-Za-z])")
+_MARKUP_PATTERN = re.compile(r"</?[A-Za-z][^<>]*>")
+# Inline markup (subtitle <i>, Pango/HTML tags) is protected like a format
+# placeholder: the model never sees the tag, so it cannot drop, reorder, or
+# re-case it, and validation stops rejecting otherwise good translations.
 _FORMAT_PATTERNS = [
     _PRINTF_PATTERN,
     _BRACE_PATTERN,
     _QT_PATTERN,
+    _MARKUP_PATTERN,
 ]
 _PROTOCOL_ARTIFACT_PATTERN = re.compile(
     r"(?:\|{2,}(?:NEXT)?\|*|<\s*/?\s*(?:NL|br|x\d+)\b[^>]*>|"
     r"&lt;\s*/?\s*(?:NL|br|x\d+)\b.*?&gt;|\[(?:x)?\d+\]|```)",
     re.IGNORECASE,
 )
-_MARKUP_PATTERN = re.compile(r"</?[A-Za-z][^<>]*>")
 _ENTITY_PATTERN = re.compile(r"&(?:[A-Za-z][A-Za-z0-9]+|#\d+|#x[0-9A-Fa-f]+);")
 _NUMBER_PATTERN = re.compile(
     r"(?<!\d)(?P<sign>[+-]?)(?P<number>\d+(?:[.,]\d+)*)"
@@ -241,6 +245,26 @@ def _match_boundary_whitespace(original: str, translated: str) -> str:
     return leading + translated.strip() + trailing
 
 
+_TOKEN_VARIANT_CACHE: dict[str, re.Pattern[str]] = {}
+
+
+def _token_variants(index: str) -> re.Pattern[str]:
+    """Match one <xN/> token through the punctuation an LLM may mangle.
+
+    Covers stray spaces, dropped or extra slashes, case changes, the
+    HTML-encoded form, and the bracket form, in any combination.
+    """
+    cached = _TOKEN_VARIANT_CACHE.get(index)
+    if cached is None:
+        cached = re.compile(
+            rf"(?:&lt;|<)\s*/?\s*x{index}(?!\d)\s*/?\s*(?:&gt;|>)"
+            rf"|\[\s*x{index}(?!\d)\s*\]",
+            re.IGNORECASE,
+        )
+        _TOKEN_VARIANT_CACHE[index] = cached
+    return cached
+
+
 def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
     """Restaura placeholders originais a partir dos tokens XML.
 
@@ -251,23 +275,7 @@ def _restore_placeholders(text: str, tokens: List[Tuple[str, str]]) -> str:
         # Extract the number from <xN/>
         num = re.search(r"x(\d+)", token)
         if num:
-            n = num.group(1)
-            # Try multiple corruption patterns LLMs commonly produce
-            variants = [
-                token,  # <x1/>
-                f"<x{n} />",  # <x1 />
-                f"< x{n}/>",  # < x1/>
-                f"< x{n} />",  # < x1 />
-                f"<X{n}/>",  # <X1/>
-                f"<X{n} />",  # <X1 />
-                f"&lt;x{n}/&gt;",  # HTML-encoded
-                f"<x{n}>",  # Missing / (not self-closing)
-                f"[x{n}]",  # Bracket variant
-            ]
-            for variant in variants:
-                if variant in text:
-                    text = text.replace(variant, original)
-                    break
+            text = _token_variants(num.group(1)).sub(lambda _match: original, text)
         else:
             text = text.replace(token, original)
     return text

@@ -81,6 +81,30 @@ class TestProtectPlaceholders:
         assert protected == ""
         assert len(tokens) == 0
 
+    def test_subtitle_italics_are_protected(self):
+        protected, tokens = _protect_placeholders("<i>Whispered line</i>")
+
+        assert protected == "<x1/>Whispered line<x2/>"
+        assert [placeholder for _, placeholder in tokens] == ["<i>", "</i>"]
+
+    def test_markup_with_attributes_is_one_token(self):
+        text = '<font color="#ffffff">Hi %s</font>'
+        protected, tokens = _protect_placeholders(text)
+
+        assert [placeholder for _, placeholder in tokens] == [
+            '<font color="#ffffff">',
+            "%s",
+            "</font>",
+        ]
+        assert _restore_placeholders(protected, tokens) == text
+
+    def test_comparison_signs_are_not_markup(self):
+        text = "Use a < b and c > d"
+        protected, tokens = _protect_placeholders(text)
+
+        assert protected == text
+        assert tokens == []
+
 
 class TestRestorePlaceholders:
     def test_roundtrip_percent_s(self):
@@ -106,6 +130,37 @@ class TestRestorePlaceholders:
         protected, tokens = _protect_placeholders(original)
         restored = _restore_placeholders(protected, tokens)
         assert restored == original
+
+
+class TestMangledTokenRecovery:
+    """A model that rewrites <xN/> must not cost us the translation."""
+
+    @pytest.mark.parametrize(
+        "mangled",
+        [
+            "<x1/>Olá<x2/>",
+            "<X1/>Olá<X2/>",
+            "< x1 />Olá< x2/>",
+            "&lt;x1/&gt;Olá&lt;x2/&gt;",
+            "&lt;X1 /&gt;Olá< X2 >",
+            "<x1>Olá[x2]",
+        ],
+    )
+    def test_italics_are_recovered_and_validated(self, mangled):
+        original = "<i>Hello</i>"
+        _protected, tokens = _protect_placeholders(original)
+
+        restored = _restore_placeholders(mangled, tokens)
+
+        assert restored == "<i>Olá</i>"
+        assert _validate_translation_integrity(original, restored)
+
+    def test_two_digit_tokens_are_not_confused(self):
+        tokens = [("<x1/>", "<i>"), ("<x12/>", "<b>")]
+
+        restored = _restore_placeholders("<x12/>a<x1/>b", tokens)
+
+        assert restored == "<b>a<i>b"
 
 
 class TestValidatePlaceholders:

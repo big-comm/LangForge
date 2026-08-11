@@ -771,6 +771,7 @@ class FileTranslator:
 
             try:
                 language_succeeded = True
+                untranslated = 0
                 # Resume: load already translated subtitles
                 translated_texts: list[str] = []
                 incomplete_content = _read_regular_text(incomplete_path)
@@ -829,7 +830,7 @@ class FileTranslator:
                     batch_indices = [
                         subtitles[batch_start + j]["index"] for j in range(len(batch))
                     ]
-                    batch_results, batch_succeeded = _translate_texts_exact(
+                    batch_results, item_results = _translate_texts_with_status(
                         self.api,
                         batch,
                         lang,
@@ -845,10 +846,10 @@ class FileTranslator:
                         ]
                         detail_cb(lang, pairs)
 
-                    if not batch_succeeded:
-                        language_succeeded = False
-                        break
-
+                    # A rejected line keeps its source text instead of aborting
+                    # the whole subtitle: the file stays complete and playable.
+                    untranslated += sum(1 for ok in item_results if not ok)
+                    language_succeeded = language_succeeded and all(item_results)
                     translated_texts.extend(batch_results)
 
                     # Save progress to .incomplete file after each batch
@@ -885,7 +886,7 @@ class FileTranslator:
                 if cancel_event and cancel_event.is_set():
                     break
 
-                if not language_succeeded or len(translated_texts) != len(subtitles):
+                if len(translated_texts) != len(subtitles):
                     log.warning(
                         "Incomplete SRT for %s: %d/%d",
                         lang,
@@ -897,15 +898,27 @@ class FileTranslator:
                         progress_cb(lang, "error: incomplete", i + 1, total)
                     continue
 
-                # Complete: write final file and remove .incomplete
+                # Every block has text: write final file and remove .incomplete
                 final_content = self._build_srt_content(subtitles, translated_texts)
                 _write_atomic(final_path, lambda: final_content)
                 incomplete_path.unlink(missing_ok=True)
                 checkpoint_metadata_path.unlink(missing_ok=True)
 
-                results[lang] = True
+                if not language_succeeded:
+                    log.warning(
+                        "SRT for %s kept %d/%d lines in the source language",
+                        lang,
+                        untranslated,
+                        len(subtitles),
+                    )
+                results[lang] = language_succeeded
                 if progress_cb:
-                    progress_cb(lang, "success", i + 1, total)
+                    status = (
+                        "success"
+                        if language_succeeded
+                        else f"partial: {untranslated} lines kept in source"
+                    )
+                    progress_cb(lang, status, i + 1, total)
             except Exception as e:
                 log.warning(
                     "Failed translating %s to %s: %s",

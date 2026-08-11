@@ -541,3 +541,77 @@ def test_srt_checkpoint_is_invalidated_when_source_changes(tmp_path):
     assert "fr:New source" in output.read_text(encoding="utf-8")
     assert not checkpoint.exists()
     assert not checkpoint_metadata.exists()
+
+
+class ItalicAwareAPI(EchoTranslationAPI):
+    """Echo API that mangles the markup of one specific line."""
+
+    def __init__(self, corrupt_source: str):
+        super().__init__()
+        self.corrupt_source = corrupt_source
+        self.individual_calls: list[str] = []
+
+    def _render(self, text: str, target_lang: str) -> str:
+        if text == self.corrupt_source:
+            # Model dropped the protected token entirely.
+            return f"{target_lang}:mangled"
+        return f"{target_lang}:{text}"
+
+    def translate_batch(self, texts, source_lang, target_lang):
+        self.batches.append(list(texts))
+        return [self._render(text, target_lang) for text in texts]
+
+    def translate(self, text, source_lang, target_lang):
+        self.individual_calls.append(text)
+        return self._render(text, target_lang)
+
+
+def test_srt_keeps_rejected_line_in_source_and_still_writes_file(tmp_path):
+    source = tmp_path / "episode.eng.srt"
+    source.write_text(
+        "1\n00:00:01,000 --> 00:00:02,000\n<i>Whispered line</i>\n\n"
+        "2\n00:00:03,000 --> 00:00:04,000\nPlain line\n",
+        encoding="utf-8",
+    )
+    api = ItalicAwareAPI("<x1/>Whispered line<x2/>")
+    statuses: list[str] = []
+
+    result = FileTranslator(api, source).translate_all(
+        ["fr"],
+        progress_callback=lambda _lang, status, *_: statuses.append(status),
+    )
+
+    output = _file_output_path(source, "fr", ".srt")
+    content = output.read_text(encoding="utf-8")
+
+    # One bad line must not abort the file: both blocks are present.
+    assert result == {"fr": False}
+    assert "<i>Whispered line</i>" in content
+    assert "fr:Plain line" in content
+    assert statuses[-1] == "partial: 1 lines kept in source"
+    assert not output.with_suffix(".srt.incomplete").exists()
+
+
+def test_srt_italics_survive_a_model_that_rewrites_the_token(tmp_path):
+    source = tmp_path / "episode.eng.srt"
+    source.write_text(
+        "1\n00:00:01,000 --> 00:00:02,000\n<i>Whispered line</i>\n",
+        encoding="utf-8",
+    )
+
+    class SloppyTokenAPI(EchoTranslationAPI):
+        def translate_batch(self, texts, source_lang, target_lang):
+            self.batches.append(list(texts))
+            # Case changed and HTML-escaped: both must be repaired.
+            return [
+                text.replace("<x1/>", "&lt;X1/&gt;")
+                .replace("<x2/>", "< x2 />")
+                .replace("Whispered line", f"{target_lang}:Whispered line")
+                for text in texts
+            ]
+
+    result = FileTranslator(SloppyTokenAPI(), source).translate_all(["fr"])
+
+    output = _file_output_path(source, "fr", ".srt")
+    assert result == {"fr": True}
+    assert "<i>fr:Whispered line</i>" in output.read_text(encoding="utf-8")
