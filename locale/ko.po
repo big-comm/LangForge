@@ -351,6 +351,12 @@ msgstr "새 프로젝트"
 #, python-brace-format
 msgid "{langs} languages translated in {time}"
 msgstr "{langs} 언어가 {time}에 번역됨"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 615
+# File: usr/share/langforge/ui/main_window.py, line: 700
+#: NEEDS WORK
+msgid "partially translated"
+msgstr "부분적으로 번역됨"
 # File: usr/share/langforge/ui/main_window.py, line: 587
 # File: usr/share/langforge/ui/main_window.py, line: 620
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:601

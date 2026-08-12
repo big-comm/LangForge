@@ -358,6 +358,12 @@ msgstr "Nový projekt"
 #, python-brace-format
 msgid "{langs} languages translated in {time}"
 msgstr "{langs} jazyky preložené za {time}"
+# 
+# File: usr/share/langforge/ui/main_window.py, line: 615
+# File: usr/share/langforge/ui/main_window.py, line: 700
+#: NEEDS WORK
+msgid "partially translated"
+msgstr "čiastočne preložené"
 # File: usr/share/langforge/ui/main_window.py, line: 587
 # File: usr/share/langforge/ui/main_window.py, line: 620
 #: /home/talesam/Servidor/GitHub/BigCommunity/LangForge/usr/share/langforge/ui/main_window.py:601
