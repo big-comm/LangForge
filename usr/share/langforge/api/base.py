@@ -210,7 +210,43 @@ def prepare_batch_request(
     return json.dumps(payload, ensure_ascii=False, separators=(",", ":")), item_ids
 
 
-def parse_batch_response(raw: str, expected_ids: list[str]) -> list[str]:
+_FENCED_BLOCK_PATTERN = re.compile(
+    r"\A\s*(?P<fence>`{3,}|~{3,})[^\n]*\n(?P<body>.*?)\n?(?P=fence)\s*\Z",
+    re.DOTALL,
+)
+
+
+def _unwrap_json_payload(raw: str) -> str:
+    """Return the JSON array a model wrapped in prose or a Markdown fence.
+
+    The prompt forbids fences, yet models emit ```json blocks anyway, and a
+    whole batch used to be discarded over that packaging. The payload itself
+    is still parsed strictly.
+    """
+    candidate = raw.strip()
+    fenced = _FENCED_BLOCK_PATTERN.match(candidate)
+    if fenced:
+        candidate = fenced.group("body").strip()
+    if candidate.startswith("["):
+        return candidate
+    start = candidate.find("[")
+    end = candidate.rfind("]")
+    if start != -1 and end > start:
+        return candidate[start : end + 1]
+    return candidate
+
+
+# Keys a model may use in place of "translation". The request itself uses
+# "text", so a whole response under that key that repeats every source is the
+# request bounced back, not a translation.
+_TRANSLATION_ALIASES = ("translation", "translated", "output", "text")
+
+
+def parse_batch_response(
+    raw: str,
+    expected_ids: list[str],
+    sources: Optional[list[str]] = None,
+) -> list[str]:
     """Parse a strict JSON response and align translations by opaque ID."""
     if not isinstance(raw, str):
         raise BatchAlignmentError("Batch response must be text")
@@ -232,7 +268,10 @@ def parse_batch_response(raw: str, expected_ids: list[str]) -> list[str]:
         return parsed
 
     try:
-        response = json.loads(raw, object_pairs_hook=strict_object)
+        response = json.loads(
+            _unwrap_json_payload(raw),
+            object_pairs_hook=strict_object,
+        )
     except json.JSONDecodeError as error:
         raise BatchAlignmentError("Batch response is not valid JSON") from error
     if not isinstance(response, list):
@@ -244,14 +283,32 @@ def parse_batch_response(raw: str, expected_ids: list[str]) -> list[str]:
         )
 
     expected = set(expected_ids)
+    source_by_id = dict(zip(expected_ids, sources or []))
     by_id: dict[str, str] = {}
+    aliased = 0
+    echoed = 0
     for index, item in enumerate(response):
-        if not isinstance(item, dict) or set(item) != {"id", "translation"}:
+        key = next(
+            (
+                alias
+                for alias in _TRANSLATION_ALIASES
+                if isinstance(item, dict) and set(item) == {"id", alias}
+            ),
+            None,
+        )
+        if key is None:
             raise BatchAlignmentError(
                 f"Batch response item {index + 1} has an invalid schema"
             )
         item_id = item["id"]
-        translation = item["translation"]
+        translation = item[key]
+        if key == "text" and isinstance(item_id, str):
+            aliased += 1
+            # "Terminal" is "Terminal" in Norwegian, so one identical item
+            # proves nothing. Only a wholesale echo is the request bounced
+            # back, and that is counted after the loop.
+            if translation == source_by_id.get(item_id):
+                echoed += 1
         if not isinstance(item_id, str) or not isinstance(translation, str):
             raise BatchAlignmentError(
                 f"Batch response item {index + 1} must contain strings"
@@ -267,6 +324,9 @@ def parse_batch_response(raw: str, expected_ids: list[str]) -> list[str]:
                 f"Batch response contains an empty translation for {item_id!r}"
             )
         by_id[item_id] = translation
+
+    if source_by_id and aliased == len(response) and echoed == len(response):
+        raise BatchAlignmentError("Batch response echoes every source text")
 
     missing = [item_id for item_id in expected_ids if item_id not in by_id]
     if missing:

@@ -38,25 +38,30 @@ _PRINTF_PATTERN = re.compile(
 _BRACE_PATTERN = re.compile(r"(?<!\{)\{(?!\{)(?:[^{}]|\{[^{}]*\})*\}(?!\})")
 _QT_PATTERN = re.compile(r"%(?:L)?[1-9]\d*(?![\d$A-Za-z])")
 _MARKUP_PATTERN = re.compile(r"</?[A-Za-z][^<>]*>")
-# Inline markup (subtitle <i>, Pango/HTML tags) is protected like a format
-# placeholder: the model never sees the tag, so it cannot drop, reorder, or
-# re-case it, and validation stops rejecting otherwise good translations.
+_ENTITY_PATTERN = re.compile(r"&(?:[A-Za-z][A-Za-z0-9]+|#\d+|#x[0-9A-Fa-f]+);")
+_DROPPABLE_ENTITIES = {"&amp;", "&#38;"}
+# Inline markup (subtitle <i>, Pango/HTML tags) and HTML entities are
+# protected like format placeholders: the model never sees them, so it cannot
+# drop, reorder, or re-case them. Korean renders "A &amp; B" as "A 및 B" and
+# used to lose the entity, failing an otherwise perfect translation.
 _FORMAT_PATTERNS = [
     _PRINTF_PATTERN,
     _BRACE_PATTERN,
     _QT_PATTERN,
     _MARKUP_PATTERN,
+    _ENTITY_PATTERN,
 ]
 _PROTOCOL_ARTIFACT_PATTERN = re.compile(
     r"(?:\|{2,}(?:NEXT)?\|*|<\s*/?\s*(?:NL|br|x\d+)\b[^>]*>|"
     r"&lt;\s*/?\s*(?:NL|br|x\d+)\b.*?&gt;|\[(?:x)?\d+\]|```)",
     re.IGNORECASE,
 )
-_ENTITY_PATTERN = re.compile(r"&(?:[A-Za-z][A-Za-z0-9]+|#\d+|#x[0-9A-Fa-f]+);")
 _NUMBER_PATTERN = re.compile(
     r"(?<!\d)(?P<sign>[+-]?)(?P<number>\d+(?:[.,]\d+)*)"
     r"(?P<percent>%?)(?!\d)"
 )
+# A number glued to a scale suffix: 500k, 1.5M, 2G.
+_SCALED_NUMBER_PATTERN = re.compile(r"(?<![\w.])\d+(?:[.,]\d+)*[kKMGTB](?![\w.])")
 _ENGLISH_NUMBER_WORDS = {
     "zero": "0",
     "one": "1",
@@ -324,6 +329,30 @@ def _protected_terms(text: str, app_name: str = "") -> Counter[str]:
     return terms
 
 
+def _fold_compound_terms(
+    translated_terms: Counter[str],
+    source_terms: Counter[str],
+) -> Counter[str]:
+    """Read a hyphen compound as the source term it was built from.
+
+    Norwegian writes the --user flag as "--user-flagg" and German as
+    "--user-Flag". The flag is intact; only a word was glued to it. Folding
+    happens only when the source really carries the root.
+    """
+    folded: Counter[str] = Counter()
+    for term, count in translated_terms.items():
+        root = next(
+            (
+                source
+                for source in source_terms
+                if term != source and term.startswith(f"{source}-")
+            ),
+            None,
+        )
+        folded[root or term] += count
+    return folded
+
+
 def _masked_number_text(text: str) -> str:
     """Mask placeholders whose digits are governed by stricter validators."""
     masked = list(text)
@@ -370,6 +399,15 @@ def _source_number_sequence(text: str) -> List[Tuple[str, bool]]:
 def _numbers_preserved(original: str, translated: str) -> bool:
     """Preserve digit values while allowing English number words to become digits."""
     source_sequence = _source_number_sequence(original)
+    if not any(required for _token, required in source_sequence):
+        # No digit to preserve. Languages spell implicit quantities out —
+        # Korean renders "Last Hour" as "지난 1시간" and "hex" as "16진수" —
+        # and such a digit cannot contradict a source number that is absent.
+        return True
+    # A scaled quantity is respelled per locale — 500k becomes 500.000, 500 000
+    # or 50万 — so its digits carry no comparable value.
+    if _SCALED_NUMBER_PATTERN.search(_masked_number_text(original)):
+        return True
     translated_tokens = _number_tokens(translated)
     reachable = {0}
     for token in translated_tokens:
@@ -458,16 +496,32 @@ def _validate_translation_integrity(
     translated_artifacts = Counter(_PROTOCOL_ARTIFACT_PATTERN.findall(translated))
     if source_artifacts != translated_artifacts:
         return False
-    if Counter(_ENTITY_PATTERN.findall(original)) != Counter(
-        _ENTITY_PATTERN.findall(translated)
+    # No entity may be invented or multiplied. Only the ampersand may be
+    # dropped: it stands for a character a language may not need — Korean
+    # writes "A &amp; B" as "A 및 B" — while &lt; and friends carry content.
+    source_entities = Counter(_ENTITY_PATTERN.findall(original))
+    translated_entities = Counter(_ENTITY_PATTERN.findall(translated))
+    if any(
+        count > source_entities[entity] for entity, count in translated_entities.items()
+    ):
+        return False
+    if any(
+        translated_entities[entity] != count
+        for entity, count in source_entities.items()
+        if entity.casefold() not in _DROPPABLE_ENTITIES
     ):
         return False
     if not _numbers_preserved(original, translated):
         return False
-    if _protected_terms(original, app_name) != _protected_terms(
-        translated,
-        app_name,
-    ):
+    # Every code-like term in the source must survive. A term the target
+    # gains is tolerated: Norwegian translates "Double Beep" as "Dobbelt pip",
+    # and that "pip" is a word, not the package manager.
+    source_terms = _protected_terms(original, app_name)
+    translated_terms = _fold_compound_terms(
+        _protected_terms(translated, app_name),
+        source_terms,
+    )
+    if any(translated_terms[term] != count for term, count in source_terms.items()):
         return False
     if not _source_only_terms_preserved(original, translated):
         return False
@@ -477,6 +531,11 @@ def _validate_translation_integrity(
 def _validate_placeholders(original: str, translated: str) -> bool:
     """Validate placeholder identity and unsafe positional ordering."""
     for pattern in _FORMAT_PATTERNS:
+        if pattern is _ENTITY_PATTERN:
+            # Entities are protected so the model cannot corrupt them, but a
+            # language that does not need the character may drop it. That
+            # looser rule lives in _validate_translation_integrity.
+            continue
         original_matches = pattern.findall(original)
         translated_matches = pattern.findall(translated)
 
@@ -595,6 +654,77 @@ def _plural_task_instruction(
     return ""
 
 
+def _translate_batch_with_retry(
+    api: TranslationAPI,
+    texts: List[str],
+    lang: str,
+    attempts: int = 2,
+) -> Optional[List[str]]:
+    """Translate one batch, retrying and then halving before items go alone.
+
+    A batch is lost to packaging noise now and then — a Markdown fence, a
+    renamed key, a mangled id — and asking again clears that. A batch whose
+    answer does not fit the reply budget fails identically every time, so a
+    second loss is answered by splitting the work in two. Either way this is
+    far cheaper than the single-string path, where models are much likelier
+    to answer in prose. Returns None when nothing produced an aligned batch.
+    """
+    for attempt in range(1, attempts + 1):
+        try:
+            translations = api.translate_batch(
+                texts=texts,
+                source_lang="en",
+                target_lang=lang,
+            )
+            if len(translations) != len(texts):
+                raise ValueError(
+                    "Batch translation cardinality mismatch: "
+                    f"expected {len(texts)}, got {len(translations)}"
+                )
+            return list(translations)
+        except Exception as error:
+            log.warning(
+                "Batch of %d failed for %s (attempt %d/%d): %s",
+                len(texts),
+                lang,
+                attempt,
+                attempts,
+                error,
+            )
+
+    if len(texts) < 2:
+        return None
+    middle = len(texts) // 2
+    halves = [
+        _translate_batch_with_retry(api, texts[:middle], lang, attempts),
+        _translate_batch_with_retry(api, texts[middle:], lang, attempts),
+    ]
+    if any(half is None for half in halves):
+        return None
+    log.info("Batch of %d for %s succeeded after splitting", len(texts), lang)
+    return halves[0] + halves[1]
+
+
+def _translate_single(api: TranslationAPI, text: str, lang: str) -> str:
+    """Translate one item through the strict batch protocol.
+
+    The free-form prompt lets a model answer with prose — "Certainly! The
+    message to translate is..." — which no validator can rescue. A batch of
+    one keeps the JSON schema, so the answer is a translation or nothing.
+    """
+    method = getattr(api, "translate_batch", None)
+    if callable(method):
+        try:
+            result = method([text], "en", lang)
+        except Exception:
+            result = None
+        if isinstance(result, (list, tuple)) and len(result) == 1:
+            candidate = result[0]
+            if isinstance(candidate, str) and candidate:
+                return candidate
+    return api.translate(text, "en", lang)
+
+
 def _translate_with_instruction(
     api: TranslationAPI,
     text: str,
@@ -613,7 +743,7 @@ def _translate_with_instruction(
                 f"{type(api).__name__} has no instructed translation method"
             )
         return method(text, "en", lang, instruction)
-    return api.translate(text, "en", lang)
+    return _translate_single(api, text, lang)
 
 
 def _finalize_form_translation(
@@ -670,30 +800,39 @@ def _validate_entry_translation(
     fill_singular: bool,
     app_name: str = "",
     lang: str = "",
+    repair: bool = True,
 ) -> Tuple[bool, int]:
-    """Validate every output form and replace irreparable values with source."""
+    """Validate every output form and replace irreparable values with source.
+
+    With ``repair`` disabled the entry is only inspected: an invalid value is
+    reported but left untouched, so a translation this run never asked for is
+    never thrown away. The caller flags it fuzzy and the next run retries it.
+    """
     valid = True
     fixed = 0
 
     if entry.msgid_plural:
-        entry.msgstr = ""
+        if repair:
+            entry.msgstr = ""
         for index in range(forms):
             original = _plural_source(entry, index, forms, lang)
             translated = entry.msgstr_plural.get(index, "")
             if not translated:
-                entry.msgstr_plural[index] = original
+                if repair:
+                    entry.msgstr_plural[index] = original
+                    fixed += 1
                 valid = False
-                fixed += 1
                 continue
             normalized = _match_boundary_whitespace(original, translated)
             if _validate_translation_integrity(original, normalized, app_name):
-                if normalized != translated:
+                if repair and normalized != translated:
                     entry.msgstr_plural[index] = normalized
                     fixed += 1
                 continue
-            entry.msgstr_plural[index] = original
+            if repair:
+                entry.msgstr_plural[index] = original
+                fixed += 1
             valid = False
-            fixed += 1
         return valid, fixed
 
     if not entry.msgstr:
@@ -703,12 +842,14 @@ def _validate_entry_translation(
         return True, 0
     normalized = _match_boundary_whitespace(entry.msgid, entry.msgstr)
     if _validate_translation_integrity(entry.msgid, normalized, app_name):
-        if normalized != entry.msgstr:
+        if repair and normalized != entry.msgstr:
             entry.msgstr = normalized
             return True, 1
         return True, 0
-    entry.msgstr = entry.msgid
-    return False, 1
+    if repair:
+        entry.msgstr = entry.msgid
+        return False, 1
+    return False, 0
 
 
 _CONTEXT_CACHE_VERSION = 3
@@ -812,6 +953,9 @@ class TranslationEngine:
         self.api = api_client
         self.textdomain = textdomain
         self.last_language_complete = True
+        # Entries this run could not deliver. They stay fuzzy in the catalog
+        # and the next run retries them, so they are pending, not lost.
+        self.last_language_pending = 0
 
     def _prepare_catalog(
         self,
@@ -906,11 +1050,15 @@ class TranslationEngine:
                 results[lang_code] = self.last_language_complete
 
                 if progress_callback:
-                    status = (
-                        f"success: {strings_translated} strings"
-                        if self.last_language_complete
-                        else "error: incomplete translation"
-                    )
+                    # A handful of entries left fuzzy is a partial result, not
+                    # a failure: the catalog is written and the next run
+                    # retries exactly those entries.
+                    if self.last_language_complete:
+                        status = f"success: {strings_translated} strings"
+                    else:
+                        status = (
+                            f"partial: {self.last_language_pending} strings pending"
+                        )
                     progress_callback(
                         lang_code,
                         status,
@@ -950,6 +1098,7 @@ class TranslationEngine:
         """
         # Carrega template .pot
         self.last_language_complete = True
+        self.last_language_pending = 0
         pot_file = Path(pot_file)
         if pot_file.is_symlink():
             raise ValueError("Template catalog cannot be a symlink")
@@ -1033,6 +1182,7 @@ class TranslationEngine:
                 po.remove(entry)
             _save_po_atomic(po, po_path)
             self.last_language_complete = True
+            self.last_language_pending = 0
             return copied_count
 
         translation_tasks = []
@@ -1099,25 +1249,17 @@ class TranslationEngine:
             ]
             if plain_indexes:
                 plain_texts = [protected_texts[index] for index in plain_indexes]
-                try:
-                    plain_translations = self.api.translate_batch(
-                        texts=plain_texts,
-                        source_lang="en",
-                        target_lang=lang,
-                    )
-                    if len(plain_translations) != len(plain_texts):
-                        raise ValueError(
-                            "Batch translation cardinality mismatch: "
-                            f"expected {len(plain_texts)}, "
-                            f"got {len(plain_translations)}"
-                        )
+                plain_translations = _translate_batch_with_retry(
+                    self.api,
+                    plain_texts,
+                    lang,
+                )
+                if plain_translations is not None:
                     for index, translation in zip(
                         plain_indexes,
                         plain_translations,
                     ):
                         translations[index] = translation
-                except Exception:
-                    pass
             for index, task in enumerate(batch_tasks):
                 instruction = task[3]
                 if not instruction:
@@ -1170,21 +1312,30 @@ class TranslationEngine:
         selected_entry_ids = {id(entry) for entry in entries_to_translate}
         validation_results = {}
         fixed_in_validation = 0
+        stale_in_validation = 0
         for entry in po:
             if not entry.msgid or entry.obsolete:
                 continue
+            # Entries this run did not translate are inspected, not rewritten:
+            # their outcome belongs to an earlier run and must not fail this one.
+            owned = id(entry) in selected_entry_ids
             valid, fixed = _validate_entry_translation(
                 entry,
                 plural_rule.forms,
-                fill_singular=id(entry) in selected_entry_ids,
+                fill_singular=owned,
                 lang=lang,
+                repair=owned,
             )
-            validation_results[id(entry)] = valid
+            if owned:
+                validation_results[id(entry)] = valid
+            elif not valid:
+                stale_in_validation += 1
             fixed_in_validation += fixed
             if not valid and "fuzzy" not in entry.flags:
                 entry.flags.append("fuzzy")
 
         translated_count = 0
+        pending_count = 0
         language_complete = all(validation_results.values())
         for entry in entries_to_translate:
             entry_id = id(entry)
@@ -1201,6 +1352,7 @@ class TranslationEngine:
                 translated_count += 1
             else:
                 language_complete = False
+                pending_count += 1
                 if "fuzzy" not in entry.flags:
                     entry.flags.append("fuzzy")
 
@@ -1210,8 +1362,19 @@ class TranslationEngine:
                 fixed_in_validation,
                 lang,
             )
+        if stale_in_validation:
+            log.info(
+                "Flagged %d stale forms fuzzy in %s for the next run",
+                stale_in_validation,
+                lang,
+            )
 
-        if entries_to_translate or obsolete_entries or fixed_in_validation:
+        if (
+            entries_to_translate
+            or obsolete_entries
+            or fixed_in_validation
+            or stale_in_validation
+        ):
             po.metadata["PO-Revision-Date"] = (
                 datetime.now().astimezone().strftime("%Y-%m-%d %H:%M%z")
             )
@@ -1220,6 +1383,11 @@ class TranslationEngine:
                 po.remove(entry)
         _save_po_atomic(po, po_path)
         self.last_language_complete = language_complete
+        self.last_language_pending = pending_count + sum(
+            1
+            for entry_id, succeeded in validation_results.items()
+            if not succeeded and entry_id not in selected_entry_ids
+        )
         return translated_count
 
     def fix_context(
@@ -1458,25 +1626,17 @@ class TranslationEngine:
                 ]
                 if plain_indexes:
                     plain_texts = [protected_texts[index] for index in plain_indexes]
-                    try:
-                        plain_translations = self.api.translate_batch(
-                            texts=plain_texts,
-                            source_lang="en",
-                            target_lang=reference_lang,
-                        )
-                        if len(plain_translations) != len(plain_texts):
-                            raise ValueError(
-                                "Batch translation cardinality mismatch: "
-                                f"expected {len(plain_texts)}, "
-                                f"got {len(plain_translations)}"
-                            )
+                    plain_translations = _translate_batch_with_retry(
+                        self.api,
+                        plain_texts,
+                        reference_lang,
+                    )
+                    if plain_translations is not None:
                         for index, translation in zip(
                             plain_indexes,
                             plain_translations,
                         ):
                             new_translations[index] = translation
-                    except Exception:
-                        pass
                 for index, task in enumerate(batch_tasks):
                     instruction = task[3]
                     if not instruction:

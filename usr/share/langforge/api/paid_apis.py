@@ -128,8 +128,6 @@ class OpenAIAPI(TranslationAPI):
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
         """Translate multiple texts using OpenAI with sub-batches of 15."""
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 15
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -154,11 +152,11 @@ class OpenAIAPI(TranslationAPI):
                 {"role": self._instruction_role(), "content": system_prompt},
                 {"role": "user", "content": user_msg},
             ],
-            **self._completion_options(2048),
+            **self._completion_options(4096),
         )
         self._track_openai_response(response)
         content = response.choices[0].message.content or ""
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenAI."""
@@ -260,8 +258,6 @@ class GeminiAPI(TranslationAPI):
         """
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 15
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -288,7 +284,7 @@ class GeminiAPI(TranslationAPI):
             config=self._config(2048, system_prompt),
         )
         self._track_gemini_response(response)
-        return parse_batch_response(response.text, expected_ids)
+        return parse_batch_response(response.text, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Test Gemini connection with actual generation."""
@@ -391,8 +387,6 @@ class GrokAPI(TranslationAPI):
         """Translate multiple texts using Grok with sub-batches of 10."""
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 10
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -423,7 +417,7 @@ class GrokAPI(TranslationAPI):
                     {"role": "user", "content": user_msg},
                 ],
                 "temperature": 0.3,
-                "max_tokens": 2048,
+                "max_tokens": 4096,
                 **self._extra_params,
             },
             timeout=60,
@@ -432,7 +426,7 @@ class GrokAPI(TranslationAPI):
         data = response.json()
         self._track_grok_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com Grok."""
@@ -535,8 +529,6 @@ class DeepSeekAPI(TranslationAPI):
         self, texts: list[str], source_lang: str, target_lang: str
     ) -> list[str]:
         """Translate multiple texts using DeepSeek with sub-batches of 15."""
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 15
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -561,11 +553,11 @@ class DeepSeekAPI(TranslationAPI):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_msg},
             ],
-            **self._completion_options(2048),
+            **self._completion_options(4096),
         )
         self._track_deepseek_response(response)
         content = response.choices[0].message.content or ""
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com DeepSeek."""

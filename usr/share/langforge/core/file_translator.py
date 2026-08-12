@@ -20,7 +20,11 @@ import polib
 
 from api.base import TranslationAPI
 from core.languages import FILE_LANG_CODES, get_file_lang_code, get_plural_rule
-from core.translator import _finalize_form_translation, _protect_placeholders
+from core.translator import (
+    _finalize_form_translation,
+    _protect_placeholders,
+    _translate_batch_with_retry,
+)
 
 log = logging.getLogger(__name__)
 
@@ -217,19 +221,8 @@ def _translate_texts_with_status(
         protected_texts.append(protected)
         token_maps.append(tokens)
 
-    try:
-        candidates = api.translate_batch(protected_texts, "en", target_lang)
-        if (
-            not isinstance(candidates, (list, tuple))
-            or len(candidates) != len(protected_texts)
-        ):
-            raise ValueError(
-                "Batch translation cardinality mismatch: "
-                f"expected {len(protected_texts)}, "
-                f"got {len(candidates) if hasattr(candidates, '__len__') else 'unknown'}"
-            )
-    except Exception as error:
-        log.warning("Batch translation failed; retrying individually: %s", error)
+    candidates = _translate_batch_with_retry(api, protected_texts, target_lang)
+    if candidates is None:
         candidates = [None] * len(protected_texts)
 
     translations: list[str] = []

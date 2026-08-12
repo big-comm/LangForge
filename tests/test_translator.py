@@ -163,6 +163,86 @@ class TestMangledTokenRecovery:
         assert restored == "<b>a<i>b"
 
 
+class TestLocalizedFreedom:
+    """Rules that used to reject correct translations of real catalogs."""
+
+    def test_ampersand_entity_may_be_dropped(self):
+        # Korean joins with 및 and has no use for the character itself.
+        assert _validate_translation_integrity(
+            "Application &amp; Window", "애플리케이션 및 창"
+        )
+
+    def test_other_entities_must_survive(self):
+        assert not _validate_translation_integrity("Use &lt;name&gt;", "Utiliser nom")
+
+    def test_no_entity_may_be_invented(self):
+        assert not _validate_translation_integrity(
+            "Application Window", "Aplicação &amp; Janela"
+        )
+
+    def test_hyphen_compound_keeps_the_flag_intact(self):
+        # German writes "(--user-Flag)"; the flag is still --user.
+        assert _validate_translation_integrity(
+            "Operate on user services (--user flag)",
+            "Auf Benutzerdienste anwenden (--user-Flag)",
+        )
+
+    def test_a_word_that_looks_like_a_command_is_allowed(self):
+        # "pip" is Norwegian for beep, not the package manager.
+        assert _validate_translation_integrity("Double Beep", "Dobbelt pip")
+
+    def test_a_source_command_may_not_be_duplicated(self):
+        assert not _validate_translation_integrity(
+            "Run git commit", "Exécuter git commit git commit"
+        )
+
+    def test_a_number_may_be_spelled_out_when_the_source_has_none(self):
+        # Korean renders "Last Hour" as "지난 1시간".
+        assert _validate_translation_integrity("Last Hour", "지난 1시간")
+
+    def test_a_word_number_does_not_lock_the_digits(self):
+        # "One or more hex codes" has no digit; Korean writes hex as 16진수.
+        assert _validate_translation_integrity(
+            "One or more hex codes are invalid.",
+            "하나 이상의 16진수 코드가 잘못되었습니다.",
+        )
+
+    def test_a_lowercase_hyphen_compound_keeps_the_flag(self):
+        # Norwegian writes "(--user-flagg)"; the flag is still --user.
+        assert _validate_translation_integrity(
+            "Operate on user services (--user flag)",
+            "Operer på brukertjenester (--user-flagg)",
+        )
+
+    def test_a_different_flag_is_still_rejected(self):
+        assert not _validate_translation_integrity(
+            "Operate on user services (--user flag)",
+            "Operer på brukertjenester (--system-flagg)",
+        )
+
+    def test_a_source_number_still_may_not_change(self):
+        assert not _validate_translation_integrity(
+            "Delete 3 files", "Excluir 5 arquivos"
+        )
+
+
+class TestScaledNumbers:
+    """A scaled quantity is respelled per locale and cannot be compared."""
+
+    @pytest.mark.parametrize(
+        "translated",
+        ["500.000 tegn/måned", "500 000 tecken/månad", "月間50万文字"],
+    )
+    def test_scaled_source_accepts_localized_expansion(self, translated):
+        assert _validate_translation_integrity("500k characters/month", translated)
+
+    def test_plain_numbers_are_still_compared(self):
+        assert _validate_translation_integrity("Delete 3 files", "Excluir 3 arquivos")
+        assert not _validate_translation_integrity(
+            "Delete 3 files", "Excluir 5 arquivos"
+        )
+
+
 class TestValidatePlaceholders:
     def test_valid_same_placeholders(self):
         assert _validate_placeholders("Hello %s", "Olá %s")
@@ -316,7 +396,7 @@ class TestTranslationIntegrity:
             ("Use $1 and $HOME", "Utiliser $2 et $ACCUEIL"),
             ("Value ${HOME}", "Valeur {HOME}"),
             ("Value %s", "Valeur %s %BROKEN"),
-            ("Tom &amp; Jerry", "Tom et Jerry"),
+            ("Tom &amp; Jerry", "Tom &amp; Jerry &amp; Titi"),
             ("Use &lt;name&gt;", "Utiliser nom"),
             ("[{0}/{1}] {2}", "[13] {0}/{1} {2}"),
             ("Open settings", "Ouvrir\x00 paramètres"),
@@ -653,7 +733,7 @@ class TestCatalogWrites:
         translated = polib.pofile(str(tmp_path / "fr.po"))
         assert translated.metadata["Report-Msgid-Bugs-To"] == ""
 
-    def test_existing_corrupt_translation_is_rejected_without_force(self, tmp_path):
+    def test_existing_corrupt_translation_is_flagged_not_overwritten(self, tmp_path):
         class NoCallAPI:
             batch_delay = 0
 
@@ -681,9 +761,89 @@ class TestCatalogWrites:
 
         entry = polib.pofile(str(tmp_path / "fr.po"))[0]
         assert count == 0
-        assert entry.msgstr == entry.msgid
+        # The run never asked for this entry, so its text survives: it is only
+        # flagged, which makes the next run retranslate it.
+        assert entry.msgstr == "Ouvrir <br> paramètres"
         assert "fuzzy" in entry.flags
-        assert engine.last_language_complete is False
+        # A stale entry from an earlier run must not fail this one.
+        assert engine.last_language_complete is True
+
+    def test_stale_entries_do_not_fail_a_run_that_translated_everything(self, tmp_path):
+        """One old broken form must not report the whole language as an error."""
+
+        class BatchAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def translate(self, text, _source, target):
+                return f"{target}:{text}"
+
+            def translate_batch(self, texts, _source, target):
+                return [f"{target}:{text}" for text in texts]
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.append(polib.POEntry(msgid="Fresh string"))
+        pot.append(polib.POEntry(msgid="Old\nwrapped\nstring"))
+        pot.save(str(pot_path))
+        existing = polib.POFile()
+        existing.append(
+            polib.POEntry(msgid="Old\nwrapped\nstring", msgstr="Colapsada numa linha")
+        )
+        existing.save(str(tmp_path / "fr.po"))
+        engine = TranslationEngine(BatchAPI(), "app")
+
+        engine.translate_language(pot_path, "fr", tmp_path)
+
+        catalog = polib.pofile(str(tmp_path / "fr.po"))
+        stale = catalog.find("Old\nwrapped\nstring")
+        assert stale.msgstr == "Colapsada numa linha"
+        assert "fuzzy" in stale.flags
+        assert catalog.find("Fresh string").msgstr == "fr:Fresh string"
+        assert engine.last_language_complete is True
+
+    def test_one_pending_entry_is_reported_as_partial_not_error(self, tmp_path):
+        """A catalog that is 1 of 2 short is partial: it self-heals next run."""
+
+        class HalfBrokenAPI:
+            batch_delay = 0
+
+            def set_context(self, *_args):
+                pass
+
+            def _render(self, text, target):
+                # The model drops a line break on one string, nothing else.
+                if "\n" in text:
+                    return "uma linha so"
+                return f"{target}:{text}"
+
+            def translate(self, text, _source, target):
+                return self._render(text, target)
+
+            def translate_batch(self, texts, _source, target):
+                return [self._render(text, target) for text in texts]
+
+        pot_path = tmp_path / "app.pot"
+        pot = polib.POFile()
+        pot.append(polib.POEntry(msgid="Open settings"))
+        pot.append(polib.POEntry(msgid="First line\nsecond line"))
+        pot.save(str(pot_path))
+        statuses = []
+        engine = TranslationEngine(HalfBrokenAPI(), "app")
+
+        results = engine.translate_project(
+            pot_path,
+            tmp_path,
+            progress_callback=lambda lang, status, *_: statuses.append(status),
+            languages=["fr"],
+        )
+
+        assert results == {"fr": False}
+        assert statuses[-1] == "partial: 1 strings pending"
+        assert "error" not in statuses[-1]
+        assert engine.last_language_pending == 1
 
     def test_textdomain_name_is_audited_only_as_project_context(self, tmp_path):
         class NoCallAPI:

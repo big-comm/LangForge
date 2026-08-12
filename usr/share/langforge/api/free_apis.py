@@ -126,8 +126,6 @@ class GroqAPI(TranslationAPI):
         """
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 8
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -156,7 +154,7 @@ class GroqAPI(TranslationAPI):
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                2048,
+                4096,
             ),
             timeout=60,
         )
@@ -164,7 +162,7 @@ class GroqAPI(TranslationAPI):
         data = response.json()
         self._track_groq_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com Groq."""
@@ -439,8 +437,6 @@ class GeminiFreeAPI(TranslationAPI):
         """Gemini Free has strict rate limits (15 RPM) — use sub-batches."""
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 15
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -464,10 +460,10 @@ class GeminiFreeAPI(TranslationAPI):
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=user_msg,
-            config=self._config(2048, system_prompt),
+            config=self._config(4096, system_prompt),
         )
         self._track_gemini_response(response)
-        return parse_batch_response(response.text, expected_ids)
+        return parse_batch_response(response.text, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Test Gemini connection with actual generation."""
@@ -577,8 +573,6 @@ class OpenRouterAPI(TranslationAPI):
         """Sub-batch of 8 for free models (varied RPM limits)."""
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 8
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -607,7 +601,7 @@ class OpenRouterAPI(TranslationAPI):
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                2048,
+                4096,
             ),
             timeout=60,
         )
@@ -615,7 +609,7 @@ class OpenRouterAPI(TranslationAPI):
         data = response.json()
         self._track_openrouter_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com OpenRouter."""
@@ -713,8 +707,6 @@ class MistralFreeAPI(TranslationAPI):
         """Sub-batch of 10 for Mistral free tier."""
         import time as _time
 
-        if len(texts) == 1:
-            return [self.translate(texts[0], source_lang, target_lang)]
         sub_batch_size = 10
         results: list[str] = []
         for start in range(0, len(texts), sub_batch_size):
@@ -743,7 +735,7 @@ class MistralFreeAPI(TranslationAPI):
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_msg},
                 ],
-                2048,
+                4096,
             ),
             timeout=60,
         )
@@ -751,7 +743,7 @@ class MistralFreeAPI(TranslationAPI):
         data = response.json()
         self._track_mistral_response(data)
         content = data["choices"][0]["message"]["content"].strip()
-        return parse_batch_response(content, expected_ids)
+        return parse_batch_response(content, expected_ids, texts)
 
     def test_connection(self) -> bool:
         """Testa conexão com Mistral."""

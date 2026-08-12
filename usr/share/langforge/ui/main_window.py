@@ -135,6 +135,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._mode = "project"  # "project" or "file"
         self._quit_requested = False
         self._quit_check_scheduled = False
+        self._partial_langs: set[str] = set()
 
         self.set_title("LangForge")
         self.set_default_size(1020, 720)
@@ -586,7 +587,11 @@ class MainWindow(Adw.ApplicationWindow):
         self.stack.add_named(self.success_page, "success")
 
     def _show_success_page(
-        self, success_count: int, elapsed_secs: float, failed_count: int = 0
+        self,
+        success_count: int,
+        elapsed_secs: float,
+        failed_count: int = 0,
+        partial_count: int = 0,
     ):
         """Show the final result page."""
         mins, secs = divmod(int(elapsed_secs), 60)
@@ -595,6 +600,9 @@ class MainWindow(Adw.ApplicationWindow):
         if failed_count:
             self.success_page.set_icon_name("dialog-warning-symbolic")
             self.success_page.set_title(_("Error"))
+        elif partial_count:
+            self.success_page.set_icon_name("dialog-warning-symbolic")
+            self.success_page.set_title(_("Translation Complete!"))
         else:
             self.success_page.set_icon_name("emblem-ok-symbolic")
             self.success_page.set_title(_("Translation Complete!"))
@@ -603,6 +611,8 @@ class MainWindow(Adw.ApplicationWindow):
         desc = _("{langs} languages translated in {time}").format(
             langs=success_count, time=time_str
         )
+        if partial_count:
+            desc += f"\n{partial_count} {_('partially translated')}"
         if failed_count:
             desc += f"\n{failed_count} {_('error')}"
         usage = getattr(self.controller, "_last_usage", {})
@@ -662,13 +672,21 @@ class MainWindow(Adw.ApplicationWindow):
         if code not in self.lang_widgets:
             return
         w = self.lang_widgets[code]
-        for c in ["pending", "translating", "success", "error", "reference"]:
+        for c in [
+            "pending",
+            "translating",
+            "success",
+            "partial",
+            "error",
+            "reference",
+        ]:
             w.remove_css_class(c)
         w.add_css_class(status)
         icons = {
             "pending": "content-loading-symbolic",
             "translating": "emblem-synchronizing-symbolic",
             "success": "emblem-ok-symbolic",
+            "partial": "dialog-warning-symbolic",
             "error": "dialog-error-symbolic",
             "reference": "starred-symbolic",
         }
@@ -679,6 +697,7 @@ class MainWindow(Adw.ApplicationWindow):
             "pending": _("pending"),
             "translating": _("translating"),
             "success": _("completed"),
+            "partial": _("partially translated"),
             "error": _("error"),
             "reference": _("reference"),
         }
@@ -1131,6 +1150,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._active_langs = selected_langs  # for progress tracking
 
         self._translation_start = time.monotonic()
+        self._partial_langs = set()
         self.translate_button.set_sensitive(False)
         self.translate_button.set_label(_("Translating..."))
         self.cancel_button.set_sensitive(True)
@@ -1239,7 +1259,11 @@ class MainWindow(Adw.ApplicationWindow):
                 self.progress_ring.set_progress((current - 1 + sub_fraction) / total)
             return
 
-        if "error" in status.lower():
+        if status.lower().startswith("partial"):
+            self._partial_langs.add(lang)
+            self._update_lang_status(lang, "partial")
+        elif "error" in status.lower():
+            self._partial_langs.discard(lang)
             self._update_lang_status(lang, "error")
         elif "reference" in status.lower():
             self._update_lang_status(lang, "reference")
@@ -1276,7 +1300,12 @@ class MainWindow(Adw.ApplicationWindow):
     ):
         """Handle translation pipeline completion."""
         success = sum(1 for v in results.values() if v)
-        failed = sum(1 for v in results.values() if not v)
+        partial = sum(
+            1
+            for lang, ok in results.items()
+            if not ok and lang in getattr(self, "_partial_langs", set())
+        )
+        failed = sum(1 for v in results.values() if not v) - partial
 
         if was_cancelled:
             # Cancel UI already shown by _on_cancel_translation; just update
@@ -1291,7 +1320,7 @@ class MainWindow(Adw.ApplicationWindow):
                 self.progress_subtitle.set_label(cancel_msg)
         else:
             self.progress_ring.set_progress(1.0)
-            self._show_success_page(success, elapsed, failed)
+            self._show_success_page(success, elapsed, failed, partial)
         self._finish_translation()
 
     def _on_translation_error(self, error: Exception):

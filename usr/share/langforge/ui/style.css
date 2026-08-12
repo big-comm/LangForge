@@ -41,6 +41,12 @@
     opacity: 1;
 }
 
+.lang-item.partial {
+    border-color: @warning_bg_color;
+    background: alpha(@warning_bg_color, 0.15);
+    opacity: 1;
+}
+
 .lang-item.error {
     border-color: @error_bg_color;
     background: alpha(@error_bg_color, 0.15);

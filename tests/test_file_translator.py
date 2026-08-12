@@ -244,7 +244,7 @@ def test_po_clears_fuzzy_only_for_successful_entries(tmp_path):
     assert "fuzzy" in translated[1].flags
 
 
-def test_truncated_batch_retries_every_item_individually(tmp_path):
+def test_truncated_batch_retries_every_item_through_strict_protocol(tmp_path):
     class TruncatedAPI(EchoTranslationAPI):
         def __init__(self):
             super().__init__()
@@ -269,10 +269,13 @@ def test_truncated_batch_retries_every_item_individually(tmp_path):
 
     output = _file_output_path(source, "fr", ".json")
     assert result == {"fr": True}
-    assert api.individual_calls == ["Hello", "World"]
+    # Each item is retried alone as a one-item batch: the free-form prompt is
+    # never used, so the model cannot answer with prose instead of a string.
+    assert api.individual_calls == []
+    assert api.batches[-2:] == [["Hello"], ["World"]]
     assert json.loads(output.read_text(encoding="utf-8")) == {
-        "first": "single:Hello",
-        "second": "single:World",
+        "first": "batch:Hello",
+        "second": "batch:World",
     }
 
 
