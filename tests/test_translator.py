@@ -220,6 +220,26 @@ class TestLocalizedFreedom:
             "Operer på brukertjenester (--system-flagg)",
         )
 
+    def test_the_dialogue_dash_is_not_a_command_flag(self):
+        # A subtitle opens a speaker line with "-I"; no translation carries it.
+        assert _validate_translation_integrity(
+            "-I hope you keep that in mind.\n-I'll keep that in mind.",
+            "-Espero que você leve isso em conta.\n-Vou levar em conta.",
+        )
+
+    def test_a_dialogue_dash_may_become_an_em_dash(self):
+        assert _validate_translation_integrity(
+            "-Wipe the drool.\n-I think I'm falling in love.",
+            "—Enxuga a baba.\n—Acho que estou me apaixonando.",
+        )
+
+    def test_a_real_command_flag_is_still_required(self):
+        assert _validate_translation_integrity("Run git add -A", "Exécuter git add -A")
+        assert not _validate_translation_integrity("Run git add -A", "Exécuter git add")
+        assert not _validate_translation_integrity(
+            "Use -v for verbose output", "Use -x para saída detalhada"
+        )
+
     def test_a_source_number_still_may_not_change(self):
         assert not _validate_translation_integrity(
             "Delete 3 files", "Excluir 5 arquivos"

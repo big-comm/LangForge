@@ -172,7 +172,10 @@ _SOURCE_ONLY_PROTECTED_PATTERNS = (
     ),
     re.compile(r"refs/[A-Za-z0-9_{}.*^:/-]*[A-Za-z0-9_{}*]"),
     re.compile(r"backup/[A-Za-z0-9_{}.*^:/-]*[A-Za-z0-9_{}*]"),
-    re.compile(r"(?<![A-Za-z0-9_])-[A-Za-z](?![A-Za-z0-9_])"),
+    # A short flag lives inside a command line — "git add -A" — so it must
+    # follow a space. A dash opening a line is the dialogue dash of every
+    # subtitle ("-I hope so."), not something a translation has to carry.
+    re.compile(r"(?<=[ \t])-[A-Za-z](?![A-Za-z0-9_])"),
     re.compile(r"(?<![A-Za-z0-9_])dev-[A-Za-z0-9_{}-]+"),
 )
 
