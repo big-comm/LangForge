@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LangForge\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-12 21:08+0000\n"
+"POT-Creation-Date: 2026-08-15 20:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,139 +55,6 @@ msgstr "Translation Complete!"
 # File: usr/share/langforge/main.py, line: 168
 msgid "Automatic translator for gettext projects"
 msgstr "Automatic translator for gettext projects"
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
-msgid ""
-"Select a project folder with translatable source code.\n"
-"\n"
-"Scans for translatable strings using gettext patterns\n"
-"and generates .po files for each target language.\n"
-"\n"
-"Supported project types:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"and any project using gettext"
-msgstr ""
-"Select a project folder with translatable source code.\n"
-"\n"
-"Scans for translatable strings using gettext patterns\n"
-"and generates .po files for each target language.\n"
-"\n"
-"Supported project types:\n"
-"Python, C/C++, JavaScript, Shell, Vala\n"
-"and any project using gettext"
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
-msgid ""
-"Select a single file to translate directly.\n"
-"\n"
-"Supported formats:\n"
-".po / .pot — Gettext translation files\n"
-".json — Key-value translation files\n"
-".srt — SubRip subtitle files\n"
-".txt / .md — Plain text and Markdown"
-msgstr ""
-"Select a single file to translate directly.\n"
-"\n"
-"Supported formats:\n"
-".po / .pot — Gettext translation files\n"
-".json — Key-value translation files\n"
-".srt — SubRip subtitle files\n"
-".txt / .md — Plain text and Markdown"
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
-msgid ""
-"Re-check existing translations using context-aware AI.\n"
-"\n"
-"Detects entries translated without app name/context\n"
-"and fixes only those. Requires an LLM-based API.\n"
-"\n"
-"Compatible APIs:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Not compatible:\n"
-"DeepL, LibreTranslate (no context support)"
-msgstr ""
-"Re-check existing translations using context-aware AI.\n"
-"\n"
-"Detects entries translated without app name/context\n"
-"and fixes only those. Requires an LLM-based API.\n"
-"\n"
-"Compatible APIs:\n"
-"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
-"\n"
-"Not compatible:\n"
-"DeepL, LibreTranslate (no context support)"
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
-msgid ""
-"Select the API category for translations.\n"
-"\n"
-"Free — APIs with free tier or no cost:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Paid — APIs that require a billing plan:\n"
-"OpenAI, Gemini Pro, Grok"
-msgstr ""
-"Select the API category for translations.\n"
-"\n"
-"Free — APIs with free tier or no cost:\n"
-"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
-"Mistral, LibreTranslate\n"
-"\n"
-"Paid — APIs that require a billing plan:\n"
-"OpenAI, Gemini Pro, Grok"
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
-msgid ""
-"Translation provider to use.\n"
-"\n"
-"Only providers with a configured API key\n"
-"are shown here. Add keys in API Settings.\n"
-"\n"
-"Providers that don't require a key\n"
-"(e.g. LibreTranslate) are always available."
-msgstr ""
-"Translation provider to use.\n"
-"\n"
-"Only providers with a configured API key\n"
-"are shown here. Add keys in API Settings.\n"
-"\n"
-"Providers that don't require a key\n"
-"(e.g. LibreTranslate) are always available."
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
-msgid ""
-"Compile .po files into .mo binary format.\n"
-"\n"
-"The .mo files are the optimized binary format\n"
-"used by gettext at runtime. Enable this to\n"
-"automatically generate them after translation."
-msgstr ""
-"Compile .po files into .mo binary format.\n"
-"\n"
-"The .mo files are the optimized binary format\n"
-"used by gettext at runtime. Enable this to\n"
-"automatically generate them after translation."
-
-#
-# File: usr/share/langforge/utils/tooltip_helper.py, line: 74
-msgid ""
-"Open a live view of translations in progress.\n"
-"\n"
-"Shows the original text and its translation\n"
-"in real time as each language is processed."
-msgstr ""
-"Open a live view of translations in progress.\n"
-"\n"
-"Shows the original text and its translation\n"
-"in real time as each language is processed."
 
 #
 # File: usr/share/langforge/ui/main_window.py, line: 29
@@ -892,6 +759,161 @@ msgid "Open"
 msgstr "Open"
 
 #
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 28
+msgid ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+msgstr ""
+"Select a project folder with translatable source code.\n"
+"\n"
+"Scans for translatable strings using gettext patterns\n"
+"and generates .po files for each target language.\n"
+"\n"
+"Supported project types:\n"
+"Python, C/C++, JavaScript, Shell, Vala\n"
+"and any project using gettext"
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 36
+msgid ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+msgstr ""
+"Select a single file to translate directly.\n"
+"\n"
+"Supported formats:\n"
+".po / .pot — Gettext translation files\n"
+".json — Key-value translation files\n"
+".srt — SubRip subtitle files\n"
+".txt / .md — Plain text and Markdown"
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 44
+msgid ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+msgstr ""
+"Re-check existing translations using context-aware AI.\n"
+"\n"
+"Detects entries translated without app name/context\n"
+"and fixes only those. Requires an LLM-based API.\n"
+"\n"
+"Compatible APIs:\n"
+"OpenAI, Gemini, Groq, Mistral, OpenRouter, Grok\n"
+"\n"
+"Not compatible:\n"
+"DeepL, LibreTranslate (no context support)"
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 53
+msgid ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+msgstr ""
+"Select the API category for translations.\n"
+"\n"
+"Free — APIs with free tier or no cost:\n"
+"Groq, Gemini Free, DeepL Free, OpenRouter,\n"
+"Mistral, LibreTranslate\n"
+"\n"
+"Paid — APIs that require a billing plan:\n"
+"OpenAI, Gemini Pro, Grok"
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 61
+msgid ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+msgstr ""
+"Translation provider to use.\n"
+"\n"
+"Only providers with a configured API key\n"
+"are shown here. Add keys in API Settings.\n"
+"\n"
+"Providers that don't require a key\n"
+"(e.g. LibreTranslate) are always available."
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 68
+msgid ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+msgstr ""
+"Compile .po files into .mo binary format.\n"
+"\n"
+"The .mo files are the optimized binary format\n"
+"used by gettext at runtime. Enable this to\n"
+"automatically generate them after translation."
+
+#
+# File: usr/share/langforge/utils/tooltip_helper.py, line: 74
+msgid ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+msgstr ""
+"Open a live view of translations in progress.\n"
+"\n"
+"Shows the original text and its translation\n"
+"in real time as each language is processed."
+
+#
+# File: usr/share/langforge/core/controller.py, line: 83
+msgid "Project does not use gettext"
+msgstr "Project does not use gettext"
+
+#
+# File: usr/share/langforge/core/controller.py, line: 100
+#, python-brace-format
+msgid "Not a file: {}"
+msgstr "Not a file: {}"
+
+#
+# File: usr/share/langforge/core/controller.py, line: 104
+#, python-brace-format
+msgid "Unsupported file type: {ext}. Supported: {supported}"
+msgstr "Unsupported file type: {ext}. Supported: {supported}"
+
+#
+# File: usr/share/langforge/core/controller.py, line: 122
+msgid "JSON root must be an object or array"
+msgstr "JSON root must be an object or array"
+
+#
 # File: usr/share/langforge/core/compiler.py, line: 46
 #, python-brace-format
 msgid "Catalog names collide after locale normalization: {first}, {second}"
@@ -924,25 +946,3 @@ msgstr "Could not compile {lang}: {error}"
 # File: usr/share/langforge/core/compiler.py, line: 143
 msgid "msgfmt was not found. Install the gettext package."
 msgstr "msgfmt was not found. Install the gettext package."
-
-#
-# File: usr/share/langforge/core/controller.py, line: 83
-msgid "Project does not use gettext"
-msgstr "Project does not use gettext"
-
-#
-# File: usr/share/langforge/core/controller.py, line: 100
-#, python-brace-format
-msgid "Not a file: {}"
-msgstr "Not a file: {}"
-
-#
-# File: usr/share/langforge/core/controller.py, line: 104
-#, python-brace-format
-msgid "Unsupported file type: {ext}. Supported: {supported}"
-msgstr "Unsupported file type: {ext}. Supported: {supported}"
-
-#
-# File: usr/share/langforge/core/controller.py, line: 122
-msgid "JSON root must be an object or array"
-msgstr "JSON root must be an object or array"
