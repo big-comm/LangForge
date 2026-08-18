@@ -16,6 +16,8 @@
   <img src="https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black" alt="Linux">
 </p>
 
+<img width="1070" height="770" alt="langforge" src="https://github.com/user-attachments/assets/f300e75c-1c9a-4d44-a4f5-fb0a27325d77" />
+
 ---
 
 ## Overview
